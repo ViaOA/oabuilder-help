@@ -1,0 +1,92 @@
+<html><body style="margin:12;">
+
+<h3 align="center">Editing a Model</h3>
+
+<table width='100%'>
+	<tr>
+		<td>
+Select the "properties" button from the toolbar to display the OABuilder dialog window,
+and then select the "OAModel" tab.
+		</td>
+	</tr>
+	<tr>
+		<td>
+
+<img src="images/editmodel1.gif">
+<br>
+<ol>
+<li>OAModel tab</li>
+<li>Setting information</li>
+<li>Model changes</li>
+<li>DataSource settings</li>
+</ol>
+<ul><b>Settings information:</b>
+<li>Size: chooses the default size to use for display the objects.</li>
+<li>If "Name only ..." is checked, then objects that are "lookup" will only
+display the name of the object.</li>
+<li>Display: <br>"Use Hilighting" to display if color coding is used for objects.  
+<br>If "Show hidden" is unchecked, then objects that are flagged as hidden are not displayed.
+<br>If "Show All Lookup Objects" is unchecked, then objects that are flagged as lookup
+object are not displayed.  
+<br>If "Show all Links" is unchecked, then only the links for the selected
+are displayed.  
+<br>If "Show hidden links" is unchecked, then links that
+are flagged as hidden are not displayed, unless one of the objects that are linked is
+selected.
+</li>
+</ul>
+
+<p>
+
+<img src="images/editmodel2.gif">
+<br>
+<b>Changes:</b> list of changes made to the model.  This is used to be able to
+determine and generate changes to datasource, etc.
+<p>
+The top is a listing of the changes.  There are commands to remove a change, clear all
+changes, and to rearrange the order of the changes.
+<p>
+The bottom shows information about the change and how it will affect the database.
+<p>
+<br>
+<br>
+
+<img src="images/editmodel3.gif">
+<br>
+<b>DataSource:</b> JDBC settings for establishing a database connection.
+The "DataSource Naming Rules" is used to choose the naming convention for the
+database table, column, index and constraint names.  By default OABuilder will 
+use the same names given to the Object and Property names.
+
+<ul>DataSource Naming Rules
+<li>Convert Hungarian to "_" - this will expand the name to use "_" to seperate names.
+</li>
+<li>"Expand Column name for PKeys to include Table Name" - by default, it is recommended
+to name the object identifier property "Id".  If this is checked the the database column
+name will be prefixed with the table name.
+</li>
+<li>Use uupercase names - if checked, then all database names will be in uppercase.
+</li>
+<li>"Lock automatical changes to names" - if checked, then OABuilder will not change
+the database name if the object or property name is changed.
+</li>
+<li>Update Table/Column Names - this will rename the table and column names to match
+the above settings.
+</li>
+<li>Verify Database - will verify that the database matches the object model.</li>
+</ul>
+
+
+
+
+
+<p>
+
+
+		</td>
+	</tr>
+</table>
+
+
+</body>
+</html>

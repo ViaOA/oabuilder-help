@@ -1,0 +1,50 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Code Generation Menu</h3>
+OABuilder is also a code generation tool, with an <i>engine</i> that is designed to
+create custom code generators.  
+<p>
+
+    This menu shows the code generation that is included in OABuilder. 
+    We have also developed other generators and will be adding more in the future.
+    <p>
+    Note that these generators can be re-ran after an application has been created.  It does
+    not use two-way generation, instead it uses templates and a way to include custom code into
+    the model that is then added to (re)generated code.
+         
+    <br><br> 
+        <img src='images/codegen.jpg'><br>
+<p>
+<b>OAObject classes</b> - observable pojo "looking" entity classes, could also are DAO.  Each object
+in the model will have a Java class created for it.
+Also generated is classes for filters, and search objects.
+<p>
+<b>OAModel classes</b> - the model classes automate the wiring between the data objects, to 
+form relationships like master/detail, linking, filtering, etc.
+<p>
+<b>OADataSource ORM</b> - automates the object to relational mapping so that the OA objects 
+work with database.  Queries, save, delete, cascading, references, etc. are all part of the functionality
+for OAObjects.
+<p>
+<b>SQL Script</b> - this will generate the DDL script used to create the database.
+<p>
+<b>SQL Changes Script</b> - OABuilder keeps track of all model changes and is able to generate a 
+script that will then update the database.  
+<p>
+<b>Data Generator</b> - this will generate sample data to use for testing, etc.  We plan to have this be
+more specific in future releases.
+<p>
+<b>JFC/Swing Application</b> - this will create a fully functional UI application using the Java Swing components 
+that have been extended to be Object Aware/bindable.
+<p>
+<b>OATemplate files</b> - this will take the template project and use it as the base for the new application.
+<p>
+
+    
+
+</body>
+</html>

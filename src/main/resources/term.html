@@ -1,0 +1,78 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Terminology</h3>
+
+The following is a list of terms used throughout this help system.  These apply to building applications using
+the oaFramework, along with using OABuilder.
+<ul>
+
+<li>Model - defines a group of related entities that are used to store data and 
+include validation and business logic.
+</li>
+<li>Object Graph - a collective group of objects from the model.</li>
+<li>OA (Object Automation) - name used for automating object oriented programming.</li>
+<li>OABuilder - name of visual development tool.</li>
+<li>Link/Relationship - used to define the rules for how objects are related together.
+    Types are One/Many : O2O, O2M, M2M.  A recursive is a self reference.
+    Additonal information can include cascade rules, how and where the data is created, other
+    required references, etc.
+</li>
+<li>Meta-data - additional information that describes specific pieces of the program in enough detail
+so that it can be automated.</li>
+<li>Reflection - a way for code to read and use meta-data to call methods dynamically.
+<li>Observable - a type of design pattern where events can be sent to interested listeners when
+a particular event happens.  This is a powerful feature, but at a cost.  OA has overcome this
+cost so that any object or collection of objects can be made observable.</li>  
+<li>Reflective Model - used to describe how the OA model uses reflection, meta-data and 
+the observable behavior of the model objects to automate how objects work together, even
+with when running on separate computers (distributed).
+</li>
+<li>Datasource - used to store and retreive data.  Most common is relational database, but also 
+includes xml, json, webservice, binary, csv, text, legacy formats/interface, etc.
+OA defines a base OADataSource class that allows applications to be datasource independent.
+
+<li>DAO - data access objects. Used for application data that is stored in a database or other datasource.</li>
+<li>OAObject - base class for all model objects, that are observable, and can serve as DAO. 
+<li>Hub - OA's obserable collection class, similar in functionality to an ArrayList, with additonal features.</li>
+
+<li>Messaging - used by programs to communicate.  OA has built in messaging that allows OAObject and Hubs to 
+stay in-sync with other applications.  OA also includes a way to define distributed methods, so that one application
+can call it, and have it executed on another system.  This is all treated as if is was a local method call.
+
+<li>Auto Number -
+used by object property so that it's value will automatically be assigned, usually a sequentially number.
+If the property type is "GUID", then a global unique identifier will be created, based on a unique system
+prefix. 
+</li>
+<li>JDBC - Java Database Connectivity, used to access any database from a Java program.</li>
+
+<li>OBX - file extension for files saved by OABuilder, using an XML format.</li>
+<li>Owner - an object relationship, where one is a continuation of the first.  For example, 
+an OrderItem does not exist without an Order - the Order is the owner.
+</li>
+<li>Property - data element within an object that defines a specific type of data.</li>
+<li>Property Path - An important concept in OA that is combined with reflection to be
+able to define a reference from one object to another object/objects through a path of relationships
+  
+For example, "order.customer.name" will 
+get the name for a customer, for a specific order.
+</li>
+<li>Recursive - an object "self" relationship, where each object can have many of the same type
+of objects, and they can also have many of the same, etc. 
+</li>
+<li>Sequence property - an property that is used to keep the order within a list, 
+when there is not a sortable property to use.  
+For example, if a Department has many Employees, you can use a seq property to keep
+the specific order to sort the employee list.
+</li>
+<li>Transient - used by object or property to signify that it should not be stored.</li>
+
+
+</ul>
+
+</body>
+</html>

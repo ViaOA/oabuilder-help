@@ -1,0 +1,48 @@
+<html><body style="margin:12;">
+
+<h3 align="center">Database Overview</h3>
+
+<table width='100%'>
+	<tr>
+		<td>
+
+OABuilder can be used to create and update databases.  With databases, there are
+tables, column, keys, indexes and more that an OAModel can create and update.
+When changes to an OAModel are made, there are code generators that can then
+create the database program (ex: sql scripts) to update the database to match
+the OAModel.
+<p>
+Internally, OABuilder keeps a list of changes and from this is able to generate
+the necessary changes need for the database to match the model.
+<p>
+Because all database have some differences in how they accomplish similar tasks, 
+OABuilder has configuration settings that allow you to work with these differences.
+<p>
+OABuilder currently has code generators for relational databases that use SQL.  
+Generators for other databases can be created by contacting ViaOA.
+<p>
+Mapping concepts - OABuilder is able to generate Object to Relationship Mapping (ORM) for 
+various tools.  Use ORM, developers are able to work with objects that automate
+most of the database programming, which allows developers to use an object oriented
+approach to working with the program.  This also allows for a seperation between the
+code and the database, allowing for support for other databases (database independent).
+<p>
+The following concepts are usual in understanding the differencs between
+working with databases and object oriented programming (OOP):
+
+Databases have Tables and Columns, OOP uses classes and properties.
+Databases use primary keys to define uniqueness, OOP uses additional coding to allow for this.
+Databases uses reference keys to link data together, OOP uses references.
+Databases use link tables to manage many to many relationships, OOP does not need this.
+Databases use SQL to select records, OOP can use an object query language based on the
+object structure, that can then be converted to the database language.
+
+<p>
+Done correctly, applications can be built so that they are independent of the database.
+Queries, updates, etc. can all be handled at an interface level so that the appropriate
+database command is then used.
+		</td>
+	</tr>
+</table>
+</body>
+</html>

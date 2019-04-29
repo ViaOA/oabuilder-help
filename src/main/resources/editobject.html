@@ -1,0 +1,86 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Editing an Object</h3>
+
+Use the Object editor to complete the setup.
+<p>
+Under the General tab, fill out the following information.
+    <p> 
+    <img src='images/editobject1.jpg'><p>
+    <hr> 
+
+    <div style='padding-left: 25'>
+Super Class - from out experience, this is rarely used, but can be used so that the current object inherits from the select class.<p>
+
+Name - class name to create, must be a valid Java name. Use camel-case for multipart names.
+This will then update other settings to match.<p>
+
+Display name - to show in UI, etc.<p>
+
+Plural - name used for many of these objects.<p>
+
+DB Name - table name.<p>
+
+Pkey Name - name of DB table primary key.<p>
+
+Display Property - this can be set to any property (or calc property) that is the default display for this class.<p>
+
+Sort Property - name of property to sort by default.  It can also be a property that is flagged as a sequence property,
+which will automatically be numbered in the order it was last sorted.<p>
+
+Est Total - estimated total amount of objects that will be created.  This is for documentation only.<p>
+
+Use DataSource - check if this should also exist in the database.<p>
+
+Local Only - if true, then changes to this object will not be communicated to other servers.<p>
+
+Add to Cache - if this is a local only object, then it can be choosen to be excluded from the OAObjectCache.<p>
+
+Pre-Select - if true, then all objcts will be selected during program startup.<p>
+
+Lookup - true if this object is used for a drop down type of selection.<p>
+
+Server Root - if true then this the object will be selected from database and included in the ServerRoot as a reference.
+The ServerRoot object is a top level object that will be sent to client applications during startup.
+If checked, then an editor will be displayed to define the query to use.<p>
+
+ClientRoot - similar to the ServerRoot, but this object is unique for each client that connects to the server.<p>
+
+Hide - if checked then this object should be hidden when the Model's display settings is set to hide hidden objects.<p>
+
+Hide Links - if checked then this object's links should be hidden when the Model's display settings is set to hide hidden links.<p>
+
+Flag - if true, then this object can be color coded.<p>
+</div>
+  
+
+<hr> 
+<br>
+The help editor allows you to create custom documentation for the object.
+Use the toolbar and right-click popup menu to access additional functionality.   
+<br><br> 
+<img src='images/editobject2.jpg'><p>
+<br><br> 
+<hr> 
+
+<br>
+The "Import Code" tab is used to add any needed "Java imports".    
+<br><hr> 
+  
+<br>
+For the "Filters", see the next section about "Object Filters".    
+<br><hr> 
+  
+<br>
+For the "User Interface", see the next section about "Object User Interface".    
+<br><hr> 
+  
+  
+  
+  
+  
+  
