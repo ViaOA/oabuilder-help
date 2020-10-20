@@ -20,8 +20,8 @@ public class Test extends JFrame {
 
     public Test() {
         try {
-            // qqqq Put help.hs and all files into help.jar as root files and change next line to help.hs
-	        URL url = HelpSet.findHelpSet(null, "help\\help.hs");
+            // NOTE: >>>> Put help.hs and all files into help.jar
+            URL url = HelpSet.findHelpSet(null, "help.hs");
 	        mainHS = new HelpSet(null, url);
             mainHB = mainHS.createHelpBroker();
 	        mainHB.enableHelpKey(this.getRootPane(), "index", null);
@@ -31,19 +31,19 @@ public class Test extends JFrame {
         }
         
         miHelp = new JMenuItem("Help");
-        miHelp.setIcon(new ImageIcon(this.getClass().getResource("icons/Help.gif")));
-        miHelp.setToolTipText("VetPlan Help");
+        miHelp.setIcon(new ImageIcon(this.getClass().getResource("/icons/Help.gif")));
+        miHelp.setToolTipText("Test Help");
     	miHelp.addActionListener(new CSH.DisplayHelpFromSource(mainHB));
 
 
         cmdHelp = new JButton();
-        cmdHelp.setIcon(new ImageIcon(this.getClass().getResource("icons/Help.gif")));
-        cmdHelp.setToolTipText("VetPlan Help");
+        cmdHelp.setIcon(new ImageIcon(this.getClass().getResource("/icons/Help.gif")));
+        cmdHelp.setToolTipText("Test Help");
        	mainHB.enableHelpOnButton(cmdHelp,"index", null);
 
         cmdCSHelp = new JButton();
-        cmdCSHelp.setIcon(new ImageIcon(this.getClass().getResource("icons/CSHelp.gif")));
-        cmdCSHelp.setToolTipText("VetPlan Context Sensitive Help");
+        cmdCSHelp.setIcon(new ImageIcon(this.getClass().getResource("/icons/CSHelp.gif")));
+        cmdCSHelp.setToolTipText("Context Sensitive Help");
     	cmdCSHelp.addActionListener(new CSH.DisplayHelpAfterTracking(mainHB));
 
 // -- Set id for context sensitive help
@@ -57,9 +57,25 @@ public class Test extends JFrame {
     
     public static void main(String[] args) {
         Test test = new Test();
+
+        test.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        } );
+        
+        test.cmdHelp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0 ,false), "xx");
+        test.cmdHelp.getActionMap().put("xx", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        
+        
+        test.setBounds(1500,  200,  800,  500);
         test.getContentPane().add(test.cmdHelp, BorderLayout.NORTH);
         test.getContentPane().add(test.cmdCSHelp, BorderLayout.SOUTH);
-        test.pack();
+        // test.pack();
         test.setVisible(true);
     }
 }
