@@ -11,20 +11,23 @@ import com.viaoa.json.node.OAJsonObjectNode;
 
 public class RestClientTest {
 
-	public void test() {
-		RestClient<ManualPOInterface> restClient = new RestClient<ManualPOInterface>() {
-			//qqqqqq
-		};
+	public void test() throws Exception {
+		RestClient restClient = new RestClient();
 
 		restClient.setBaseUrl("http://localhost:8082/servlet/oarest");
-
 		restClient.setUserPw("admin", "admin");
 
-		ManualPOInterface mpo = restClient.getInstance();
+		ManualPOInterface mpo = restClient.getInstance(ManualPOInterface.class);
+
+		ArrayList<String> alVerify = restClient.verify(ManualPOInterface.class);
+
+		int xxxx = 4;
+		xxxx++;
+		//qqqqqqqqqqqqqqqqqqqqqqqqqq
 
 		PurchaseOrder po, po2;
 		PurchaseOrder[] pos;
-		RestClient.InvokeInfo invokeInfo;
+		InvokeInfo invokeInfo;
 
 		po = new PurchaseOrder();
 		po.getPurchaseOrderItems().add(new PurchaseOrderItem());
@@ -140,7 +143,7 @@ public class RestClientTest {
 		xx++;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		RestClientTest test = new RestClientTest();
 		test.test();
 		System.out.println("DONE");

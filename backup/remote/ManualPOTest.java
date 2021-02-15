@@ -20,14 +20,13 @@ public class ManualPOTest {
 	 * "paging":{"rowsPerPage":10,"pageNumber":1,"totalCount":3}
 	 */
 
-	public void test() {
-		RestClient<ManualPOInterface> restClient = new RestClient<ManualPOInterface>() {
-		};
+	public void test() throws Exception {
+		RestClient restClient = new RestClient();
 
 		restClient.setBaseUrl("http://localhost:18080/retail-manual-po");
 		// restClient.setUserPw("admin", "admin");
 
-		final ManualPOInterface mpo = restClient.getInstance();
+		final ManualPOInterface mpo = restClient.getInstance(ManualPOInterface.class);
 
 		PurchaseOrder po, po2;
 		String s, s2;
@@ -48,7 +47,11 @@ public class ManualPOTest {
 			objNode.set("orderedByUser", "testD");
 			int id = objNode.getInt("id");
 			json = objNode.toJson();
-			mpo.updateManualPurchaseOrder(json);
+			try {
+				mpo.updateManualPurchaseOrder(json);
+			} catch (Exception e) {
+
+			}
 		}
 
 		objNode = arrayNode.getObject(0);
@@ -78,7 +81,7 @@ public class ManualPOTest {
 		xx++;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		ManualPOTest test = new ManualPOTest();
 		test.test();
 		System.out.println("DONE");

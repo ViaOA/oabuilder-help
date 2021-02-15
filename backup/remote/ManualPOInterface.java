@@ -30,25 +30,25 @@ public interface ManualPOInterface {
 
 	@RestMethod(methodType = MethodType.GET, urlPath = SingularName)
 	String getPurchaseOrderBySupplierIdPurchaseOrderNumber(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "supplierId") int supplierId,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "purchaseOrderNumber") int purchaseOrderNumber);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "supplierId") int supplierId,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "purchaseOrderNumber") int purchaseOrderNumber);
 
-	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, extraUrlQueryParams = "sorting=Id")
+	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, urlQuery = "sorting=Id")
 	String getManualPurchaseOrders(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "fromOrderDate") OADate dateFrom,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "toOrderDate") OADate dateTo,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "pageNumber") int pageNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "rowsPerPage") int rowsPerPage);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "fromOrderDate") OADate dateFrom,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "toOrderDate") OADate dateTo,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "pageNumber") int pageNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "rowsPerPage") int rowsPerPage);
 
-	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, extraUrlQueryParams = "sorting=Id")
+	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, urlQuery = "sorting=Id")
 	String getPurchaseOrdersByPurchaseOrderNumber(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "purchaseOrderNumber") int purchaseOrderNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "pageNumber") int pageNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "rowsPerPage") int rowsPerPage);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "purchaseOrderNumber") int purchaseOrderNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "pageNumber") int pageNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "rowsPerPage") int rowsPerPage);
 
-	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, extraUrlQueryParams = "sorting=Id")
+	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, urlQuery = "sorting=Id")
 	String getPurchaseOrdersBySupplierId(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "supplierId") int supplierId,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "pageNumber") int pageNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "rowsPerPage") int rowsPerPage);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "supplierId") int supplierId,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "pageNumber") int pageNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "rowsPerPage") int rowsPerPage);
 }

@@ -27,7 +27,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RestParam {
-	String name() default ""; // default is to use the name of the param defined in the method.
+
+	/**
+	 * default is to use the name of the param defined in the method. <br>
+	 * Note: param names are lost and will be named arg#, unless compiled with option to save names.
+	 */
+	String name() default "";
 
 	Class paramClass() default Void.class;
 
@@ -54,27 +59,110 @@ public @interface RestParam {
 	ParamType paramType() default ParamType.Unassigned;
 
 	public static enum ParamType {
+		/**
+		 * default value if not used, otherwise method params are set to default value based on RestMethod.MethodType
+		 */
 		Unassigned,
 
-		UrlPath, // use the value to be the urlPath
+		Ignore,
 
-		UrlQueryParam, // url query parameter
+		/**
+		 * use the value of this param to be the RestMethod.urlPath
+		 * <p>
+		 * verify: RestMethod.urlPath is empty, value is a String
+		 */
+		MethodUrlPath,
 
-		MethodReturnClass, // defines the type of return for the method.  Used when using generics, ex: List<T>
+		/**
+		 * use the value of this param to be the Method's RestMethod.queryWhereClause.
+		 * <p>
+		 * This can also have ? tags to use for RestParams = QueryWhereParam, filled in from left to right.
+		 * <p>
+		 * verify: RestMethod.queryWhere is empty, value is a String
+		 */
+		MethodSearchWhere,
 
-		PathVariable, // value is used in the url path.  See RestMethod.urlPath template
+		/**
+		 * use the value of this param to be the Method's RestMethod.queryOrderBy.
+		 * <p>
+		 * verify: RestMethod.queryOrderBy is empty, value is a String
+		 */
+		MethodSearchOrderBy,
 
-		QueryWhereClause, // value of param is the queryWhereClause.  Supported by OARestServlet
+		/**
+		 * value is used in the url path.
+		 * <p>
+		 * See RestMethod.urlPath template.
+		 * <p>
+		 * RestParam.name is required (not case sensitive) if RestMethod.urlPath is using "{x}" style tags.<br>
+		 * If RestMethod.urlPath is using "?" tags, then they are filled in with params that have paramType=PathParam<br>
+		 * <p>
+		 * verify: if RestMethod.urlPath uses {} tags, that method name is in urlPath template (not case sensitive)<br>
+		 * verify: method name is in urlPath template (not case sensitive)<br>
+		 */
+		UrlPathTagValue,
 
-		QueryWhereParam, // use the value(s) of this param for the queryWhereClause inputs
+		/**
+		 * Use RestParam.name and param value to add to url query string.
+		 * <p>
+		 * requires RestParam.name<br>
+		 * verify: name is not empty<br>
+		 */
+		UrlQueryNameValue,
 
-		QueryOrderBy, // value of param is the queryOrderBy.  Supported by OARestServlet
+		/**
+		 * defines the type of return for the method. Used when using generics, ex: List<T>
+		 * <p>
+		 * verify: required if RestMethod method type cant be discovered<br>
+		 */
+		MethodReturnClass,
 
-		QueryWhereNameValue, // use name=value to add to where clause.
+		/**
+		 * use the value(s) of this arg for the queryWhere inputs
+		 * <p>
+		 * RestParam.name is required (not case sensitive) if RestMethod.urlPath is using "{x}" style tags.<br>
+		 * If RestMethod.queryWhere is using "?" tags, then they are filled in with params that have paramType=PathParam<br>
+		 * <p>
+		 * verify: RestMethod.queryWhere has matching tags<br>
+		 */
+		SearchWhereTagValue,
 
-		BodyObject, // convert to json and send in body (will be default to any passed objs)
+		/**
+		 * use RestParam.name=value to add to where clause. Will skip any values that are null.<br>
+		 * Will append existing RestMethod.queryWhere with "AND"<br>
+		 * Any params that are array/collection will use "OR" between each value.
+		 * <p>
+		 * requires RestParam.name<br>
+		 */
+		SearchWhereAddNameValue,
 
-		BodyJson, // use this json in the body.
+		/**
+		 * use to mark as method argument for as the OAObject for a RestMethod.MethodType=OAObjectMethodCall
+		 * <p>
+		 * requires
+		 * <p>
+		 * verify: RestMethod.methodType=OAObjectMethodCall, Insert, Update, Delete
+		 */
+		OAObject,
+
+		OAObjectId, // used by OAGet qqqqqqqqqqq
+
+		/**
+		 * use to mark as method argument for RestMethod.MethodType=OAObjectMethodCall
+		 * <p>
+		 * requires
+		 * <p>
+		 * verify: RestMethod.methodType=OAObjectMethodCall
+		 */
+		OAObjectMethodCallArg,
+
+		/**
+		 * convert to json and send in body. If only one exists for the method, then it will be used as the body. If more than one, then a
+		 * json object with properties will be created, using the param name.
+		 */
+		BodyObject,
+
+		BodyJson, // use this json in the body.  Can be a String (json) or OAJsonNode
 
 		Header, // put value in http header
 
@@ -83,11 +171,13 @@ public @interface RestParam {
 		/**
 		 * value is to be used as the page number. a value <= 0 is for all pages. Can be used as header or query string (controlled by
 		 * client config)
+		 * <p>
+		 * verify: only needed when return value is array,List,Hub<br>
 		 */
 		PageNumber,
 
 		/**
-		 * value is property path(s) to include in response, and String[] array, or List<String>
+		 * value or arg is property path(s) to include in response. Can be String[], List<String>, or String (one)
 		 */
 		ResponseIncludePropertyPaths
 	}

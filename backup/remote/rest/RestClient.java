@@ -1,10 +1,10 @@
 package com.oreillyauto.storepurchaseorder.remote.rest;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
@@ -22,13 +22,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import com.oreillyauto.storepurchaseorder.remote.rest.MethodInfo.ReturnClassType;
 import com.oreillyauto.storepurchaseorder.remote.rest.ParamInfo.ClassType;
@@ -37,16 +36,12 @@ import com.oreillyauto.storepurchaseorder.remote.rest.annotation.RestMethod;
 import com.oreillyauto.storepurchaseorder.remote.rest.annotation.RestMethod.MethodType;
 import com.oreillyauto.storepurchaseorder.remote.rest.annotation.RestParam;
 import com.oreillyauto.storepurchaseorder.remote.rest.annotation.RestParam.ParamType;
-import com.viaoa.jaxb.OAJaxb;
+import com.viaoa.hub.Hub;
 import com.viaoa.json.OAJson;
+import com.viaoa.json.OAJsonUtil;
 import com.viaoa.json.node.OAJsonArrayNode;
-import com.viaoa.json.node.OAJsonBooleanNode;
 import com.viaoa.json.node.OAJsonNode;
-import com.viaoa.json.node.OAJsonNullNode;
-import com.viaoa.json.node.OAJsonNumberNode;
-import com.viaoa.json.node.OAJsonObjectNode;
 import com.viaoa.json.node.OAJsonRootNode;
-import com.viaoa.json.node.OAJsonStringNode;
 import com.viaoa.object.OAObject;
 import com.viaoa.template.OATemplate;
 import com.viaoa.util.Base64;
@@ -56,7 +51,61 @@ import com.viaoa.util.OADateTime;
 import com.viaoa.util.OAString;
 import com.viaoa.util.OATime;
 
+/* Demos
+
+oarest model objects
+	object by id
+		servlet/oarest/manualPurchaseOrder/{id}?pp
+		with pp
+		?? query params
+		multipart id
+			combined into 1 using "-" or "_"
+			separate path params "/WIX/51515
+	select using object query
+		using filter
+	extra params
+		PPs to include
+		sort
+	insert
+		object
+	update
+		object
+		partial using json/map of name=value
+		partial using query name=value
+	delete
+		id
+	remote object method calls
+
+oarest remote using Java Interface
+	methods to define all of the above
+
+	select using params as name=values
+		single
+		list, array, hub
+
+	call method on oaobject
+
+	call remote method on registered object
+		../oaremote?remoteclassname=className&remotemethodname=methodName
+
+*/
+
 //qqqqqqqqqqqqqqqqq
+
+// ** make remote calls to a registered Impl, from a client.proxy/interface object
+
+// Content-Type and Content-Length
+
+// SPEC: https://tools.ietf.org/html/rfc2616
+
+// String response = restTemplate.getForObject(DUMMY_URL, String.class);
+
+// response body
+//    https://developer.mozilla.org/en-US/docs/Web/HTTP/Messages
+
+// keep-alive support
+
+// multipart support
 
 // rename to OAHttpRemoteClient  qqqqqqqqq
 
@@ -83,12 +132,15 @@ import com.viaoa.util.OATime;
  *
  * @author vvia
  */
-public abstract class RestClient<API> {
+public class RestClient {
 
 	private String protocol; // http, https
 	private String baseUrl; // www.test.com:8080
-	private Class<API> classProxy;
-	private API apiInstance;
+
+	//qqqqq have these 2 use oarestservlet, so that the security & "boundries" can be used in both
+	private String defaultOARestUrl = "servlet/oarest"; // when MethodType=OA* and urlPath annotation is not defined.
+
+	private String defaultIdSeperator = "/"; // example:   "-", "_", "/"
 
 	private String userId;
 	private transient String password;
@@ -98,12 +150,14 @@ public abstract class RestClient<API> {
 
 	private Object expectedResult;
 
-	private final HashMap<Method, MethodInfo> hmMethodInfo;
+	private final HashMap<Class, ClassInfo> hmClassInfo = new HashMap<>();
+	private final HashMap<Method, MethodInfo> hmMethodInfo = new HashMap<>();
 
 	private InvokeInfo lastInvokeInfo;
 
+	private final HashMap<Class, Object> hmRemoteObjectInstance = new HashMap<>();
+
 	public RestClient() {
-		hmMethodInfo = new HashMap();
 	}
 
 	public void setExpectedResult(Object result) {
@@ -135,23 +189,56 @@ public abstract class RestClient<API> {
 		return this.protocol;
 	}
 
-	public JAXBContext getJAXBContext() throws Exception {
+	public void setDefaultOARestUrl(String defaultOARestUrl) {
+		this.defaultOARestUrl = defaultOARestUrl;
+	}
+
+	public String getDefaultOARestUrl() {
+		return defaultOARestUrl;
+	}
+
+	public void setDefaultIdSeperator(String defaultIdSeperator) {
+		this.defaultIdSeperator = defaultIdSeperator;
+	}
+
+	public String getDefaultIdSeperator() {
+		return defaultIdSeperator;
+	}
+
+	protected JAXBContext getJAXBContext() throws Exception {
 		if (jaxbContext != null) {
 			return jaxbContext;
 		}
 
-		// MOXY
-		HashMap hm = new HashMap<>();
-
 		// create using Moxy Factory
+		HashMap hm = new HashMap<>();
 		jaxbContext = JAXBContextFactory.createContext(new Class[] { Object.class, HashMap.class }, hm);
 		return jaxbContext;
 	}
 
-	public API getInstance() {
-		if (apiInstance != null) {
-			return apiInstance;
+	protected ClassInfo getClassInfo(Class clazz) {
+		if (clazz == null) {
+			return null;
 		}
+		ClassInfo ci = hmClassInfo.get(clazz);
+		return ci;
+	}
+
+	public <API> API getInstance(Class<API> clazz) throws Exception {
+		if (clazz == null) {
+			return null;
+		}
+
+		API obj = (API) hmRemoteObjectInstance.get(clazz);
+		if (obj != null) {
+			return obj;
+		}
+
+		if (!clazz.isInterface()) {
+			throw new Exception("Class (" + clazz + ") must be a java interface");
+		}
+
+		loadMetaData(clazz);
 
 		InvocationHandler handler = new InvocationHandler() {
 			@Override
@@ -166,9 +253,9 @@ public abstract class RestClient<API> {
 			}
 		};
 
-		Class<API> clazz = getProxyClass();
-		apiInstance = (API) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, handler);
-		return apiInstance;
+		obj = (API) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, handler);
+
+		return obj;
 	}
 
 	protected Object onInvoke(Method method, Object[] args) throws Throwable {
@@ -193,203 +280,153 @@ public abstract class RestClient<API> {
 			strUrl += "?" + invokeInfo.urlQuery;
 		}
 
-		String mt = mi.methodType.toString();
-		if (mt.startsWith("Get")) {
+		String mt;
+		switch (mi.methodType) {
+		case OAGet:
+		case OASearch:
 			mt = "GET";
-		} else if (mt.startsWith("Post")) {
+			break;
+		case OARemote:
+		case OAObjectMethodCall:
 			mt = "POST";
+			break;
+		case OAInsert:
+			mt = "POST";
+			break;
+		case OAUpdate:
+			mt = "POST";
+			break;
+		case OADelete:
+			mt = "DELETE";
+			break;
+		default:
+			mt = mi.methodType.toString();
 		}
+
+		//qqqqqqqqqqqqqqqqqqqq if methodType is OA*, then need to prepare body with OARestServlet required data
 
 		// get json object for body
 		String jsonBody = null;
-		int x = invokeInfo.jsonNodeBody.getChildrenPropertyNames().size();
-		if (x == 1) {
-			String s = invokeInfo.jsonNodeBody.getChildrenPropertyNames().get(0);
-			jsonBody = invokeInfo.jsonNodeBody.getChildNode(s).toJson();
-		} else if (x > 1) {
-			// simulate an object based on the params that are paramType.BodyObject
+		if (invokeInfo.jsonNodeBody instanceof OAJsonArrayNode) {
 			jsonBody = invokeInfo.jsonNodeBody.toJson();
-		}
-
-		// VVVVVVVqqqqqqq real deal
-		String jsonResult = callHttpEndPoint(strUrl, mt, jsonBody);
-		invokeInfo.response = jsonResult;
-		Object obj;
-
-		/* qqqqqqqqq TEST
-		Object obj = expectedResult; // qqqqqqqqqq
-		
-		OAJaxb jaxbx = new OAJaxb(invokeInfo.methodReturnClass);
-		String jsonResult = jaxbx.convertToJson(obj);
-		*/
-
-		if (mi.returnClassType == MethodInfo.ReturnClassType.JsonNode) {
-			OAJson json = new OAJson();
-			obj = json.load((String) jsonResult);
-		} else if (OAObject.class.isAssignableFrom(mi.returnClass)) {
-			if (mi.returnClassType == MethodInfo.ReturnClassType.Array) {
-				OAJaxb jaxb = new OAJaxb(mi.returnClass);
-				obj = jaxb.convertArrayFromJSON(jsonResult);
-			} else if (mi.returnClassType == MethodInfo.ReturnClassType.List) {
-				OAJaxb jaxb = new OAJaxb(mi.returnClass);
-				obj = jaxb.convertListFromJSON(jsonResult);
-			} else {
-				OAJaxb jaxb = new OAJaxb(mi.returnClass);
-				obj = jaxb.convertFromJSON(jsonResult);
-			}
-		} else if (mi.returnClassType == ReturnClassType.Void) {
-			obj = null;
-		} else if (mi.returnClassType == ReturnClassType.String) {
-			obj = jsonResult;
 		} else {
-			OAJson json = new OAJson();
-			obj = json.load((String) jsonResult);
-
-			if (mi.returnClassType == MethodInfo.ReturnClassType.Array || mi.returnClassType == MethodInfo.ReturnClassType.List) {
-				if (obj instanceof OAJsonArrayNode) {
-					ArrayList al = new ArrayList();
-					for (OAJsonNode node : ((OAJsonArrayNode) obj).getArray()) {
-						obj = json.load(node.toJson());
-
-						if (obj == null || obj instanceof OAJsonNullNode) {
-							continue;
-						} else if (obj instanceof OAJsonStringNode) {
-							obj = ((OAJsonStringNode) obj).getValue();
-							obj = OAConv.convert(mi.returnClass, obj);
-						} else if (obj instanceof OAJsonBooleanNode) {
-							obj = ((OAJsonBooleanNode) obj).getValue();
-							obj = OAConv.convert(mi.returnClass, obj);
-						} else if (obj instanceof OAJsonNumberNode) {
-							obj = ((OAJsonNumberNode) obj).getValue();
-							obj = OAConv.convert(mi.returnClass, obj);
-						} else {
-							// jaxb
-							OAJaxb jaxb = new OAJaxb(mi.returnClass);
-							obj = jaxb.convertFromJSON(jsonResult);
-						}
-						al.add(obj);
-					}
-					if (mi.returnClassType == MethodInfo.ReturnClassType.Array) {
-						obj = Array.newInstance(mi.returnClass, al.size());
-						int i = 0;
-						for (Object objx : al) {
-							Array.set(obj, i++, objx);
-						}
-					} else {
-						obj = al;
-					}
-				} else {
-					obj = null;
-				}
-			} else {
-				if (obj == null || obj instanceof OAJsonNullNode || mi.returnClassType == ReturnClassType.Void) {
-					obj = null;
-				} else if (obj instanceof OAJsonStringNode) {
-					obj = ((OAJsonStringNode) obj).getValue();
-					obj = OAConv.convert(mi.returnClass, obj);
-				} else if (obj instanceof OAJsonBooleanNode) {
-					obj = ((OAJsonBooleanNode) obj).getValue();
-					obj = OAConv.convert(mi.returnClass, obj);
-				} else if (obj instanceof OAJsonNumberNode) {
-					obj = ((OAJsonNumberNode) obj).getValue();
-					obj = OAConv.convert(mi.returnClass, obj);
-				} else {
-					OAJaxb jaxb = new OAJaxb(mi.returnClass);
-					obj = jaxb.convertFromJSON(jsonResult);
-				}
+			int x = invokeInfo.jsonNodeBody.getChildrenPropertyNames().size();
+			if (x == 1) {
+				String s = invokeInfo.jsonNodeBody.getChildrenPropertyNames().get(0);
+				jsonBody = invokeInfo.jsonNodeBody.getChildNode(s).toJson();
+			} else if (x > 1) {
+				// simulate an object based on the params that are paramType.BodyObject
+				jsonBody = invokeInfo.jsonNodeBody.toJson();
 			}
 		}
+		// ================== now CALL the endpoint ==================
+		String jsonResult = callHttpEndPoint(invokeInfo, strUrl, mt, jsonBody);
+
+		invokeInfo.response = jsonResult;
+
+		Object obj = OAJsonUtil.convertJsonToObject(jsonResult, mi.origReturnClass, mi.returnClass);
+
 		return obj;
-	}
-
-	public static class InvokeInfo {
-		MethodInfo methodInfo;
-		OATemplate pathTemplate;
-		String urlPath;
-		String urlQuery = "";
-
-		final OAJsonRootNode jsonNodeBody = new OAJsonObjectNode();
-		final HashMap<String, String> hsHeader = new HashMap<>();
-		final HashMap<String, String> hsCookie = new HashMap<>();
-		int pageNumber;
-
-		Class methodReturnClass;
-
-		String queryWhereClause;
-		ArrayList<String> alQueryWhereParams;
-		String queryOrderBy;
-		String[] responseIncludePropertyPaths;
-		ArrayList<String> alUrlQueryParams; // name=value (utf-8)
-		String response;
 	}
 
 	protected InvokeInfo createInvokeInfo(final Method method, final Object[] args, final MethodInfo mi) throws Throwable {
 		final InvokeInfo invokeInfo = new InvokeInfo();
 		invokeInfo.methodInfo = mi;
 
-		invokeInfo.urlPath = mi.urlPath;
-
-		if (OAString.isNotEmpty(mi.pathTemplate)) {
-			invokeInfo.pathTemplate = new OATemplate(mi.pathTemplate);
+		invokeInfo.pathTemplate = mi.urlPathTemplate;
+		//qqqqqqqqqqqq
+		if (OAString.isNotEmpty(mi.urlPath)) {
+			invokeInfo.pathTemplate = new OATemplate(mi.urlPath);
 		}
 
-		final boolean bIsObjectQuery = (mi.methodType == MethodType.GetObjectsUsingQuery);
-		String objectQuery = null;
+		final boolean bIsSearch = (mi.methodType == MethodType.OASearch);
+		final boolean bIsObjectRemote = (mi.methodType == MethodType.OAObjectMethodCall);
+		final boolean bIsRemote = (mi.methodType == MethodType.OARemote);
+
+		String search = null;
 		for (int argPos = 0; argPos < mi.alParamInfo.size(); argPos++) {
 			ParamInfo pi = mi.alParamInfo.get(argPos);
 			final Object objArg = args[argPos];
 
-			if (pi.paramType == RestParam.ParamType.PathVariable) {
+			if (bIsObjectRemote && argPos == 0) {
+				// first param is the object, which needs to get the Id used to set the path param.  Remainder args will be in json body
+				String id = ((OAObject) objArg).getJaxbSinglePartId();
+				invokeInfo.pathTemplate.setProperty(pi.name, id);
+
+				List<String>[] lstIncludePropertyPathss = new ArrayList[mi.alParamInfo.size()];
+				int ix = -1;
+				for (ParamInfo pix : mi.alParamInfo) {
+					ix++;
+					lstIncludePropertyPathss[ix] = pix.alIncludePropertyPaths;
+				}
+				invokeInfo.jsonNodeBody = (OAJsonRootNode) OAJsonUtil.convertMethodArgumentsToJson(	method, args,
+																									lstIncludePropertyPathss,
+																									true);
+			} else if (bIsObjectRemote && argPos <= mi.method.getParameterCount()) {
+				// no-op, already added to jsonNodeBody
+			} else if (bIsRemote && argPos == 0) {
+				List<String>[] lstIncludePropertyPathss = new ArrayList[mi.alParamInfo.size()];
+				int ix = -1;
+				for (ParamInfo pix : mi.alParamInfo) {
+					ix++;
+					lstIncludePropertyPathss[ix] = pix.alIncludePropertyPaths;
+				}
+				invokeInfo.jsonNodeBody = (OAJsonRootNode) OAJsonUtil.convertMethodArgumentsToJson(	method, args,
+																									lstIncludePropertyPathss,
+																									false);
+			} else if (bIsRemote && argPos <= mi.method.getParameterCount()) {
+				// no-op, already added to jsonNodeBody
+			} else if (pi.paramType == RestParam.ParamType.UrlPathTagValue) {
 				Object objx = OAConv.toString(args[argPos], pi.format);
 				invokeInfo.pathTemplate.setProperty(pi.name, objx);
-			} else if (pi.paramType == RestParam.ParamType.QueryWhereNameValue) {
+			} else if (pi.paramType == RestParam.ParamType.SearchWhereAddNameValue) {
 				if (objArg != null) {
 					if (pi.classType == ParamInfo.ClassType.Array) {
 						int x = Array.getLength(objArg);
 						for (int i = 0; i < x; i++) {
 							Object obj = Array.get(objArg, i);
 
-							if (bIsObjectQuery && i == 0) {
-								if (objectQuery == null) {
-									objectQuery = "";
+							if (bIsSearch && i == 0) {
+								if (search == null) {
+									search = "";
 								} else {
-									objectQuery += " AND ";
+									search += " AND ";
 								}
 							}
 
 							if (invokeInfo.urlQuery.length() > 0) {
-								if (bIsObjectQuery) {
+								if (bIsSearch) {
 									if (i > 0) {
-										objectQuery += " OR ";
+										search += " OR ";
 									}
 								} else {
 									invokeInfo.urlQuery += "&";
 								}
 							}
 
-							if (bIsObjectQuery && i == 0) {
-								objectQuery += "(";
+							if (bIsSearch && i == 0) {
+								search += "(";
 							}
 							String val = OAConv.toString(obj, pi.format);
 							if (val == null) {
-								if (bIsObjectQuery) {
+								if (bIsSearch) {
 									val = "NULL";
 								} else {
 									val = "";
 								}
 							} else {
-								if (!bIsObjectQuery) {
+								if (!bIsSearch) {
 									val = URLEncoder.encode(val, "UTF-8");
 								}
 							}
-							if (bIsObjectQuery) {
-								objectQuery += pi.name + "=" + val;
+							if (bIsSearch) {
+								search += pi.name + "=" + val;
 							} else {
 								invokeInfo.urlQuery += pi.name + "=" + val;
 							}
 						}
-						if (bIsObjectQuery && x > 0) {
-							objectQuery += ")";
+						if (bIsSearch && x > 0) {
+							search += ")";
 						}
 					} else if (pi.classType == ParamInfo.ClassType.List) {
 						final List list = (List) objArg;
@@ -400,72 +437,75 @@ public abstract class RestClient<API> {
 						}
 						int i = 0;
 						for (Object arg : list) {
-							if (bIsObjectQuery && i == 0) {
-								if (objectQuery == null) {
-									objectQuery = "";
+							if (bIsSearch && i == 0) {
+								if (search == null) {
+									search = "";
 								} else {
-									objectQuery += " AND ";
+									search += " AND ";
 								}
 							}
 
 							if (invokeInfo.urlQuery.length() == 0) {
 							} else {
-								if (bIsObjectQuery) {
+								if (bIsSearch) {
 									if (i > 0) {
-										objectQuery += " OR ";
+										search += " OR ";
 									}
 								} else {
 									invokeInfo.urlQuery += "&";
 								}
 							}
-							if (i++ == 0 && bIsObjectQuery) {
-								objectQuery += "(";
+							if (i++ == 0 && bIsSearch) {
+								search += "(";
 							}
 
 							String val = OAConv.toString(arg, pi.format);
 							if (val == null) {
-								if (bIsObjectQuery) {
+								if (bIsSearch) {
 									val = "NULL";
 								} else {
 									val = "";
 								}
 							} else {
-								if (!bIsObjectQuery) {
+								if (!bIsSearch) {
 									val = URLEncoder.encode(val, "UTF-8");
 								}
 							}
-							if (bIsObjectQuery) {
-								objectQuery += pi.name + "=" + val;
+							if (bIsSearch) {
+								search += pi.name + "=" + val;
 							} else {
 								invokeInfo.urlQuery += pi.name + "=" + val;
 							}
 						}
-						if (bIsObjectQuery && list.size() > 0) {
-							objectQuery += ")";
+						if (bIsSearch && list.size() > 0) {
+							search += ")";
 						}
 					} else {
-						if (invokeInfo.urlQuery.length() == 0) {
-						} else {
-							if (bIsObjectQuery) {
-								objectQuery += " AND ";
+						if (bIsSearch) {
+							if (search == null) {
+								search = "";
 							} else {
-								invokeInfo.urlQuery += "&";
+								search += " AND ";
 							}
 						}
+						if (invokeInfo.urlQuery.length() > 0) {
+							invokeInfo.urlQuery += "&";
+						}
+
 						String val = OAConv.toString(objArg, pi.format);
 						if (val == null) {
-							if (bIsObjectQuery) {
+							if (bIsSearch) {
 								val = "NULL";
 							} else {
 								val = "";
 							}
 						} else {
-							if (!bIsObjectQuery) {
+							if (!bIsSearch) {
 								val = URLEncoder.encode(val, "UTF-8");
 							}
 						}
-						if (bIsObjectQuery) {
-							objectQuery += pi.name + "=" + val;
+						if (bIsSearch) {
+							search += pi.name + "=" + val;
 						} else {
 							invokeInfo.urlQuery += pi.name + "=" + val;
 						}
@@ -480,167 +520,8 @@ public abstract class RestClient<API> {
 					invokeInfo.jsonNodeBody.set(pi.name, (OAJsonNode) objArg);
 				}
 			} else if (pi.paramType == RestParam.ParamType.BodyObject) {
-				final Object obj = objArg;
-				if (obj == null) {
-					invokeInfo.jsonNodeBody.set(pi.name, new OAJsonNullNode());
-					continue;
-				}
-
-				if (obj instanceof OAJsonNode) {
-					invokeInfo.jsonNodeBody.set(pi.name, (OAJsonNode) obj);
-					continue;
-				}
-
-				Class c = pi.paramClass != null ? pi.paramClass : pi.origParamClass;
-				if (OAObject.class.isAssignableFrom(c)) {
-					OAJaxb jaxb = new OAJaxb(obj.getClass());
-					jaxb.setUseReferences(false);
-					jaxb.setIncludeGuids(false);
-					if (pi.lstIncludePropertyPaths != null) {
-						for (String s : pi.lstIncludePropertyPaths) {
-							jaxb.addPropertyPath(s);
-						}
-					}
-
-					if (pi.classType == ParamInfo.ClassType.Array) {
-						OAJsonArrayNode arrayNode = new OAJsonArrayNode();
-						invokeInfo.jsonNodeBody.set(pi.name, arrayNode);
-
-						int x = Array.getLength(obj);
-						for (int i = 0; i < x; i++) {
-							Object objx = Array.get(obj, i);
-
-							String s = jaxb.convertToJSON((OAObject) objx);
-
-							OAJson oaJson = new OAJson();
-							OAJsonNode node = oaJson.load(s);
-
-							arrayNode.add(node);
-						}
-					} else if (pi.classType == ParamInfo.ClassType.List) {
-						OAJsonArrayNode arrayNode = new OAJsonArrayNode();
-						invokeInfo.jsonNodeBody.set(pi.name, arrayNode);
-
-						for (Object objx : (List) obj) {
-							String s = jaxb.convertToJSON((OAObject) objx);
-
-							OAJson oaJson = new OAJson();
-							OAJsonNode node = oaJson.load(s);
-							arrayNode.add(node);
-						}
-					} else {
-						String s = jaxb.convertToJSON((OAObject) obj);
-						OAJson oaJson = new OAJson();
-						OAJsonNode node = oaJson.load(s);
-						invokeInfo.jsonNodeBody.set(pi.name, node);
-					}
-				} else if (pi.classType == ClassType.Array) {
-					OAJsonArrayNode arrayNode = new OAJsonArrayNode();
-					invokeInfo.jsonNodeBody.set(pi.name, arrayNode);
-
-					int x = Array.getLength(obj);
-					for (int i = 0; i < x; i++) {
-						Object objx = Array.get(obj, i);
-						if (objx == null) {
-							arrayNode.add(new OAJsonNullNode());
-						} else if (objx instanceof String) {
-							arrayNode.add(new OAJsonStringNode((String) objx));
-						} else if (objx instanceof Boolean) {
-							arrayNode.add(new OAJsonBooleanNode((Boolean) objx));
-						} else if (objx instanceof Number) {
-							arrayNode.add(new OAJsonNumberNode((Number) objx));
-						} else if (objx instanceof OADateTime) {
-							arrayNode.add(new OAJsonStringNode(((OADateTime) objx).toString("yyyy-MM-dd'T'HH:mm:ss")));
-						} else if (objx instanceof OADate) {
-							arrayNode.add(new OAJsonStringNode(((OADate) objx).toString("yyyy-MM-dd")));
-						} else if (objx instanceof OATime) {
-							arrayNode.add(new OAJsonStringNode(((OATime) objx).toString("HH:mm:ss")));
-						} else {
-							StringWriter writer = new StringWriter();
-
-							Marshaller marshaller = getJAXBContext().createMarshaller();
-							marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-							marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-							marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-							marshaller.setProperty(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-							marshaller.marshal(objx, writer);
-
-							OAJson oaJson = new OAJson();
-							OAJsonNode node = oaJson.load(writer.toString());
-							arrayNode.add(node);
-						}
-					}
-				} else if (pi.classType == ClassType.List) {
-					OAJsonArrayNode arrayNode = new OAJsonArrayNode();
-					invokeInfo.jsonNodeBody.set(pi.name, arrayNode);
-					for (Object objx : (List) obj) {
-						if (objx == null) {
-							arrayNode.add(new OAJsonNullNode());
-						} else if (objx instanceof String) {
-							arrayNode.add(new OAJsonStringNode((String) objx));
-						} else if (objx instanceof Boolean) {
-							arrayNode.add(new OAJsonBooleanNode((Boolean) objx));
-						} else if (objx instanceof Number) {
-							arrayNode.add(new OAJsonNumberNode((Number) objx));
-						} else if (objx instanceof OADateTime) {
-							arrayNode.add(new OAJsonStringNode(((OADateTime) objx).toString("yyyy-MM-dd'T'HH:mm:ss")));
-						} else if (objx instanceof OADate) {
-							arrayNode.add(new OAJsonStringNode(((OADate) objx).toString("yyyy-MM-dd")));
-						} else if (objx instanceof OATime) {
-							arrayNode.add(new OAJsonStringNode(((OATime) objx).toString("HH:mm:ss")));
-						} else {
-							StringWriter writer = new StringWriter();
-
-							Marshaller marshaller = getJAXBContext().createMarshaller();
-							marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-							marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-							marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-							marshaller.setProperty(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-							marshaller.marshal(objx, writer);
-
-							OAJson oaJson = new OAJson();
-							OAJsonNode node = oaJson.load(writer.toString());
-							arrayNode.add(node);
-						}
-					}
-				} else {
-					if (obj == null) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonNullNode());
-					} else if (obj instanceof String) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonStringNode((String) obj));
-					} else if (obj instanceof OAJsonNode) {
-						invokeInfo.jsonNodeBody.set(pi.name, (OAJsonNode) obj);
-					} else if (obj instanceof Boolean) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonBooleanNode((Boolean) obj));
-					} else if (obj instanceof Number) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonNumberNode((Number) obj));
-					} else if (obj instanceof OADateTime) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonStringNode(((OADateTime) obj).toString("yyyy-MM-dd'T'HH:mm:ss")));
-					} else if (obj instanceof OADate) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonStringNode(((OADate) obj).toString("yyyy-MM-dd")));
-					} else if (obj instanceof OATime) {
-						invokeInfo.jsonNodeBody.set(pi.name, new OAJsonStringNode(((OATime) obj).toString("HH:mm:ss")));
-					} else {
-						StringWriter writer = new StringWriter();
-
-						Marshaller marshaller = getJAXBContext().createMarshaller();
-						marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-						marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-						marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-						marshaller.setProperty(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-						marshaller.marshal(obj, writer);
-
-						OAJson oaJson = new OAJson();
-						OAJsonNode node = oaJson.load(writer.toString());
-						invokeInfo.jsonNodeBody.set(pi.name, node);
-					}
-				}
+				OAJsonNode nodex = OAJsonUtil.convertObjectToJsonNode(objArg, pi.alIncludePropertyPaths);
+				invokeInfo.jsonNodeBody.set(pi.name, nodex);
 			} else if (pi.paramType == RestParam.ParamType.Header) {
 				String val = OAConv.toString(objArg, pi.format);
 				invokeInfo.hsHeader.put(pi.name, val);
@@ -672,11 +553,11 @@ public abstract class RestClient<API> {
 					invokeInfo.responseIncludePropertyPaths = new String[] { OAConv.toString(objArg) };
 				}
 
-			} else if (pi.paramType == RestParam.ParamType.QueryOrderBy) {
+			} else if (pi.paramType == RestParam.ParamType.MethodSearchOrderBy) {
 				invokeInfo.queryOrderBy = OAConv.toString(objArg);
-			} else if (pi.paramType == RestParam.ParamType.QueryWhereClause) {
+			} else if (pi.paramType == RestParam.ParamType.MethodSearchWhere) {
 				invokeInfo.queryWhereClause = OAConv.toString(objArg);
-			} else if (pi.paramType == RestParam.ParamType.QueryWhereParam) {
+			} else if (pi.paramType == RestParam.ParamType.SearchWhereTagValue) {
 
 				if (invokeInfo.alQueryWhereParams == null) {
 					invokeInfo.alQueryWhereParams = new ArrayList();
@@ -698,7 +579,7 @@ public abstract class RestClient<API> {
 				} else {
 					invokeInfo.alQueryWhereParams.add(OAConv.toString(objArg, pi.format));
 				}
-			} else if (pi.paramType == RestParam.ParamType.UrlQueryParam) {
+			} else if (pi.paramType == RestParam.ParamType.UrlQueryNameValue) {
 				if (invokeInfo.alUrlQueryParams == null) {
 					invokeInfo.alUrlQueryParams = new ArrayList();
 				}
@@ -723,17 +604,17 @@ public abstract class RestClient<API> {
 
 			} else if (pi.paramType == RestParam.ParamType.MethodReturnClass) {
 				invokeInfo.methodReturnClass = (Class) objArg;
-			} else if (pi.paramType == RestParam.ParamType.UrlPath) {
+			} else if (pi.paramType == RestParam.ParamType.MethodUrlPath) {
 				invokeInfo.urlPath = (String) objArg;
 			}
 		}
 
-		if (objectQuery != null) {
+		if (search != null) {
 			if (invokeInfo.urlQuery.length() > 1) {
 				invokeInfo.urlQuery += "&";
 			}
 			invokeInfo.urlQuery += "query=";
-			invokeInfo.urlQuery += URLEncoder.encode(objectQuery, "UTF-8");
+			invokeInfo.urlQuery += URLEncoder.encode(search, "UTF-8");
 		}
 
 		if (invokeInfo.methodReturnClass == null) {
@@ -747,13 +628,7 @@ public abstract class RestClient<API> {
 			throws Throwable {
 
 		if (invokeInfo.pathTemplate != null) {
-			String s = invokeInfo.pathTemplate.process();
-			if (OAString.isNotEmpty(s)) {
-				if (s.length() > 1 && s.charAt(0) == '/') {
-					s = s.substring(1);
-				}
-				invokeInfo.urlPath = OAString.concat(invokeInfo.urlPath, s, "/");
-			}
+			invokeInfo.urlPath = invokeInfo.pathTemplate.process();
 		}
 
 		if (OAString.isNotEmpty(invokeInfo.queryWhereClause)) {
@@ -794,8 +669,8 @@ public abstract class RestClient<API> {
 			}
 		}
 
-		if (mi.lstIncludePropertyPaths != null) {
-			for (String s : mi.lstIncludePropertyPaths) {
+		if (mi.alIncludePropertyPaths != null) {
+			for (String s : mi.alIncludePropertyPaths) {
 				if (invokeInfo.urlQuery.length() > 0) {
 					invokeInfo.urlQuery += "&";
 				}
@@ -803,11 +678,11 @@ public abstract class RestClient<API> {
 			}
 		}
 
-		if (OAString.isNotEmpty(mi.extraUrlQueryParams)) {
+		if (OAString.isNotEmpty(mi.urlQuery)) {
 			if (invokeInfo.urlQuery.length() > 0) {
 				invokeInfo.urlQuery += "&";
 			}
-			invokeInfo.urlQuery += mi.extraUrlQueryParams;
+			invokeInfo.urlQuery += mi.urlQuery;
 		}
 
 		if (invokeInfo.pageNumber > 0) {
@@ -815,6 +690,7 @@ public abstract class RestClient<API> {
 		}
 	}
 
+	/*
 	protected Class<API> getProxyClass() {
 		if (classProxy != null) {
 			return classProxy;
@@ -835,19 +711,266 @@ public abstract class RestClient<API> {
 		} catch (Exception e) {
 			throw new RuntimeException("Error while loading MethodInfo from " + classProxy, e);
 		}
-
+	
 		for (MethodInfo mi : hmMethodInfo.values()) {
 			for (ParamInfo pi : mi.alParamInfo) {
 				int xx = 4;
 				xx++;
 			}
 		}
-
+	
 		return classProxy;
 	}
+	*/
 
-	protected void loadClassMetaData() throws Exception {
-		Class interfaceClass = getProxyClass();
+	public ArrayList<String> verify(Class interfaceClass) {
+		ClassInfo ci = hmClassInfo.get(interfaceClass);
+		if (ci == null) {
+			return null;
+		}
+
+		ArrayList<String> alErrors = ci.verify();
+
+		/*
+		if (alErrors.size() > 0) {
+			String msg = "";
+			for (int i = 0; i < 5; i++) {
+				if (msg.length() > 0) {
+					msg += "  ";
+				}
+				msg += alErrors.get(i);
+			}
+			throw new RuntimeException(msg);
+		}
+		*/
+		return alErrors;
+	}
+
+	protected void loadMetaData(Class interfaceClass) throws Exception {
+		if (interfaceClass == null) {
+			return;
+		}
+
+		final ClassInfo classInfo = new ClassInfo(interfaceClass);
+		hmClassInfo.put(interfaceClass, classInfo);
+
+		RestClass rc = (RestClass) interfaceClass.getAnnotation(RestClass.class);
+		if (rc != null) {
+			if (getBaseUrl() == null) {
+				setBaseUrl(rc.urlPath());
+			}
+			if (protocol == null) {
+				protocol = rc.protocol();
+			}
+		}
+
+		Method[] methods = interfaceClass.getMethods();
+		for (Method method : methods) {
+			MethodInfo mi = new MethodInfo(method);
+			classInfo.alMethodInfo.add(mi);
+
+			hmMethodInfo.put(method, mi);
+
+			mi.name = method.getName();
+			mi.origReturnClass = mi.returnClass = method.getReturnType();
+
+			if (mi.origReturnClass.isArray()) {
+				mi.returnClassType = MethodInfo.ReturnClassType.Array;
+				mi.returnClass = mi.origReturnClass.getComponentType();
+			} else if (List.class.isAssignableFrom(mi.origReturnClass)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.List;
+				Type type = method.getGenericReturnType();
+				if (type instanceof ParameterizedType) {
+					Type typex = ((ParameterizedType) type).getActualTypeArguments()[0];
+					if (typex instanceof Class) {
+						mi.returnClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+					}
+				} else {
+					mi.returnClass = null; // needs to be defined by method returnClas or param.paramType=MethodReturnClass
+				}
+			} else if (Hub.class.isAssignableFrom(mi.origReturnClass)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.Hub;
+				Type type = method.getGenericReturnType();
+				if (type instanceof ParameterizedType) {
+					Type typex = ((ParameterizedType) type).getActualTypeArguments()[0];
+					if (typex instanceof Class) {
+						mi.returnClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+					}
+				} else {
+					mi.returnClass = null; // needs to be defined by method paramType=MethodReturnClass
+				}
+			} else if (OAJsonNode.class.isAssignableFrom(mi.origReturnClass)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.JsonNode;
+			} else if (mi.origReturnClass.equals(String.class)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.String;
+			} else if (mi.origReturnClass.equals(void.class) || mi.origReturnClass.equals(Void.class)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.Void;
+			}
+
+			Parameter[] parameters = method.getParameters();
+			for (int i = 0; parameters != null && i < parameters.length; i++) {
+				ParamInfo pi = new ParamInfo();
+				mi.alParamInfo.add(pi);
+				pi.paramType = RestParam.ParamType.Unassigned;
+
+				pi.name = parameters[i].getName();
+				pi.origParamClass = pi.paramClass = parameters[i].getType();
+
+				if (pi.origParamClass.isArray()) {
+					pi.classType = ParamInfo.ClassType.Array;
+					pi.paramClass = pi.origParamClass.getComponentType();
+				} else if (List.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.Array.List;
+					Type type = method.getGenericReturnType();
+					if (type instanceof ParameterizedType) {
+						pi.paramClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+					} else {
+						pi.paramClass = null;
+					}
+				} else if (OAJsonNode.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.JsonNode;
+				} else if (pi.origParamClass.equals(String.class)) {
+					pi.classType = ParamInfo.ClassType.String;
+				} else if (OADate.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.Date;
+				} else if (OADateTime.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.DateTime;
+				} else if (OATime.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.Time;
+				} else if (LocalDate.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.Date;
+				} else if (LocalDateTime.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.DateTime;
+				} else if (Date.class.isAssignableFrom(pi.origParamClass)) {
+					pi.classType = ParamInfo.ClassType.Date;
+				} else {
+					pi.classType = ParamInfo.ClassType.Unassigned;
+				}
+
+				RestParam rp = (RestParam) parameters[i].getAnnotation(RestParam.class);
+				if (rp != null) {
+					if (rp.name().length() > 0) {
+						pi.name = rp.name();
+						pi.bNameAssigned = true;
+					}
+
+					if (rp.format().length() > 0) {
+						pi.format = rp.format();
+					}
+					if (rp.paramType() != null && rp.paramType() != RestParam.ParamType.Unassigned) {
+						pi.paramType = rp.paramType();
+					}
+					if (!rp.paramClass().equals(Void.class)) {
+						pi.rpParamClass = pi.paramClass = rp.paramClass();
+					}
+
+					if (pi.paramType == RestParam.ParamType.MethodReturnClass) {
+						mi.returnClass = null; // assigned at runtime using this param's class value
+					}
+
+					pi.includeReferenceLevelAmount = rp.includeReferenceLevelAmount();
+
+					pi.alIncludePropertyPaths = new ArrayList();
+
+					String sx = rp.includePropertyPath();
+					if (sx != null && sx.length() > 0) {
+						pi.alIncludePropertyPaths.add(rp.includePropertyPath());
+					}
+					String[] ss = rp.includePropertyPaths();
+					if (ss != null && ss.length > 0) {
+						for (String s : rp.includePropertyPaths()) {
+							if (s.length() > 0) {
+								pi.alIncludePropertyPaths.add(s);
+							}
+						}
+					}
+				}
+
+				if (OAString.isEmpty(pi.format)) {
+					if (pi.classType == ParamInfo.ClassType.Date) {
+						pi.format = OADate.JsonFormat;
+					}
+					if (pi.classType == ParamInfo.ClassType.DateTime) {
+						pi.format = OADateTime.JsonFormat;
+					}
+					if (pi.classType == ParamInfo.ClassType.Time) {
+						pi.format = OATime.JsonFormat;
+					}
+				}
+			}
+
+			boolean bUsesBody = false;
+			for (ParamInfo pi : mi.alParamInfo) {
+				if (pi.paramType == RestParam.ParamType.BodyObject) {
+					bUsesBody = true;
+					break;
+				}
+			}
+
+			// methodType & urlPath
+			mi.methodType = RestMethod.MethodType.Unassigned;
+
+			boolean bFoundUrlPath = false;
+
+			RestMethod rm = (RestMethod) mi.method.getAnnotation(RestMethod.class);
+			if (rm != null) {
+				if (rm.methodName() != null && rm.methodName().length() > 0) {
+					mi.objectMethodName = rm.methodName();
+				}
+
+				if (rm.name() != null && rm.name().length() > 0) {
+					mi.name = rm.name();
+				}
+
+				if (rm.urlQuery() != null && rm.urlQuery().length() > 0) {
+					mi.urlQuery = rm.urlQuery();
+				}
+
+				if (rm.methodType() != RestMethod.MethodType.Unassigned) {
+					mi.methodType = rm.methodType();
+				}
+				if (rm.urlPath().length() > 0) {
+					mi.urlPath = rm.urlPath();
+					bFoundUrlPath = true;
+				}
+
+				if (!rm.returnClass().equals(Void.class)) {
+					mi.rmReturnClass = rm.returnClass();
+				}
+
+				mi.includeReferenceLevelAmount = rm.includeReferenceLevelAmount();
+
+				mi.alIncludePropertyPaths = new ArrayList();
+
+				if (rm.includePropertyPath() != null && rm.includePropertyPath().length() > 0) {
+					mi.alIncludePropertyPaths.add(rm.includePropertyPath());
+				}
+				if (rm.includePropertyPaths() != null && rm.includePropertyPaths().length > 0) {
+					for (String s : rm.includePropertyPaths()) {
+						if (s.length() > 0) {
+							mi.alIncludePropertyPaths.add(s);
+						}
+					}
+				}
+
+				if (rm.urlPath() != null && rm.urlPath().length() > 0) {
+					mi.urlPath = rm.urlPath();
+				}
+
+				if (rm.searchWhere() != null && rm.searchWhere().length() > 0) {
+					mi.searchWhere = rm.searchWhere();
+				}
+				if (rm.searchOrderBy() != null && rm.searchOrderBy().length() > 0) {
+					mi.searchOrderBy = rm.searchOrderBy();
+				}
+			}
+		}
+	}
+
+	protected void loadMetaData_OLD_(Class interfaceClass) throws Exception {
+		if (interfaceClass == null) {
+			return;
+		}
 
 		RestClass rc = (RestClass) interfaceClass.getAnnotation(RestClass.class);
 		if (rc != null) {
@@ -872,6 +995,17 @@ public abstract class RestClient<API> {
 				mi.returnClass = mi.origReturnClass.getComponentType();
 			} else if (List.class.isAssignableFrom(mi.origReturnClass)) {
 				mi.returnClassType = MethodInfo.ReturnClassType.List;
+				Type type = method.getGenericReturnType();
+				if (type instanceof ParameterizedType) {
+					Type typex = ((ParameterizedType) type).getActualTypeArguments()[0];
+					if (typex instanceof Class) {
+						mi.returnClass = (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+					}
+				} else {
+					mi.returnClass = null; // needs to be defined by method returnClas or param.paramType=MethodReturnClass
+				}
+			} else if (Hub.class.isAssignableFrom(mi.origReturnClass)) {
+				mi.returnClassType = MethodInfo.ReturnClassType.Hub;
 				Type type = method.getGenericReturnType();
 				if (type instanceof ParameterizedType) {
 					Type typex = ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -952,17 +1086,17 @@ public abstract class RestClient<API> {
 
 					pi.includeReferenceLevelAmount = rp.includeReferenceLevelAmount();
 
-					pi.lstIncludePropertyPaths = new ArrayList();
+					pi.alIncludePropertyPaths = new ArrayList();
 
 					String sx = rp.includePropertyPath();
 					if (sx != null && sx.length() > 0) {
-						pi.lstIncludePropertyPaths.add(rp.includePropertyPath());
+						pi.alIncludePropertyPaths.add(rp.includePropertyPath());
 					}
 					String[] ss = rp.includePropertyPaths();
 					if (ss != null && ss.length > 0) {
 						for (String s : rp.includePropertyPaths()) {
 							if (s.length() > 0) {
-								pi.lstIncludePropertyPaths.add(s);
+								pi.alIncludePropertyPaths.add(s);
 							}
 						}
 					}
@@ -991,90 +1125,111 @@ public abstract class RestClient<API> {
 
 			// methodType & urlPath
 			mi.methodType = RestMethod.MethodType.Unassigned;
-			mi.urlPath = method.getName(); // default
 
-			String lowerName = method.getName().toLowerCase();
+			/*qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+			
+						mi.urlPath = method.getName(); // default
+			
+						String lowerName = method.getName().toLowerCase();
+			
+						if (lowerName.startsWith("select")) {
+							mi.urlPath = method.getName().substring(6);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+							if (bUsesBody) {
+								mi.methodType = RestMethod.MethodType.POST;
+							} else {
+								mi.methodType = RestMethod.MethodType.GET;
+							}
+						} else if (lowerName.startsWith("get")) {
+							mi.urlPath = method.getName().substring(3);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+							if (bUsesBody) {
+								mi.methodType = RestMethod.MethodType.POST;
+							} else {
+								mi.methodType = RestMethod.MethodType.GET;
+							}
+						} else if (lowerName.startsWith("post")) {
+							mi.methodType = RestMethod.MethodType.POST;
+							mi.urlPath = method.getName().substring(4);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+						} else if (lowerName.startsWith("post") || lowerName.startsWith("update")) {
+							mi.methodType = RestMethod.MethodType.POST;
+							mi.urlPath = method.getName().substring(6);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+						} else if (lowerName.startsWith("put")) {
+							mi.methodType = RestMethod.MethodType.PUT;
+							mi.urlPath = method.getName().substring(3);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+						} else if (lowerName.startsWith("insert")) {
+							mi.methodType = RestMethod.MethodType.PUT;
+							mi.urlPath = method.getName().substring(6);
+							mi.urlPath = OAString.mfcl(mi.urlPath);
+						}
+			
+						if (mi.methodType == null || mi.methodType == RestMethod.MethodType.Unassigned) {
+							mi.methodType = RestMethod.MethodType.GET;
+						}
+			
+			qqqqqqq */
 
-			if (lowerName.startsWith("select")) {
-				lowerName = "get" + method.getName().substring(6);
-			}
-			if (lowerName.startsWith("get")) {
-				mi.urlPath = method.getName().substring(3);
-				mi.urlPath = OAString.mfcl(mi.urlPath);
-				if (bUsesBody) {
-					mi.methodType = RestMethod.MethodType.POST;
-				} else {
-					mi.methodType = RestMethod.MethodType.GET;
-				}
-			} else if (lowerName.startsWith("post")) {
-				mi.methodType = RestMethod.MethodType.POST;
-				mi.urlPath = method.getName().substring(4);
-				mi.urlPath = OAString.mfcl(mi.urlPath);
-			} else if (lowerName.startsWith("post") || lowerName.startsWith("update")) {
-				mi.methodType = RestMethod.MethodType.POST;
-				mi.urlPath = method.getName().substring(6);
-				mi.urlPath = OAString.mfcl(mi.urlPath);
-			} else if (lowerName.startsWith("put")) {
-				mi.methodType = RestMethod.MethodType.PUT;
-				mi.urlPath = method.getName().substring(3);
-				mi.urlPath = OAString.mfcl(mi.urlPath);
-			} else if (lowerName.startsWith("insert")) {
-				mi.methodType = RestMethod.MethodType.PUT;
-				mi.urlPath = method.getName().substring(6);
-				mi.urlPath = OAString.mfcl(mi.urlPath);
-			}
-
-			if (mi.methodType == null || mi.methodType == RestMethod.MethodType.Unassigned) {
-				mi.methodType = RestMethod.MethodType.GET;
-			}
+			boolean bFoundUrlPath = false;
 
 			RestMethod rm = (RestMethod) mi.method.getAnnotation(RestMethod.class);
 			if (rm != null) {
+				if (rm.methodName() != null && rm.methodName().length() > 0) {
+					mi.objectMethodName = rm.methodName();
+				}
 
 				if (rm.name() != null && rm.name().length() > 0) {
 					mi.name = rm.name();
 				}
 
-				if (rm.extraUrlQueryParams() != null && rm.extraUrlQueryParams().length() > 0) {
-					mi.extraUrlQueryParams = rm.extraUrlQueryParams();
+				if (rm.urlQuery() != null && rm.urlQuery().length() > 0) {
+					mi.urlQuery = rm.urlQuery();
 				}
 
 				if (rm.methodType() != RestMethod.MethodType.Unassigned) {
 					mi.methodType = rm.methodType();
 				}
 				if (rm.urlPath().length() > 0) {
-					mi.urlPath = rm.urlPath();
+					//qqq mi.origUrlPath = mi.urlPath = rm.urlPath();
+					bFoundUrlPath = true;
+				}
+
+				if (!rm.returnClass().equals(Void.class)) {
+					mi.rmReturnClass = rm.returnClass();
 				}
 
 				mi.includeReferenceLevelAmount = rm.includeReferenceLevelAmount();
 
-				mi.lstIncludePropertyPaths = new ArrayList();
+				mi.alIncludePropertyPaths = new ArrayList();
 
 				if (rm.includePropertyPath() != null && rm.includePropertyPath().length() > 0) {
-					mi.lstIncludePropertyPaths.add(rm.includePropertyPath());
+					mi.alIncludePropertyPaths.add(rm.includePropertyPath());
 				}
 				if (rm.includePropertyPaths() != null && rm.includePropertyPaths().length > 0) {
 					for (String s : rm.includePropertyPaths()) {
 						if (s.length() > 0) {
-							mi.lstIncludePropertyPaths.add(s);
+							mi.alIncludePropertyPaths.add(s);
 						}
 					}
 				}
 
-				if (rm.pathTemplate() != null && rm.pathTemplate().length() > 0) {
-					mi.pathTemplate = rm.pathTemplate();
+				if (rm.urlPath() != null && rm.urlPath().length() > 0) {
+					mi.urlPath = rm.urlPath();
 				}
 
-				if (rm.queryWhereClause() != null && rm.queryWhereClause().length() > 0) {
-					mi.queryWhereClause = rm.queryWhereClause();
+				if (rm.searchWhere() != null && rm.searchWhere().length() > 0) {
+					mi.searchWhere = rm.searchWhere();
 				}
-				if (rm.queryOrderBy() != null && rm.queryOrderBy().length() > 0) {
-					mi.queryOrderBy = rm.queryOrderBy();
+				if (rm.searchOrderBy() != null && rm.searchOrderBy().length() > 0) {
+					mi.searchOrderBy = rm.searchOrderBy();
 				}
 			}
 
-			// ?? should be using template, query, body
+			//qqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
 
+			/*
 			boolean bHasPathVariable = false;
 			boolean bHasQueryNameValue = false;
 			int cntUnassigned = 0;
@@ -1082,82 +1237,238 @@ public abstract class RestClient<API> {
 				if (pi.paramType == null || pi.paramType == ParamType.Unassigned) {
 					cntUnassigned++;
 				} else {
-					if (pi.paramType == ParamType.PathVariable) {
+					if (pi.paramType == ParamType.UrlPathValue) {
 						bHasPathVariable = true;
 						break;
 					}
-					if (pi.paramType == ParamType.QueryWhereNameValue) {
+					if (pi.paramType == ParamType.SearchWhereNameValue) {
 						bHasQueryNameValue = true;
 						break;
 					}
 					continue;
 				}
 			}
-
+			
 			if (!bHasPathVariable && !bHasQueryNameValue) {
+				int cnt = 0;
 				for (ParamInfo pi : mi.alParamInfo) {
 					if (pi.paramType != null && pi.paramType != ParamType.Unassigned) {
 						continue;
 					}
-
-					if (pi.bNameAssigned) {
-						if (mi.pathTemplate != null && cntUnassigned == 1) {
-							pi.paramType = ParamType.PathVariable;
+			
+					if (mi.methodType == MethodType.OAGet && OAString.isEmpty(mi.urlPath)) {
+						pi.paramType = ParamType.UrlPathValue;
+						if (!pi.bNameAssigned) {
+							pi.name = "id";
+							if (cnt++ > 0) {
+								pi.name += cnt;
+							}
+						}
+					} else if (mi.methodType == MethodType.OASearch) {
+						pi.paramType = ParamType.SearchWhereNameValue;
+					} else if (pi.bNameAssigned) {
+						if (mi.urlPath != null && cntUnassigned == 1) {
+							pi.paramType = ParamType.UrlPathValue;
 						} else {
-							pi.paramType = ParamType.UrlQueryParam;
+							pi.paramType = ParamType.UrlQueryValue;
 						}
 					}
 				}
 			}
+			*/
 
-			if (mi.pathTemplate == null) {
-				String newPathTemplate = "";
-				for (ParamInfo pi : mi.alParamInfo) {
-					if (pi.paramType == ParamType.Unassigned) {
-						pi.paramType = ParamType.PathVariable;
-					}
-					if (pi.paramType == ParamType.PathVariable) {
-						newPathTemplate += "/{" + pi.name + "}";
-					}
-				}
-				if (newPathTemplate.length() > 0) {
-					mi.pathTemplate = newPathTemplate;
-				}
-			} else {
-				for (ParamInfo pi : mi.alParamInfo) {
-					if (pi.paramType == RestParam.ParamType.PathVariable && !pi.bNameAssigned) {
-						String s = "method param " + pi.name + " is not able to be used as PathVar since name is not defined, method="
-								+ mi.method;
-						throw new RuntimeException(s);
+			// Verify =====================================
 
+			ArrayList<String> alErrors = new ArrayList<>();
+			mi.verify(alErrors);
+
+			if (alErrors.size() > 0) {
+				String msg = "";
+				for (int i = 0; i < 5; i++) {
+					if (msg.length() > 0) {
+						msg += "  ";
 					}
+					msg += alErrors.get(i);
 				}
+				throw new RuntimeException(msg);
 			}
 
-			if (OAString.isNotEmpty(mi.pathTemplate)) {
-				String s = mi.pathTemplate;
-				s = OAString.convert(s, "{", "<%=$");
-				s = OAString.convert(s, "}", "%>");
-				mi.pathTemplate = s;
-			}
+			//qqqqqqqqqqqqqqqqqqqqqqq =================== qqqqqqqqqqq
 
-			for (ParamInfo pi : mi.alParamInfo) {
-				if (pi.paramType == ParamType.Unassigned) {
-					String s = !pi.bNameAssigned ? " (name of param not defined)" : "";
-					s = "method param=" + pi.name + s + " is not defined (ParamType) and is not able to be used, method=" + mi.method;
+			if (mi.methodType == MethodType.OASearch) {
+				if (OAString.isEmpty(mi.urlPath)) {
+					String s = String
+							.format("method name=%s methodType=%s, requires urlPath.  ex: /customers",
+									mi.name, mi.methodType);
 					throw new RuntimeException(s);
 				}
 
-				if (pi.paramType == ParamType.UrlPath) {
+				if (mi.returnClassType != ReturnClassType.Array && mi.returnClassType != ReturnClassType.List
+						&& mi.returnClassType != ReturnClassType.Hub) {
+					boolean b = false;
+					for (ParamInfo pi : mi.alParamInfo) {
+						if (pi.paramType == ParamType.MethodReturnClass) {
+							b = true;
+						}
+					}
+					if (!b) {
+						String s = String
+								.format("method name=%s methodType=%s, return value must be an Array or List or Hub",
+										mi.name, mi.methodType);
+						throw new RuntimeException(s);
+					}
+				}
+
+				if (!OAObject.class.isAssignableFrom(mi.returnClass)) {
+					String s = String
+							.format("method name=%s methodType=%s, returnClass=%s, must be an array/list/hub of asssignable from OAObject",
+									mi.name, mi.methodType, mi.returnClass);
+					throw new RuntimeException(s);
+				}
+
+				for (ParamInfo pi : mi.alParamInfo) {
+
+					if (pi.paramType == ParamType.OAObject
+							|| pi.paramType == ParamType.OAObjectMethodCallArg) {
+						String s = String
+								.format("method name=%s methodType=%s, paramType=%s not needed/allowed with OAGet",
+										mi.name, mi.methodType, pi.paramType);
+						throw new RuntimeException(s);
+					}
+				}
+			}
+
+			if (mi.methodType == MethodType.OAObjectMethodCall) {
+				if (OAString.isEmpty(mi.objectMethodName)) {
+					String s = String
+							.format("method name=%s methodType=%s, requires MethodName",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+
+				if (OAString.isEmpty(mi.urlPath)) {
+					String s = String
+							.format("method name=%s methodType=%s, requires urlPath.  ex: /customer",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+				/*qq
+				if (mi.origUrlPath.indexOf('?') >= 0 || mi.origUrlPath.indexOf('{') >= 0) {
+					String s = String
+							.format("method name=%s methodType=%s, urlPath should not have any tags (?, {}).",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+				*/
+				if (mi.alParamInfo.size() == 0 || mi.alParamInfo.get(0).paramType != ParamType.OAObject
+						|| !OAObject.class.isAssignableFrom(mi.alParamInfo.get(0).origParamClass)) {
+					String s = String
+							.format("method name=%s methodType=%s, first param must be an OAObject",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+
+				for (ParamInfo pi : mi.alParamInfo) {
+					if (pi.paramType == ParamType.Unassigned) {
+						String s = String
+								.format("method name=%s methodType=%s, params cant be ParamType.Unassigned, use OAObjectMethodCallArg, or Ignore",
+										mi.name, mi.methodType);
+						throw new RuntimeException(s);
+					}
+				}
+
+				boolean b = false;
+				for (ParamInfo pi : mi.alParamInfo) {
+					if (pi.paramType == ParamType.SearchWhereTagValue
+							|| pi.paramType == ParamType.SearchWhereAddNameValue
+							|| pi.paramType == ParamType.MethodUrlPath
+							|| pi.paramType == ParamType.MethodSearchWhere
+							|| pi.paramType == ParamType.MethodSearchOrderBy
+							|| pi.paramType == ParamType.SearchWhereTagValue
+							|| pi.paramType == ParamType.SearchWhereAddNameValue
+							// || pi.paramType == ParamType.OAObjectMethodCallObject
+							// || pi.paramType == ParamType.OAObjectMethodCallArg
+							|| pi.paramType == ParamType.BodyObject
+							|| pi.paramType == ParamType.BodyJson
+							|| pi.paramType == ParamType.PageNumber) {
+						String s = String
+								.format("method name=%s methodType=%s, paramType=%s not needed/allowed with OAObjectMethodCall",
+										mi.name, mi.methodType, pi.paramType);
+						throw new RuntimeException(s);
+					}
+				}
+			}
+
+			if (mi.methodType == MethodType.OARemote) {
+				String s = String
+						.format("method name=%s methodType=%s, is for internal (remote instances) use only.",
+								mi.name, mi.methodType);
+				throw new RuntimeException(s);
+			}
+
+			if (mi.methodType == MethodType.OAInsert || mi.methodType == MethodType.OAUpdate || mi.methodType == MethodType.OADelete) {
+				if (OAString.isEmpty(mi.urlPath)) {
+					String s = String
+							.format("method name=%s methodType=%s, requires urlPath.  ex: /customer",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+				/*qqq
+				if (mi.origUrlPath.indexOf('?') >= 0 || mi.origUrlPath.indexOf('{') >= 0) {
+					String s = String
+							.format("method name=%s methodType=%s, urlPath should not have any tags (?, {}).",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+				*/
+				if (mi.alParamInfo.size() == 0 || mi.alParamInfo.get(0).paramType != ParamType.OAObject
+						|| !OAObject.class.isAssignableFrom(mi.alParamInfo.get(0).origParamClass)) {
+					String s = String
+							.format("method name=%s methodType=%s, first param must be an OAObject",
+									mi.name, mi.methodType);
+					throw new RuntimeException(s);
+				}
+
+				boolean b = false;
+				for (ParamInfo pi : mi.alParamInfo) {
+					if (pi.paramType == ParamType.SearchWhereTagValue
+							|| pi.paramType == ParamType.SearchWhereAddNameValue
+							|| pi.paramType == ParamType.MethodUrlPath
+							|| pi.paramType == ParamType.MethodSearchWhere
+							|| pi.paramType == ParamType.MethodSearchOrderBy
+							|| pi.paramType == ParamType.SearchWhereTagValue
+							|| pi.paramType == ParamType.SearchWhereAddNameValue
+							// || pi.paramType == ParamType.OAObject
+							|| pi.paramType == ParamType.OAObjectMethodCallArg
+							|| pi.paramType == ParamType.BodyObject
+							|| pi.paramType == ParamType.BodyJson
+							|| pi.paramType == ParamType.PageNumber) {
+						String s = String
+								.format("method name=%s methodType=%s, paramType=%s not needed/allowed with OAObjectMethodCall",
+										mi.name, mi.methodType, pi.paramType);
+						throw new RuntimeException(s);
+					}
+				}
+			}
+
+			// final checks
+			for (ParamInfo pi : mi.alParamInfo) {
+				if (pi.paramType == ParamType.Unassigned) {
+					String s = !pi.bNameAssigned ? " (name of param not defined)" : "";
+					s = "method param=" + pi.name + s + " is not defined (ParamType) and is required, method=" + mi.method;
+					throw new RuntimeException(s);
+				}
+
+				if (pi.paramType == ParamType.MethodUrlPath) {
 					if (pi.classType != ClassType.String) {
 						String s = "method param " + pi.name + " type=UrlPath must be a String, method=" + mi.method;
 						throw new RuntimeException(s);
 					}
 				}
 
-				if (pi.paramType == ParamType.PathVariable && pi.classType != ClassType.Unassigned) {
-					if (pi.classType != ClassType.String && pi.classType != ClassType.Date && pi.classType != ClassType.DateTime) {
-						String s = "method param " + pi.name + " can not be used for pathVariable, method=" + mi.method;
+				if (pi.paramType == ParamType.SearchWhereAddNameValue) {
+					if (!pi.bNameAssigned) {
+						String s = "method param " + pi.name + " type=QueryWhereNameValue must have a name assigned, method=" + mi.method;
 						throw new RuntimeException(s);
 					}
 				}
@@ -1177,7 +1488,65 @@ public abstract class RestClient<API> {
 				}
 			}
 
+			/* qqqqqqqqqqq removed qqqqqqqqq
+			
+			// make changes based on methodType
+			boolean bUseSingularParamName = false;
+			boolean bUsePluralReturnName = false;
+			boolean bUseSingularReturnName = false;
+			if (mi.methodType == MethodType.OAObjectMethodCall) {
+				// ex:  "servlet/oarest/supplier/12?objectMethodName=displayOnserver"
+			
+				// first param must be OAObject, and methodName needs to be a valid oamethod
+				if (mi.alParamInfo.size() == 0 || !OAObject.class.isAssignableFrom(mi.alParamInfo.get(0).paramClass)) {
+					if (mi.objectMethodName == null) {
+						String s = "method type is OAObjectRemote and requires first param to be an OAObject, method=" + mi.method;
+						throw new RuntimeException(s);
+					}
+				}
+			
+				// all params are json
+				if (mi.objectMethodName == null) {
+					String s = "method type is OAObjectRemote and requires a objectMethodName, method=" + mi.method;
+					throw new RuntimeException(s);
+				}
+				mi.urlQuery = OAString.append(mi.urlQuery, "objectMethodName=" + mi.objectMethodName, "&");
+				mi.urlPath = "<%=$id%>";
+				bUseSingularParamName = true;
+			} else if (mi.methodType == MethodType.OAGet) {
+				bUseSingularReturnName = true;
+			} else if (mi.methodType == MethodType.OASearch) {
+			
+				if (mi.returnClassType != ReturnClassType.Array && mi.returnClassType != ReturnClassType.List
+						&& mi.returnClassType != ReturnClassType.Hub) {
+					String s = "method type is OAQuery, and must return an Array/List/Hub, MethodName, method=" + mi.method;
+					throw new RuntimeException(s);
+				}
+				bUsePluralReturnName = true;
+			} else if (mi.methodType == MethodType.OAInsert) {
+				bUseSingularParamName = true;
+			} else if (mi.methodType == MethodType.OAUpdate) {
+				bUseSingularParamName = true;
+			} else if (mi.methodType == MethodType.OADelete) {
+				bUseSingularParamName = true;
+			} else if (mi.methodType == MethodType.OARemote) {
+				mi.urlQuery = OAString.append(mi.urlQuery, "remoteClassName=" + interfaceClass.getSimpleName(), "&");
+				mi.urlQuery = OAString.append(mi.urlQuery, "remoteMethodName=" + mi.objectMethodName, "&");
+				mi.urlPath = getDefaultOARestUrl() + "/oaremote"; // oaRestServlet will check "classname" for this
+			}
+			
+			if (bUseSingularParamName) {
+				mi.urlPath = getDefaultOARestUrl() + "/" + OAString.mfcl(mi.alParamInfo.get(0).paramClass.getSimpleName());
+			} else if (bUseSingularReturnName) {
+				mi.urlPath = getDefaultOARestUrl() + "/" + OAString.mfcl(mi.returnClass.getSimpleName());
+			} else if (bUsePluralReturnName) {
+				OAObjectInfo oi = OAObjectInfoDelegate.getOAObjectInfo(mi.returnClass);
+				String s = oi.getPluralName();
+				mi.urlPath = getDefaultOARestUrl() + "/" + OAString.mfcl(s);
+			}
+			*/
 		}
+
 	}
 
 	public String convertToString(Object obj) {
@@ -1185,11 +1554,13 @@ public abstract class RestClient<API> {
 		return "" + obj;
 	}
 
+	// needed for PATCH support
 	private static java.lang.reflect.Field fieldHttpURLConnectMethod;
 	private static java.lang.reflect.Field fieldHttpsURLConnectMethod1;
 	private static java.lang.reflect.Field fieldHttpsURLConnectMethod2;
 
-	protected String callHttpEndPoint(String httpUrl, final String httpMethodName, final String requestBodyJson) throws Exception {
+	protected String callHttpEndPoint(InvokeInfo invokeInfo, String httpUrl, final String httpMethodName, final String requestBodyJson)
+			throws Exception {
 
 		//qqqqqqqqqqqq add invokeInfo for all of this qqqqq get responseCode, etc
 
@@ -1203,7 +1574,7 @@ public abstract class RestClient<API> {
 
 		URL url = new URL(httpUrl);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
+		conn.setUseCaches(false);
 		conn.setRequestProperty("User-Agent", "RestClient");
 
 		if ("PATCH".equalsIgnoreCase(httpMethodName)) {
@@ -1276,53 +1647,89 @@ public abstract class RestClient<API> {
 			out.close();
 		}
 
+		for (Map.Entry<String, List<String>> me : conn.getHeaderFields().entrySet()) {
+			String s = me.getKey() + "=";
+			boolean b = false;
+			for (String s2 : me.getValue()) {
+				if (!b) {
+					b = true;
+				} else {
+					s += ", ";
+				}
+				s += s2;
+			}
+			// System.out.println(s);
+		}
+
 		String setcookie = conn.getHeaderField("Set-Cookie");
 		if (OAString.isNotEmpty(setcookie)) {
 			this.cookie = OAString.field(setcookie, ";", 1);
 		}
 
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-		int responseCode = conn.getResponseCode();
+		invokeInfo.responseCode = conn.getResponseCode();
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 		StringBuilder sb = new StringBuilder();
-		for (;;) {
-			int ch = br.read();
-			if (ch < 0) {
-				break;
+		InputStream inputStream = null;
+		try {
+			inputStream = conn.getInputStream();
+		} catch (Exception e) {
+			throw new RuntimeException(
+					"Exception getting inputStream from connection, responseCode=" + invokeInfo.responseCode + ", responseMessage="
+							+ conn.getResponseMessage(),
+					e);
+		}
+
+		// HTTP Response
+		// https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html
+
+		if (inputStream != null) {
+			BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+			/*
+			for (;;) {
+				int ch = br.read();
+				if (ch < 0) {
+					break;
+				}
+				sb.append((char) ch);
 			}
-			sb.append((char) ch);
-		}
+			*/
 
-		String line;
-		while ((line = br.readLine()) != null) {
-			sb.append(line);
+			String line;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+			br.close();
 		}
-		br.close();
-
 		conn.disconnect();
 
 		String result = sb.toString();
-		if (responseCode < 200 || responseCode > 299) {
+		if (invokeInfo.responseCode < 200 || invokeInfo.responseCode > 299) {
 			String s = String.format(	"Error Response code: %d, msg=%s, result=%s",
-										responseCode,
+										invokeInfo.responseCode,
 										conn.getResponseMessage(),
 										result);
 
 			throw new RuntimeException(s);
 		}
-
 		return result;
 	}
 
+	/**
+	 * Manually call an end point.
+	 *
+	 * @param url
+	 * @param query
+	 * @param httpMethod
+	 * @param jsonBody
+	 */
 	public String callJsonEndpoint(String url, String query, String httpMethod, String jsonBody) throws Exception {
 		String strUrl = url;
 		if (OAString.isNotEmpty(query)) {
 			strUrl += "?" + query;
 		}
-
-		String jsonResult = callHttpEndPoint(strUrl, httpMethod, jsonBody);
-		return jsonResult;
+		InvokeInfo invokeInfo = new InvokeInfo();
+		String result = callHttpEndPoint(invokeInfo, strUrl, httpMethod, jsonBody);
+		return result;
 	}
-
 }

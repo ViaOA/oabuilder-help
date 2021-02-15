@@ -20,14 +20,13 @@ public class RetailProductsTest {
 	 * "paging":{"rowsPerPage":10,"pageNumber":1,"totalCount":3}
 	 */
 
-	public void test() {
-		RestClient<RetailProductsInterface> restClient = new RestClient<RetailProductsInterface>() {
-		};
+	public void test() throws Exception {
+		RestClient restClient = new RestClient();
 
 		restClient.setBaseUrl("http://localhost:18080/retail-products");
 		// restClient.setUserPw("admin", "admin");
 
-		final RetailProductsInterface retailProducts = restClient.getInstance();
+		final RetailProductsInterface retailProducts = restClient.getInstance(RetailProductsInterface.class);
 
 		String s, s2;
 		String json;
@@ -54,7 +53,7 @@ public class RetailProductsTest {
 		xx++;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		RetailProductsTest test = new RetailProductsTest();
 		test.test();
 		System.out.println("DONE");

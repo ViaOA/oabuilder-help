@@ -1,6 +1,6 @@
 package com.oreillyauto.storepurchaseorder.remote.rest;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.oreillyauto.storepurchaseorder.remote.rest.annotation.RestParam;
 
@@ -9,6 +9,7 @@ class ParamInfo {
 	String name;
 	boolean bNameAssigned;
 
+	Class rpParamClass;
 	Class origParamClass; // could be array or list, etc
 
 	Class paramClass; // could be null
@@ -17,7 +18,7 @@ class ParamInfo {
 
 	ClassType classType;
 
-	List<String> lstIncludePropertyPaths;
+	ArrayList<String> alIncludePropertyPaths;
 	int includeReferenceLevelAmount;
 
 	RestParam.ParamType paramType;

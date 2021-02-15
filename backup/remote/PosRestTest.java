@@ -18,14 +18,13 @@ public class PosRestTest {
 	 * "paging":{"rowsPerPage":10,"pageNumber":1,"totalCount":3}
 	 */
 
-	public void test() {
-		RestClient<PosRestInterface> restClient = new RestClient<PosRestInterface>() {
-		};
+	public void test() throws Exception {
+		RestClient restClient = new RestClient();
 
 		restClient.setBaseUrl("http://localhost:18080/posrest");
 		// restClient.setUserPw("admin", "admin");
 
-		final PosRestInterface posRest = restClient.getInstance();
+		final PosRestInterface posRest = restClient.getInstance(PosRestInterface.class);
 
 		String s, s2;
 		String json;
@@ -40,11 +39,17 @@ public class PosRestTest {
 		int x = arrayNode.getSize();
 		for (int i = 0; i < x; i++) {
 			objNode = arrayNode.getObject(i);
-			objNode.set("orderedByUser", "testA");
+			objNode.set("orderedByUser", "testE");
 			int id = objNode.getInt("id");
 			json = objNode.toJson();
-			//qqqqqqq NOT UPDAting qqqqqqq
-			String json2 = posRest.update(id, json);
+			String json2 = "";
+			try {
+				json2 = posRest.update(id, json);
+			} catch (Exception e) {
+				e.printStackTrace();
+				int xz = 1;
+				xz++;
+			}
 			int xxx = 4;
 			xxx++;
 		}
@@ -53,7 +58,7 @@ public class PosRestTest {
 		xx++;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		PosRestTest test = new PosRestTest();
 		test.test();
 		System.out.println("DONE");

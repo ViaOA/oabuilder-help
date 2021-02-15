@@ -21,26 +21,26 @@ public interface RetailProductsInterface {
 	public final static String SingularName = "product";
 	public final static String PluralName = "products";
 
-	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, extraUrlQueryParams = "sorting=line&sorting=item")
+	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, urlQuery = "sorting=line&sorting=item")
 	String getBySupplier(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "supplierCode") String supplierCode,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "supplierCode") String supplierCode,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "active") boolean active,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "active") boolean active,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "stocking") boolean stocking,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "stocking") boolean stocking,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "pageNumber") int pageNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "rowsPerPage") int rowsPerPage);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "pageNumber") int pageNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "rowsPerPage") int rowsPerPage);
 
-	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, extraUrlQueryParams = "sorting=line&sorting=item")
+	@RestMethod(methodType = MethodType.GET, urlPath = PluralName, urlQuery = "sorting=line&sorting=item")
 	String getItems(
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "productIds") List<String> productIds,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "productIds") List<String> productIds,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "active") boolean active,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "active") boolean active,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "stocking") boolean stocking,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "stocking") boolean stocking,
 
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "pageNumber") int pageNumber,
-			@RestParam(paramType = ParamType.UrlQueryParam, name = "rowsPerPage") int rowsPerPage);
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "pageNumber") int pageNumber,
+			@RestParam(paramType = ParamType.UrlQueryNameValue, name = "rowsPerPage") int rowsPerPage);
 
 }
