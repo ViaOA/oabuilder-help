@@ -7,9 +7,9 @@
 <tocitem text="OABuilder" image="toplevelfolder" target="index">
    <tocitem text="Welcome" target="welcome"></tocitem>
    <tocitem text="Overview" target="overview">
-       <tocitem text="Workflow Overview" target="workflow"></tocitem>
+       <tocitem text="Workflow" target="workflow"></tocitem>
 	   <tocitem text="Concepts" target="concepts"></tocitem>
-       <tocitem text="Main Window" target="mainwindow"></tocitem>
+       <tocitem text="Main Window" target="mainWindow"></tocitem>
        <tocitem text="Workspace/Desktop" target="workspace"></tocitem>
        <tocitem text="Navigation" target="navigation"></tocitem>
        <tocitem text="Model Editor" target="modeleditor"></tocitem>

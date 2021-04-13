@@ -14,7 +14,7 @@
 	<mapID target="overview" url="overview.html" />
 	<mapID target="workflow" url="workflow.html" />
 	<mapID target="concepts" url="concepts.html" />
-	<mapID target="mainwindow" url="mainwindow.html" />
+	<mapID target="mainWindow" url="mainWindow.html" />
 	<mapID target="workspace" url="workspace.html" />
 	<mapID target="navigation" url="navigation.html" />
 	<mapID target="modeleditor" url="modeleditor.html" />
