@@ -6,15 +6,46 @@
 
 <h3 align="center">Concepts</h3>
 
-OABuilder is used for building Software Models, where the Model captures the detail about the data, relationships, rules, etc.  
-This data, sometimes referred as metadata, can then be used to create databases, data objects,
-user interfaces, reports, web pages, web services, security, and any other part of a software system. 
+OABuilder is used by Software Architects for designing and building Software Models, where the Model captures the detail about the data, relationships, rules, etc.  
+
+<p>  
+A model created by OABuilder captures a large portion of the application logic and requirements, and is a common "cookie cutter" way of
+building from model to model. 
+The remaining custom features can be included using various techniques, such as callbacks, common OOP techniques like subclassing, etc.
+
 <p>
 All software uses data that is specific to the function of the application.  This follows 
 industry defined patterns and is used throughout OABuilder, resulting in a consistent and organized software development process. 
-<p>  
-This usually captures a large portion of the application, that is "cookie cutter" from model to model. 
-OABuilder also includess various technigues for custom programming, by using callbacks, common OOP techniques, etc.
+This data, sometimes referred as metadata, can then be used to define databases, model objects,
+user interfaces, reports, web pages, web services, security, and any other part of a software system.
+
+<p>
+OABuidler uses a hierarchy structure for defining models.<br>
+Each model has the following:
+<ul>
+<li>Classes - entities
+<li>Links - references between classes
+<li>Processes
+<li>User Interface
+<li>Permissions
+<li>API
+<li>DataSource
+<li>Remote clients
+</ul>
+<p>
+
+For each Class
+<ul>
+<li>Properties
+<li>Calculated Properties
+<li>UI
+<li>Indexes
+<li>Filters
+<li>Permissions
+<li>References to other classes - direct, calculated, aggregated, and more.
+</ul>
+
+ 
 <p>
 
 </body>
