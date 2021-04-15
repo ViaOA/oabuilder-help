@@ -10,6 +10,8 @@
        <tocitem text="Workflow" target="workflow"></tocitem>
 	   <tocitem text="Concepts" target="concepts"></tocitem>
        <tocitem text="Main Window" target="mainWindow"></tocitem>
+       <tocitem text="Main Menu" target="mainMenu"></tocitem>
+
        <tocitem text="Workspace/Desktop" target="workspace"></tocitem>
        <tocitem text="Navigation" target="navigation"></tocitem>
        <tocitem text="Model Editor" target="modeleditor"></tocitem>
