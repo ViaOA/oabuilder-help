@@ -1,0 +1,98 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Callbacks</h3>
+
+Callbacks are used in Objects to allow programs to interact with Objects. 
+<p>
+
+ A callback is implemented by creating a callback method in the Object java code,
+ or as a callback property method.
+ 
+ <p>
+  OAObjCallback is the annotation used to mark and Object method as a callback.
+ <p>
+ OAObjectCallback is the paramater passed and updated.
+  
+ 
+
+  <img src='images/editor/objectCodeEditor.jpg'><br>
+  Object callbacks.
+    <p>
+    Example:
+    <code><pre>   
+public void callback(final OAObjectCallback callback) {
+    if (callback == null) return;
+    switch (callback.getType()) {
+    case AllowNew:
+        // todo: custom code here;
+        callback.ack();
+        // callback.setAllowed(true); 
+        // callback.setResponse("");
+        break;
+    }
+}
+</pre></code>
+
+
+
+  <img src='images/editor/property9Editor.jpg'><br>
+  Property callbacks.
+  <p>
+  <code><pre>
+public void inspectedDateCallback(final OAObjectCallback callback) {
+    if (callback == null) return;
+    switch (callback.getType()) {
+    case AllowSave:
+        // todo: custom code here;
+        callback.ack();
+        callback.setAllowed(true); 
+        callback.setResponse("");
+        break;
+    }
+}  
+  </pre></code>
+  
+
+  List of Callback Types that can be called.  
+  <ul>
+  <li>Unknown</li>
+  <li>AllowEnabled</li>
+  <li>AllowVisible</li>
+  <li>AllowNew</li>
+  <li>AllowRemove</li>
+  <li>AllowRemoveAll</li>
+  <li>AllowDelete</li>
+  <li>AllowSave</li>
+  <li>AllowCopy</li>
+  <li>AllowSubmit</li>
+  <li>VerifyPropertyChange</li>
+  <li>VerifyAdd</li>
+  <li>VerifyRemoveAll</li>
+  <li>VerifyDelete</li>
+  <li>VerifySave</li>
+  <li>VerifyCommand</li>
+  <li>GetCopy</li>
+  <li>AfterCopy</li>
+  <li>SetConfirmForPropertyChange</li>
+  <li>SetConfirmForAdd</li>
+  <li>SetConfirmForRemove</li>
+  <li>SetConfirmForRemoveAll</li>
+  <li>SetConfirmForDelete</li>
+  <li>SetConfirmForSave</li>
+  <li>SetConfirmForCommand</li>
+  <li>GetToolTip</li>
+  <li>RenderLabel</li>
+  <li>UpdateLabel</li>
+  <li>GetFormat</li>
+  </ul>
+  
+
+
+<p>
+
+</body>
+</html>

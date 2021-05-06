@@ -1,0 +1,247 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Model Editor</h3>
+
+    <img src='images/editor/modelEditor.jpg'><br>
+    The model editor is used to define the information about a project.
+    <p>
+    <br>
+
+    <h3>Settings tab</h3>
+    <img src='images/editor/modelSettingsEditor.jpg'><br>
+    <p>
+    
+    <ul>
+    <li>Name of project</li>
+    <li>Lower Name of project</li>
+    <li>Display Name</li>
+    <li>Abbrev Name</li>
+    <li>Website address for the project (if any).</li>
+    <li>Package - Java package name or namespace.</li>
+    <li>Code Gen Root Dir - root directory for project.  Example: user/jdoe/git/sales</li>
+    <li> Java Dir - directory under root, for generating Java.  Example: src/main/java</li>
+    <li>Custom Template Dir - used by code generator for teample projects, to include a custom template directory.</li>
+    <li> Output dir - directory where custom template will be written.</li>
+    <li>User Class - Object (/Class) used by code generator that defines the "User" object.
+        Must have the following properties: loginId, password, admin, firstName, lastName, inactiveDate, editProcessed (boolean, permission to edit process data).</li>
+    <li>Use double instead of BigDecimal - setting for code generator to what type to use.</li>
+    <li>Size options - sizing options of visual model.</li>
+    <li>Display options - for objects and links in desktop.</li>
+    <li>Verify Model - command to check model for potential problems.</li>
+    </ul>
+    <br> 
+
+    <h3>Changes tab</h3>
+    <img src='images/editor/modelChangesEditor.jpg'><br>
+    Tracks model changes, so that code generation can create updates.  For example:  SQL &amp; DDL changes to update database.
+    <p>
+    Select "Regen" when other changes to the projects Database have been made, so that DB specific
+    changes can be made.
+    <p>
+    Note: not all model changes will require DB changes.  Always review and test before applying scripts.
+    
+    <br>
+    Select clear or clear all once scripts have been created from the changes.
+    <p>
+    See <a href="codeGeneration.html">code gen</a> for database update scripts.      
+
+    <ul>
+    <li>Remove - remove selected change.</li>
+    <li>Remove All - clear list.  This can be done once all of the changes have been added to a release.</li>
+    <li>Up/Down arrows - move changes.</li>
+    <li>Regen - regen selected change.</li>
+    <li>Database Changes - list of SQL and DDL for the change.  This can be edited.</li>
+    </ul>
+    <p>
+    <br> 
+
+
+    <h3>DataSource tab</h3>
+    <img src='images/editor/modelDataSourceEditor.jpg'><br>
+    Configure the default datasource to use, and it's default naming and settings.
+    See <a href="jdbcEditor.html">JDBC Editor</a> for setting up Databases.      
+    <ul>
+    <li>Sql Database Type - select from JDBC Editor's list.</li>
+    <li>JDBC URL - used to connect to the database.</li>
+    <li>User - database User Id to use for accessing the database.</li>
+    <li>Password - database User Password to use for accessing the database.</li>
+    <li>Min Connections - used by connection pool.</li>
+    <li>Max Connections - used by connection pool.</li>
+    </ul>
+    <p>
+
+    Datbase Naming Rules
+    <ul>
+    <li>Use Identity Pkey - automatically create an auto number (sequence) Id property for each create Object.</li>
+    <li>Convert CamelCase to SnakeCase ("_") - naming convention to use underscores for database names.  Example: firstName would be first_name</li>
+    <li>Expand Column name for PKeys to include Table Name - if checked, then the key property will be named using the Object name and "Id", else it will be "id".</li>
+    <li>Use uppercase names for tables and columns - name convention where uppercase names will be used.</li>
+    <li>Lock automatic changes to names - if checked then changes to model names wont affect database names.  Otherwise, changes to the model will be reflected in the DB naming.</li>
+    <li>Rename/update names - command that rename all database names.</li>
+    </ul>
+    <p>
+    <br> 
+    
+
+    <h3>Permissions tab</h3>
+    <img src='images/editor/modelPermissionsEditor.jpg'><br>
+    Model Permissions, to specify default permission settings for the model.    
+    <p>
+    <ul>
+    <li>Context Visibility Property - choose the property that allows a user (/context) to have visible access to model.</li>
+    <li>Context Enabled Property - choose the property that allows a user (/context) to be enabed to make changes to model.</li>
+    <li>Admin Property - property used to give user Admin access to model.</li>
+    </ul>
+
+    <br>
+    <img src='images/editor/modelPermissions2Editor.jpg'><br>
+    Additional dependent properties that affect the permissions.
+
+    <ul>
+    <li>Use "Add..." to select other properties that determine if user (/context) has permission.</li>
+    </ul>
+    <p>
+    <br> 
+
+
+    <h3>Processes tab</h3>
+    <img src='images/editor/modelProcessesEditor.jpg'><br>
+    Model Processes, that can be defined to run as cron, timed, event based, and the type of thread handling.     
+    
+    <ul>
+    <li>Process Name</li>
+    <li>Upper Name</li>
+    <li>Display Name</li>
+    <li>Type - type of process: event, cron, run every x, and thread type to use.</li>
+    <li>Enter information - for the type. </li>
+    </ul>
+    <p>
+    <br>
+     
+    <img src='images/editor/modelProcesses2Editor.jpg'><br>
+    The property paths to listen for triggering the running of the process.
+    <p>
+    <br> 
+    <img src='images/editor/modelProcesses3Editor.jpg'><br>
+    List of properties that are updated when the process runs.    
+    <p>
+    <br> 
+    <img src='images/editor/modelProcesses4Editor.jpg'><br>
+    Code that is ran for the process.  Generate code will create a template using list of dependent &amp; update properties.    
+    <p>
+    <br> 
+
+    <h3>Remote Clients tab</h3>
+    <img src='images/editor/modelRemoteClientsEditor.jpg'><br>
+    Remote/distributed Client Apps to create with this application.  They will be able to access the model as if it were running on the same computer. 
+    Clients can be any number and scale.  For example, create a Client that will
+    manage all customer orders once they are created, and have it set up to run a pool of twenty of these behind a load balancer.
+    <p>
+    
+    <ul>
+    <li>Name</li>
+    <li>Lower Name</li>
+    <li>On Connect Code - code to run when a connection is made.</li>
+    <li>On Disconnect code - run when disconnected.</li>
+    </ul>
+    <p>
+    <br> 
+    
+
+    <h3>API tab</h3>
+    <img src='images/editor/modelApiEditor.jpg'><br>
+    This editor allows for adding custom APIs that will be added to the Models full REST API (including security).
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi2Editor.jpg'><br>
+    Add a property to add to API request.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi3Editor.jpg'><br>
+    
+    <ul>
+    <li>Property Path - existing property path that was selected.</li>
+    <li>Name - property name to use.</li>
+    <li>Upper Name</li>
+    <li>Input Type - type of input: one, many, range, no input (if it will be supplied).</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi4Editor.jpg'><br>
+    Create a new property for the requiest, similar to creating a new property for an Object.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi5Editor.jpg'><br>
+    Define the response Object and properties.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi6Editor.jpg'><br>
+    Code to run.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi7Editor.jpg'><br>
+    Permissions for using this API.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi8Editor.jpg'><br>
+    Additonal properties that affect Permission for using this API.
+    <p>
+    <br> 
+
+    <img src='images/editor/modelApi9Editor.jpg'><br>
+    Help for this API.
+    <p>
+    <br> 
+
+
+    <h3>App UI tab</h3>
+    <img src='images/editor/modelAppUIEditor.jpg'><br>
+    User Interface layout for the model.  This is used to form the hierarchy for the UI, and then have it configured to use various UI layouts by
+    code generators. 
+    For example, the "Outlook" layout, similar to the layout of the UI for OABuilder.
+    <br>
+    Code generators are able to take the UI layout for the model, and all of the other parts of the model (objects, properties, links, etc)
+    to create the UI. 
+    <p>
+    <br>
+     
+    <img src='images/editor/modelAppUI2Editor.jpg'><br>
+    User Interface layout for the model.
+    <ul>
+    <li>Use new to create a new layout to the UI tree. </li>
+    <li>Use add to add an Object, Property Path to an Object, Search, Filter, Create New, etc.</li>
+    <li>Generato - button that will generate a default UI layout for the select Model.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/modelAppUI3Editor.jpg'><br>
+    User Interface component.
+    <ul>
+    <liProperty Path that was choosen.</li>
+    <li>Type - List All, Search, Create New.  The options depend on the type of Object.</li>
+    <li>Label - UI lable to show with component.</li>
+    <li>Java Name used in generated code.</li>
+    <li>Add tree nodes - if true, then the navigation tree will include leaf nodes for this object.</li>
+    <li>Use split panel - if true, then the display window will be split into list and detail panes.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <h3>Help tab</h3>
+    <img src='images/editor/modelHelpEditor.jpg'><br>
+    Model Help, used for the project Help System.  
+    <p>
+</body>
+</html>

@@ -4,23 +4,6 @@
 </head>
 <body>
 
-qqqqqqqqqqqqqqqqqqqqqqq
-
-VVVVVVVVVVVVVVV property path (reference navigation)
-
-qqqqqqqqqqqqqqqq
-Link
-Merge Link
-Hierarchy Link
-Calc link
-Group By Link
-
-Calc Prop
-
-object graph
-
-qqqqqqqqq
-
 
 <h3 align="center">Terminology</h3>
 
@@ -35,12 +18,15 @@ include validation and business logic.
 <li>OA (Object Automation) - name used for automating object oriented programming.</li>
 <li>OABuilder - name of visual development tool.</li>
 <li>Link/Relationship - used to define the rules for how objects are related together.
-    Types are One/Many : O2O, O2M, M2M.  A recursive is a self reference.
+    Types are One/Many : O2O, O2M, M2M.  
+    A link can be recursive, which is a self reference.
+    Other links are available to create merged links, calculated, heirarchy, grouped, and more.
+    
     Additonal information can include cascade rules, how and where the data is created, other
     required references, etc.
 </li>
 <li>Meta-data - additional information that describes specific pieces of the program in enough detail
-so that it can be automated.</li>
+ that it can be used to automate functionality.</li>
 <li>Reflection - a way for code to read and use meta-data to call methods dynamically.
 <li>Observable - a type of design pattern where events can be sent to interested listeners when
 a particular event happens.  This is a powerful feature, but at a cost.  OA has overcome this
@@ -74,10 +60,9 @@ an OrderItem does not exist without an Order - the Order is the owner.
 </li>
 <li>Property - data element within an object that defines a specific type of data.</li>
 <li>Property Path - An important concept in OA that is combined with reflection to be
-able to define a reference from one object to another object/objects through a path of relationships
-  
-For example, "order.customer.name" will 
-get the name for a customer, for a specific order.
+able to define a reference from one object to another object/objects through a path of relationships.
+<br>See <a htrf="prpertypath.html">property path</a>
+
 </li>
 <li>Recursive - an object "self" relationship, where each object can have many of the same type
 of objects, and they can also have many of the same, etc. 
@@ -89,6 +74,11 @@ the specific order to sort the employee list.
 </li>
 <li>Transient - used by object or property to signify that it should not be stored.</li>
 
+<li>Context - the User or System accessing the model.</li>
+<li>Visible - for permissions, this uses a property path to determine if an object, property, etc. is visible.</li>
+<li>Enabled - for permissions, this uses a property path to determine if an object, property, etc. is enabled for changes.</li>
+<li>Hierarchy relationship - allows a property to be defined through a hierarchy property path.  This allows high or low level
+settings.</li>
 
 </ul>
 

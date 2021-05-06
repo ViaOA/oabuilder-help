@@ -1,0 +1,400 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+<h3 align="center">Object Editor</h3>
+
+    <img src='images/editor/objectEditor.jpg'><br>
+     The object editor is used to define the information about each object in the model.
+     <p>
+     As with all of the Editors, as much of the data is filled out as possible.
+    <p>
+    <br> 
+
+    
+    <h3>General Information tab</h3>
+    
+    <img src='images/editor/objectGeneralEditor.jpg'><br>
+    <ul>
+    <li>Name of class - upper camel case.</li>
+    <li> plural - upper camel case.</li>
+    <li>Lower Name - lower camel case.</li>
+    <li>Display Name - using spaces.</li>
+    <li>Abbreviation</li>
+    <li>Estimated Count - defautls to 0 for undefined.</li>
+    <li>DB name - name of table in database.</li>
+    <li>Pkey name - name of primary key.</li>
+    <li>Sort property - default sort property (if any).</li>
+    <li>AutoCreate using - can use a property that has name/value pairs to autocreate the objects at for this class.</li>
+    <li>Soft delete property - a date[time] property that can be used to mark the object as deleted.</li>
+    <li> Reason property - a string property that allows a user to give the reason for a soft delete.</li>
+    <li>Version Property - a date[time] property that can be used to create version of an object, to track changes.  Objects that have a null value are the current version.</li>
+    <li>Version Link - a link to another object that maintains versions of objects in this class.</li>
+    <li>Time Series Property - </li>a datetime property that can be used capturing time series data.</li>
+    </ul>
+    <p>
+    <ul>
+    <li>Use DataSource - if true/checked, then this class is saved (persisted), else it will not be.</li>
+    <li>Initialize - if true, then this class should be initialized when created.</li>
+    <li>Local Only - flag to know if this object should be local only (true) or allowed to distributed.</li>
+    <li>Add to Cache - flag to know if objects should be cached.</li>
+    <li>Lookup - flag to know if this object is used for dropdown/pickfrom lists.</li>
+    <li>Pre-select - flag to know if this object is preselected at startup and kept in cache.</li>
+    <li>Owned - flag to know that this object will be owned by another object. (see Link)</li>
+    <li>Processed - flag to know if these objects will be created by a process and not by user.</li>
+    <li>Create only one - flag to know if there is only one instance, (singleton) that is autocreated.</li>
+    <li>Multi-purpose - flag to know if this object is used (linked) by other objects and does not need a reverse link.  Example: an Object PhoneType</li>
+    <li>Hide - dont show this object in model, unless show all is select, it is selected, or a link object is selected.</li>
+    <li>Hide Links - dont show links to this object, unless model has show all links, or this object is selected.  Example: an Object for Image that is used by a lot of object Objects.</li>
+    <li>Flag - allows this object to display a different title color, else gray.</li>
+    </ul>
+    <p>
+    <br> 
+    
+    
+    <h3>Triggers tab</h3>
+    
+
+    <img src='images/editor/objectTriggerEditor.jpg'><br>
+    Create a new Obect Trigger, which is code that will run when a specific change/event happens. 
+    <ul>
+    <li>Trigger Name</li>
+    <li>Upper Name</li>
+    <li>Display Name</li>
+    <li>Description</li>
+    <li>Loaded Data Only - if the trigger only is for active (loaded in cache) objects only.</li>
+    <li>Run on server - if trigger code should run on server.</li>
+    <li>Use background thread - if code can run in another thread.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectTrigger2Editor.jpg'><br>
+    Dependent property paths for Trigger.
+    
+    <ul>
+    <li>Use add button to included a property path to listen to for the Trigger.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectTrigger3Editor.jpg'><br>
+    Trigger Code to run.
+    <ul>
+    <li>Generate Code - generate template code based on selected dependent properties.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectFilterEditor.jpg'><br>
+    Filters are used to determine if an Object meets specific criteria, and is used 
+    to create a sub list.
+    <ul>
+    <li>Filter Name</li>
+    <li>Upper Name</li>
+    <li>Display Name</li>
+    <li>Description</li>
+    <li>For Tables - if UI tables should include this Filter.</li>
+    <li>Refresh Daily - if Filter should be refreshed daily, used for date specific Filters.</li>
+    <li>Add to Root - if this Filter should be included in application root object and kept updated realtime.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectFilter2Editor.jpg'><br>
+    Dependent Properties are the property paths that are used by the Filter.
+    <ul>
+    <li>Use add button to select a property path to add to this list of dependent properties.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectFilter3Editor.jpg'><br>
+    Input Properties that are needed for the Filter.
+    This is similar to creating a new Object Property, that will 
+    be used for the input class that is created for the Filter.
+    <ul>
+    <li>Add an existing Property</li>
+    <li>Create a new property</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectFilter4Editor.jpg'><br>
+    Code used for the query and for the actual Filter Java code.
+    <ul>
+    <li>Extra select6 where clause - is to add additional where clause.</li>
+    <li>Filters Query Code - Java code used to run the query.</li>
+    <li>Add - included property paths needed by Filter.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectFilter5Editor.jpg'><br>
+    
+    <ul>
+    <li>Filter tab - Java code that determines if filter is true or false.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCodeEditor.jpg'><br>
+    Java Object code tab is list of various Java code blocks to include.
+    
+    See <a href="callbacks.html">callbacks</a> for more information.
+    
+    
+    <p>
+    The Callback tab is used for the Object Callback method, used for accessing specific information,
+    and allows for custom handling of a list of common callbacks.
+    <ul>
+    <li>Select from callback types - select the callbacks that have custom code.</li>
+    <li>Generate code - will generate template code for then adding custom code.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCode2Editor.jpg'><br>
+    Add custom code to overwrite OAObject base methods. 
+    <ul>
+    <li>afterLoad - after object is loaded from datasource.</li>
+    <li>canSave - returns true (default) if object can be saved.</li>
+    <li>save - called to save the object.  Default is to have the datasource save this object and mark the object
+    isChanged = false and isNew = false.</li>
+    <li>afterSave - called after object is saved.</li>
+    <li>canDelete - called to determine if object can be deleted, default is true.</li>
+    <li>delete - call to delete object.  Default is to have datasource delete the object, and 
+    flag object.isDeleted = true and object.isNew = true.</li>
+    <li>afterDelete is called afer object is deleted.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCode3Editor.jpg'><br>
+    Add additonal custom imports that are needed for this Object. 
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCode4Editor.jpg'><br>
+    Add Object Controller custom code for this Object.
+    This is used to have custom code ran when specific things change to this Object.
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCode5Editor.jpg'><br>
+    Custom code to add to Object class.
+    <p>
+    <br> 
+
+    <img src='images/editor/objectCode6Editor.jpg'><br>
+    Custom JFC code to add to the JFC generated class for this Object.
+    <p>
+    <br> 
+
+
+    <img src='images/editor/objectPermissionsEditor.jpg'><br>
+    Permission for Visibility and Enabled.
+    <ul>
+    <li>Visibility - is read access allowed.</li>
+    <li>Enabled - if write access allowed.</li>
+    </ul>
+    <ul>
+    <li>Visibility Property - property path from this Object.</li>
+    <li>Enabled Property - property path from this Object. </li>
+    <li>Context Visibility Property - property path from User/Context object.</li>
+    <li>Context Enabled Property - property path from User/Context Object. </li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectPermissions2Editor.jpg'><br>
+    <ul>
+    <li>Dependent Properties - used to define additional property paths used to determin isVisible or isEnabled.</li>
+    </ul>
+    <p>
+    <br>
+    
+    
+    <img src='images/editor/objectUIEditor.jpg'><br>
+    The User Interface tab is used to further define the UI for an Object.
+    <p>
+    The UI General sub tab:
+    <ul>
+    <li>Display property - default property path to use for displaying Object.</li>
+    <li>Warning property - property path that can be used to get a warning message about Object.</li>
+    <li>Status Bar property - property path used to display on status bar for UI application.</li>
+    <li>Default UI Container - to select the UI Container to use for UI.</li>
+    <li>SplitPane Container - UI container to use for UI that uses splitpane panel.</li>
+    <li>Wizard UI Container - UI container to use whe creating a new Object.</li>
+    <li>Icon Property - property path to use to get the display icon.</li>
+    <li>Foreground Color Property - property path to use to get the fonts color.</li>
+    <li>Background Color Property - property path to use to get the background color to use.</li>
+    <li>Icon Color Property - property path to use to get the color to use for an icon.</li>
+    <li>Font Property - property path to use to get the font to use.</li>
+    <li>Lookup uses table combo - if object is lookup, flag to use a table combo instead of propery combo.</li>
+    <li>Lookup uses goto button - if object is lookup, flag to know if a goto button should be added to lookup combo.</li>
+    </ul>
+    <p>
+    <br> 
+    
+    <img src='images/editor/objectUI2Editor.jpg'><br>
+    UI Container is used to customize the layout for the UI panels.
+    <ul>
+    <li>New button - add a new layout panel, and pick layout information.</li>
+    <li>Add button - add a property path to a panel.</li>
+    <li>Generate - will create a container.</li>
+    <li>Popup - used to show in a popup window.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI3Editor.jpg'><br>
+    Edit Panel shows the layout and information for creating the default layout.
+    A UI Container can used to create a custom layout.  
+    <ul>
+    <li>Include - true if this property should be include in the UI.</li>
+    <li>Tree node - for references, flag to add child node to UI tree.</li>
+    <li>Report - flag to determine if the property should be added to default report.</li>
+    <li>Title - to use for default UI label.</li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI4Editor.jpg'><br>
+    Table Column tab.<br>  
+    Columns to create for UI Table using property paths.  This allows customizations to the editor and renderers.
+    <ul>
+    <li>Property path - for column.</li>
+    <li>Column Name</li>
+    <li>Cols - width of column</li>
+    <li>View Only</li>
+    <li>Show Sum - to have last row of table show totals.</li>
+    <li>Format - for display</li>
+    <li>ToolTip - mouse over template.</li>
+    <li>UI Code - custom code for editor and rendering.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI5Editor.jpg'><br>
+    Table Config tab.<br>
+    Allows users to customize table and columns.
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI6Editor.jpg'><br>
+    Search Panel tab for defining search property paths.
+    <ul>
+    <li>Add property paths for search UI.</li>
+    <li>Input Type - allows one or range.</li>
+    <li>Null and NotNull Options - to allow searching based on null value.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI7Editor.jpg'><br>
+    Search Filters tab for adding custom code to filter datasource results, that cant be directly done using
+    query string to datasource (SQL).
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI8Editor.jpg'><br>
+    Search Filters tab for adding custom code to filter objects.
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI9Editor.jpg'><br>
+    Templates tab, for building custom output for various UI display.
+    <ul>
+    <li>Display Template - used for labels, columns, etc.</li>
+    <li>Object Template - used to display the full object.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI10Editor.jpg'><br>
+    Tooltip Template.
+    <ul>
+    <li>ToolTip Template - used for mouse over display.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI11Editor.jpg'><br>
+    AutoComplete tab, used for defining how auto complete works with this Object.
+    <ul>
+    <li>Match Template - used for building text string for matching user input.</li>
+    <li>Lengths - used for UI sizing and popups.</li>
+    <li>Display Template - for drop down display.</li>
+    <li>Help ToolTip - template used for autocomplete mouse over.</li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI12Editor.jpg'><br>
+    <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/objectUI13Editor.jpg'><br>
+    Calendar tab, used to define any date properties that can be used by
+    a calendar UI component to search and display.
+    <ul>
+    <li>Calendar Name</li>
+    <li>Display Name</li>
+    <li>Descripton</li>
+    <li>Type - type of calendar, day or time frame.</li>
+    <li>Begin &amp; End date &amp; time - date &amp; time properties used for this Object's Calendar.
+    The end values are used to span.</li>
+    <li>Display Hub - which reference/link to display for date.</li>
+    <li>Filter - filter to use for displaying list.</li>
+    <li>IsActive property - used to determine if the calendar entry (object) is active.</li>
+    </ul>
+    <p>
+    <br> 
+     
+    <img src='images/editor/objectUI14Editor.jpg'><br>
+    Sort By tab.  List of properties to use for selecting the sort order of search results.
+    <ul>
+    <li>Name</li>
+    <li>Upper Name</li>
+    <li>Display Name</li>
+    <li>Property Path</li>
+    <li>Add button - to add another property path for searching by.</li>
+    </ul>
+    <p>
+    <br> 
+     
+     
+    <img src='images/editor/objectUI15Editor.jpg'><br>
+    Group by tab.  To allow grouping search results by another object.
+    <p>
+    <br> 
+    
+    
+    <img src='images/editor/objectUI16Editor.jpg'><br>
+    Root Tree tab.  Allows for picking the property path from a root object to this Object.
+    <ul>
+    <li>Add - shows root Objects that can be expanded to get to the selected Object.</li>
+    </ul>
+    <p>
+    <br> 
+    
+    <img src='images/editor/objectDataEditor.jpg'><br>
+    Reports tab.  Used for building reports based on Templates. 
+    <ul>
+    <li>Defaults - will create a default Detail &amp; List reports.</li>
+    </ul>
+    <p>
+    <br> 
+    
+</body>
+</html>

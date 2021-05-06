@@ -18,36 +18,52 @@
     <mapID target="mainMenu" url="mainMenu.html" />
 	<mapID target="workspace" url="workspace.html" />
 	<mapID target="navigation" url="navigation.html" />
-	<mapID target="modeleditor" url="modeleditor.html" />
-	<mapID target="objecteditor" url="objecteditor.html" />
-	<mapID target="propertyEditor" url="propertyEditor.html" />
-	<mapID target="linkEditor" url="linkEditor.html" />
-    <mapID target="calcEditor" url="calcEditor.html" />
-    <mapID target="methodEditor" url="methodEditor.html" />
-    <mapID target="indexEditor" url="indexEditor.html" />
-	<mapID target="jdbcEditor" url="jdbcEditor.html" />
     <mapID target="reports" url="reports.html" />
     <mapID target="codeGeneration" url="codeGeneration.html" />
     <mapID target="terminology" url="term.html" />
 
+<!-- Editors -->
+    <mapID target="editors" url="editors.html" />
+    <mapID target="modelEditor" url="modelEditor.html" />
+    <mapID target="objectEditor" url="objectEditor.html" />
+    <mapID target="propertyEditor" url="propertyEditor.html" />
+    <mapID target="linkEditor" url="linkEditor.html" />
+    <mapID target="calcEditor" url="calcEditor.html" />
+    <mapID target="methodEditor" url="methodEditor.html" />
+    <mapID target="indexEditor" url="indexEditor.html" />
+    <mapID target="jdbcEditor" url="jdbcEditor.html" />
+
+<!--Using OABuilder -->
     <mapID target="using" url="using.html" />
     <mapID target="creating" url="creating.html" />
+    <mapID target="sampleApp" url="sampleApp.html" />
     <mapID target="planning" url="planning.html" />
     <mapID target="creatingnew" url="creatingnew.html" />
     <mapID target="openmodel" url="openmodel.html" />
     <mapID target="savemodel" url="savemodel.html" />
     <mapID target="newobject" url="newobject.html" />
-    <mapID target="editobject" url="editobject.html" />
-    <mapID target="objectfilters" url="objectfilters.html" />
-    <mapID target="objectui" url="objectui.html" />
     <mapID target="objectprop" url="objectprops.html" />
     <mapID target="objectcalc" url="objectcalc.html" />
     <mapID target="objectmethod" url="objectmethod.html" />
+    <mapID target="objectfilters" url="objectfilters.html" />
+    <mapID target="objecttriggers" url="objecttriggers.html" />
+    <mapID target="objectui" url="objectui.html" />
+    <mapID target="modelui" url="modelui.html" />
     <mapID target="objectindex" url="objectindex.html" />
-	<mapID target="newlink" url="newlink.html" />
+    <mapID target="newlink" url="newlink.html" />
+    
+    <mapID target="genApplication" url="genApplication.html" />
+    <mapID target="runApplication" url="runApplication.html" />
+    <mapID target="deployApplication" url="deployApplication.html" />
 
 
-	<mapID target="editlink" url="editlink.html" />
+
+
+
+
+
+
+
 
 <!-- Working with Databases -->
 	<mapID target="database" url="database.html" />

@@ -1,0 +1,295 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3 align="center">Sample Application</h3>
+
+
+  For our example, our fictitious company "EmpowHR" (meaning "empower Employee HR") will be designing and creating an Application that allows the employees of our customers
+  to earn points. The points are then used to purchase items from list of choices.
+  <p>Our customers are companies that have hired us to manage employee award campaigns.
+  <p>The name of our platform will be "empowhr", and we it to be able to be highly configurable. Our customers will want to be able to create a dynamic experience and
+    tune it to match their company software.
+  <p>Our goal is to be able to build a single platform, that can run as a dynamic and distributed platform. This means that we want our software to be able to scale and
+    run thousands of company campaigns, involving over one million users, and expecting an average of 1000 users at a time, with spikes as high as 25,000 users.
+  <p>For our Proof of Concepts, we will deliver:
+  <ul>
+    <li>Object Model</li>
+    <li>Class diagram for model.</li>
+    <li>Database Scheme</li>
+    <li>a working application with Desktop UI</li>
+    <li>REST API</li>
+    <li>Web Server</li>
+    <li>Security</li>
+    <li>Options to run as Server/Client/Single</li>
+  </ul>
+
+  <p>
+    <img src="images/demo/platform.jpg"><br> The production platform would look something like this.
+  <p>
+  <h3>Create using OABuilder</h3>
+  The code generator that we're using has a starter Model that we can use, "OATemplate". It has model classes for User and UI settings that we can use as our starting
+  point.
+  <p>
+    We'll pull it up and make a copy using menu option "File/Save ModelAs ...", naming it EmpowHR.<br> <img src="images/demo/saveAs.jpg">
+  <p>
+    Next, use the Model Editor to set up new project.<br> <img src="images/demo/modelSettings.jpg"><br> Next create the directory entered into "Code Gen
+    Root Dir".
+  <p>
+    The project is now ready to be generated. Let's take time now to do that before continuing to build the model. This will allow us to see the application as we move
+    through the demo. Click on menu item "Generators/Generate All" and select Ok. This will generate the project in the directory that you entered. <br> <img
+      src="images/demo/codeGenComplete.jpg">
+  <p>
+    Create a new project in your Java IDE, I'm using Eclipse:<br> <img src="images/demo/eclipseNewProject.jpg"><br> Make sure to change Location to your
+    directory.
+  <p>
+    Your project will look like this in Eclipse project explorer.<br> <img src="images/demo/eclipseAfterNewProject.jpg"><br>
+  <p>
+    Now we will set it up the project to use Maven for building. Right click on the project name, then ...<br> <img src="images/demo/mavenConfig.jpg"><br>
+    Your project is now ready to run.
+  <p>
+    We're now ready to run. We have the option to run as as single user, and multi user (client, client UI, server, webserver, and more ..). <br> There runtime
+    directory is used for running, as has subdirectories for each type.
+  <p>
+    Running as a single user, do the following from Eclipse to set up to run as Single User mode:<br> 
+    From Eclipse main menu, choose "Run/Run Configurations" and
+    choose option to create a new launch configuration<br> Enter the following:<br> <img src="images/demo/eclipseRunAsSingle1.jpg"><br> <img
+      src="images/demo/eclipseRunAsSingle2.jpg"><br> This is now ready to run.
+  <p>
+
+    Running the new App looks like this.<br> <img src="images/demo/singleUser1.jpg"><br> <img src="images/demo/singleUser2.jpg"><br> 
+    <img src="images/demo/singleUser3.jpg"><br> This is starting point, that will expand as we add and change the model.<br>
+      Quick note: this same app can be ran as multiuser and split into multiple services at any time.  For now, we'll use the single user
+      runtime option.
+  <p>
+    The runtime directory looks like this.<br> <img src="images/demo/singleRuntimeDirectory.jpg">
+  <p>
+
+
+    Runtime settings:<br> The file single.ini is used for runtime config settings. It has settings for saving the data to file, and loads it into an in-memeory database at start up.  
+    We'll switch over to a database later.  For now, the in-memory does everything you need from a database, including saving to disk. 
+    The default config settings can be found in the source
+    code, located in directory com/empowhr/resource, see files values.properties and Resource.java for more info.<br><br>Now that we have it running, we'll go back to the model and do some designing.
+    <p>
+    Let's add the main Objects, starting with Company.  Click on the workspace toolbar "create new Object" (far left).  This will create an empty object in the workspace<br>
+    <img src="images/demo/newObject1.jpg">
+    <br>
+    Use the Object Editor to make the following change:<br>
+    Change the Object name to "Company", and the other fields will automatically be updated to match.
+    <img src="images/demo/company1.jpg"><br>
+    That's all we need for now, let's add some properties.   The properties for "id" and "created" are already added by default, but are not needed.
+    Note: the Id property is an auto assigned sequence number, and is a good idea to use for all objects.   
+    <br>
+    To create properties, let's start off with "name".<br>
+    <img src="images/demo/newProp1.jpg">
+    <p> and add a abbrevName<br>
+    <img src="images/demo/newProp2.jpg"><br>
+    Changed the UI column title.
+    <p>
+    Ok, now we have a Company Object, with properties.  Let's update a couple of other things based on that.
+    The default display for Company can be "Name".<br>
+    <img src="images/demo/newObject2.jpg">
+    <p>
+    While we're in the UI tab, let's go ahead and add the table columns for Company, and the Search properties.<br>
+        <img src="images/demo/newObject3.jpg"><br>
+        Table columns.
+        
+        <br>
+        <p>
+        <img src="images/demo/newObject4.jpg"><br>
+        Search properties.
+    
+    <p>
+    All right, the Company Object is created with a few properties, we can now add to the UI and test it.<br>
+    Adding to the Application UI is done by going to the Model and choosing App UI tab.<br>
+    I added a new node for "Company", and then added Company Search under it.<br>
+        <img src="images/demo/newObject5.jpg"><br>
+    
+    
+    
+    <p>
+    Note: always save your model changes.  By default, all previous versions of the model will be stored in a backup subdirectory under the
+    directory where you are saving your Model. <br>example:  ./backup/2021x05011310_EmpowHR.obx
+    <p> 
+
+Click on menu item "Generators/Generate All" and regenerate the application, and rerun the config for EmpowHr.
+<br>
+    <img src="images/demo/singleUser4.jpg"><br> 
+    This shows the Company search.<br>
+    <img src="images/demo/singleUser5.jpg"><br> 
+    This shows the Company editor.<br>
+    
+    <p>
+    Recap: we created the first Object for Company and are able to create new, search and edit/update/delete.
+    
+    <p>
+    Let's take a moment to look at Code.  The code generation uses a combination of techniques: 
+    <ol>
+    <li>template project, filling in using a small tag language.  OABuilder defaults to use OATemplate project.</li>
+    <li>code generation, directly create files (source, resource, config, etc).</li>
+    <li>Base classes that have subclass that can be used to overwrite methods.</li>
+    <li>Report generation that uses html/xml engine to run as templates</li>
+    </ol>
+    The project is generated using Model/View/Control structure, and directories that match. <br>
+    The Controller packages are responsible for manage specific functionality.<br>
+    <img src="images/demo/code1.jpg"><br>
+
+    <p>    
+    The Model packages have the data objects and models that configure objects to match relationships and rules in the Model.<br>
+    <img src="images/demo/code2.jpg"><p>
+    
+    The View packages have the User Interface.<br>
+    <img src="images/demo/code3.jpg"><p>
+    
+    The Resource package has runtime parameters and default values.<br>
+    <img src="images/demo/code3.jpg"><p>
+    
+    For now, that's a good start for review code, we will look more later.
+    <p>
+    
+    Now, create the following three new Objects, then select all three (mouse drag to rubber band around them), and select a color green for them.
+    <img src="images/demo/newObjects.jpg"><p>
+    
+    Next let's create the relationships between these Objects, starting with LocationType - "<i>A Company has many of it's own Location Types</i>", which is used to describe the names of for a company's locations.
+    "owned" means that the Location Types belong to a single Company, and not shared with other Company ... each Company has it's own Location Types.
+    For example: Region, Territory, City, ...<br>
+    
+    <img src="images/demo/link1.jpg"><p>
+    
+    Let's change the relationship to "owned", which means that it is only for the Company that created it, and they are treated as an aggregate (one unit).<br>
+    <img src="images/demo/link2.jpg"><br><p>
+    
+    We need one more thing for this, to be able to keep the order that they are in.  To do this, we create a property that is
+    a number, so create a new Property, name it "seq", <br>
+    <img src="images/demo/prop1.jpg"><br>
+    ... and then set the the "seq" flag. <p>
+    <img src="images/demo/prop2.jpg"><br>
+    This will tell it to use this property to keep the order, so that it can make sure to load it in the same order.
+    <p>
+    
+    Now use the "seq" property in the link ...<br>
+        <img src="images/demo/link3.jpg"><br>
+        The Company.LocationTypes will now be auto sequenced in the order that users positions them.<br>
+                You will notice that the link shows a "S" icon.<br>
+        
+<p>
+Note:  "Company.LocationTypes" is a <i>property path</i>, an important concept for object graphs.<p>
+    <img src="images/demo/link4.jpg"><br>
+        <p>
+        Next, let's add a couple of things to LocationType, and then we'll regenerate and run again.
+        <br>
+        Add a new name property.  Notice that for the "Lengths", 25 is max input size.  The display size is the default size of textfield, and max display is to allow the textfield to
+        grow to a length (usually the max).  The grid length is for the column in a table/grid listing.
+        <br>
+    <img src="images/demo/prop3.jpg"><br>
+        Now, lets go to the Object UI, and set the display property to "name" (under "UI General" left sub tab).
+        Under "Table Columns" subtab, add name.  For "Search Panel", add "name".
+        <p>
+        Go ahead and regen and run again.<br>
+    <img src="images/demo/demo1.jpg"><br>
+    We now have Company.LocationTypes defined.  This will be used in the next step, when we set up Company Locations, and how each Location will "<i>know</i>" it's Location Type.
+    <p>
+    
+<h4>Create Company Locations</h4>
+
+First step is to create an owned link between Company and Location - "<i>A Company has many Locations</i>"<br>
+    <img src="images/demo/link5.jpg"><br>
+
+<p> 
+We're now going to set up Locations so that it can be multi-level.  This is done by creating a link to itself and flagging it as recursive.<br>     
+    <img src="images/demo/link6.jpg"><br>
+    <p>
+    Let's add the following to Location:<br> 
+    create a property "name"<br>
+    <img src="images/demo/prop4.jpg"><br>
+    change Location UI to use "name" as display property ("UI General" left subtab), and add name to table ("Table Columns" left subtab) and search ("Search Panel" left subtab).<br>
+    <p>
+    Let's do a codgen and rerun the App<br>
+    <img src="images/demo/demo2.jpg"><br>
+    <p> 
+    Next we want to know a Location's LocationType.  There are two options, the first would be to select one from the Location's Company list LocationTypes.  The second
+    is to have it automatically pick LocationType based on Company.LocationTyps list to match the position of the Location under Company (since Location is recursive/hierarchy).
+    We'll choose both, so that a Location.LocationType can set, else have it default to the Company.LocationTypes position.<br>
+    To do this, we'll first create a Location.LocationType link.  Right click the Location object and click new link, or click the link button on the workspace toolbar. <br>
+    Now we need to make a couple changes to the new Location.LocationType.  First make sure the relationship is One LocationType, Many Locations, and that the names are
+    "Locations" and "LocationType".<br>
+    <img src="images/demo/link7.jpg"><br>
+    Next, we need to it so that the choices for LocationType are based on the Location.Company.LocationTypes.  This is done be going to the 
+    the "General III" tab and setting the value for "Set Location Type from:" to Company.locationTypes.<br>
+    <img src="images/demo/link8.jpg"><br>
+    <p>
+    Let's do a codgen and rerun the App<br>
+    <img src="images/demo/demo3.jpg"><br>
+    <p> 
+    Ok, need to now click on the link Company.locations, go to the "General II" tab, and set "Is Locations Recursive" to checked.<p>
+    
+    Let's do a codgen and rerun the App, and add some data.<p>
+    
+    If you click on "Company Search", and click the "new" button.  
+    <img src="images/demo/demo4.jpg"><br>
+    Set the name of this new Company to "TestCorp", abbrev name "TC".
+    <br>
+    Click on the "Location Types" tab, and create to match the following:<br>
+    <img src="images/demo/demo5.jpg"><br>
+    Close the Application, and rerun again.  Click the toolbar "Application" button, then click the sidebar "Company", notice that no Companies are showing.
+    Click on "Company Search", and then click the "Run Search" button to get a list of all of the Companies.  Your new Company will be on the list, and 
+    under the Company side bar.<br>
+    <img src="images/demo/demo6.jpg"><br>
+    
+    Click the Company showing in the sidebar, or you can click it in the list, and then pop it up by clicking the "Details ..." in the bottom toolbar.<br>
+    The first shows it inside the main window, then second will show it in a popup window.<p>
+    
+    Now, let's add a Location.  Go to the following and add a new Location.<br>
+    <img src="images/demo/demo7.jpg"><br>
+    Notice that the Location list will be recursive and display in a tree table.
+    <br>
+    Now, we want to allow the Location Type that are not set to specific value to default to Company.LocationType correct value based on position.<br>
+    We will do this by creating a "Calculated Link" between Location.LocationType and call it "Location.calcLocationType".<br>
+    <img src="images/demo/link9.jpg"><br>
+    Let's set up the Link.<br>
+    <img src="images/demo/link10.jpg"><br>
+    Now we need to set up the calculation.  The first thing is to go to the "Properties" tab,
+    and click "Add ..." to add Company.locationTypes.
+    <img src="images/demo/link11.jpg"><br>
+    This is data that is used to determine the correct Location.locationType. By adding it here, we're letting the calculation know that
+    it needs to be recalculated if any changes occur on these values.
+    <br>
+    Add another property path, "Company.locations".<br>
+    Add one more property path, "locationType".
+    <img src="images/demo/link15.jpg"><br>
+    
+    
+    
+    <P>
+    Now go to the "From Code", and we'll add the code that will be used for the calculation.
+    <img src="images/demo/link11.jpg"><br>
+    Click the "Generate Code" to have a template created to enter code.<br>
+    <img src="images/demo/link12.jpg"><br>
+    Enter code, this shows that it first checks to see if a LocationType is assigned, else it will determine based on the Company.LocationTypes. 
+    <img src="images/demo/link13.jpg"><br>
+    
+    <p>
+    recap:  We now have Company.Locations, that can be a hierarchy.  The Company has a list of LocationTypes, that can be directly assigned 
+    to a Location, or be auto assigned.<br>
+    Let's add the Location.caclLocationType to the Location table columns.<br>
+    <img src="images/demo/link14.jpg"><br>
+    <p>
+     Let's do a codgen and rerun the App and see this working.<p>
+    
+    
+<p>qqqqqqqqqqqqq<p>    
+    
+    
+run as multi user, show distributed changes
+
+show rest API, swagger
+
+use calc Location Type for display qqqqqqqqqqqqq    
+    
+    
+    
+  <p>
+</body>
+</html>

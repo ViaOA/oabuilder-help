@@ -4,24 +4,31 @@
 </head>
 <body>
 
-<h3 align="center">Code Generation Menu</h3>
+<h3 align="center">Code Generation</h3>
 OABuilder is also a code generation tool, with an <i>engine</i> that is designed to
-create custom code generators.  
+create custom code generators ... &quot;<i>code generator for code generators</i>&quot;.  
 <p>
 
-    This menu shows the code generation that is included in OABuilder. 
+    This menu shows the code generation that is included in OABuilder.  These are used to create
+    applications directly from the model, and are useful for developing proof of concepts,
+    tools, and commerical software applications.
+    <p> 
     We have also developed other generators and will be adding more in the future.
     <p>
-    Note that these generators can be re-ran after an application has been created.  It does
-    not use two-way generation, instead it uses templates and a way to include custom code into
-    the model that is then added to (re)generated code.
+    The generators use various techniques, and can have ability to allow for two way 
+    generation.
          
     <br><br> 
-        <img src='images/codegen.jpg'><br>
+        <img src='images/menu/generatorMenu.jpg'><br>
+        
+        
 <p>
-<b>OAObject classes</b> - observable pojo "looking" entity classes, could also are DAO.  Each object
+<b>Generate All</b> - run all of the code generators.       
+        
+<p>
+<b>OAObject classes</b> - observable ""smart pojo" entity Java classes.  Each object
 in the model will have a Java class created for it.
-Also generated is classes for filters, and search objects.
+Also generated: classes for filters, search objects, and any request objects used for inputs.
 <p>
 <b>OAModel classes</b> - the model classes automate the wiring between the data objects, to 
 form relationships like master/detail, linking, filtering, etc.
@@ -35,13 +42,19 @@ for OAObjects.
 <b>SQL Changes Script</b> - OABuilder keeps track of all model changes and is able to generate a 
 script that will then update the database.  
 <p>
+<b>OpenAPI</b> - generate Swagger documentation for REST API.
+<p>
 <b>Data Generator</b> - this will generate sample data to use for testing, etc.  We plan to have this be
 more specific in future releases.
 <p>
-<b>JFC/Swing Application</b> - this will create a fully functional UI application using the Java Swing components 
+<b>JFC/Swing Application</b> - this will create a fully functional Desktop UI application using the Java Swing components 
 that have been extended to be Object Aware/bindable.
 <p>
+<b>OAWeb/JSP/HTML5 Application</b> - used to create webserver, REST API, JSP pages, and support for various html &amp; javascript componentsets.
+<p>
 <b>OATemplate files</b> - this will take the template project and use it as the base for the new application.
+<p>
+<b>Custom OATemplate files</b> - extends OATemplate files with custom files.
 <p>
 
     

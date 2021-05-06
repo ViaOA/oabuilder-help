@@ -6,66 +6,174 @@
 
 <h3 align="center">Link Editor</h3>
 
-    OA and OABuilder supports any type of references between objects, and 
-    advanced features and settings for making complex relationships automatic.
+    OABuilder creating "links" (references) between objects.  
+    These links for a relationship and rules for how model objects work together.
     <p>
     As with all of the editors in OABuilder, the default values are
     almost always what is needed, so there is no need to set each
     individual setting.  
     <p>
+    A link is created either by using the menu, right clicking on object and choose a link
+    option, or by using the desktop menu's link command.
+    <p>
     <br><br>
 
-    Link information: types, names, etc.
-    <br><br> 
-    <img src='images/edLink.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/linkEditor.jpg'><br>
+    General tab, showing a regular reference link.
+    <ul>
+    <li>Type of reference, depending on how it was created.</li>
+    <li>Type - one or many.  If many then checkboxes to define if: usually one, multi-select, large</li>
+    <li>Name</li>
+    <li>Upper name</li>
+    <li>Display</li>
+    <li>Cache size - allows limiting the number kept in cache.</li>
+    <li>default value</li>
+    <li>Processed - if this is created by code, and not UI.</li>
+    <li>Reset names - command to reset the default names.</li>
+    <li>Flag - to highlight the link in green.</li>
+    <li>Description</li>
+    </ul>
+    <p>
+    <br> 
+    
+    <img src='images/editor/link2Editor.jpg'><br>
+    General tab, showing Hierarchy link. <br>
+    This is created by right clicking an object and choosing the Hierarchy link.
+    This will allow selecting property path through other links to a property that 
+    is defined in all of the links in the property path. 
+    <br>
+    This allows a value to be set for all objects "below" it in the heirarchy.
+    <p>
+    <br> 
 
-    Information describing link.
-    <br><br> 
-    <img src='images/edLink1.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/link3Editor.jpg'><br>
+    General tab, showing Calculated link. <br>
+    A calculated link uses code to get the reference object.
+    <p>
+    Properties (tab) is then used to determine what property paths 
+    are used to determined the value of the link.
+    <p>
+    <br> 
 
-    More information describing link.
-    <br><br> 
-    <img src='images/edLink2.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/link4Editor.jpg'><br>
+    General tab, showing Merger link.  This is created by right clicking on an object, or 
+    using main menu. 
+    <br>
+    A Merger link is used to create a relationship using a property path, so that
+    all of the objects are combined into the collection.
+    <p>
+    <br> 
 
-    Dropdown tree to navigate to correct object.
-    <br><br> 
-    <img src='images/edLink3.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/link5Editor.jpg'><br>
+    General tab, showing GroupBy link.  This is created by right clicking on an object, or 
+    using main menu.
+    <br>
+    <ul>
+    <li>The object selected is the GroupBy Object.</li>
+    <li>The first dialog is to pick the objects to add to the group.</li>
+    <li>A second dialog is to pick the property path between the objects.</li>
+    </ul>
+    <p>
+    For example, an Item can have a list of open Orders - property path "Orders:open()".<br> 
+    This is done by right clicking Item, choosing GroupBy link,
+    then selecting property path for Object to select: "Orders:open()", and
+    then a second dialog to pick property path between Order and Item ("Order.orderItems.item")
+    <p>
+    <br> 
 
-    Options for saving and deleting objects. 
-    <br><br> 
-    <img src='images/edLink4.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/link6Editor.jpg'><br>
+    General II tab.  FYI: most of the time, the default values are all that is needed.
+    <ul>
+    <li>Create method X.getY - flag to create a method.</li>
+    <li>Does X own Y - if the releationship is owned and treated as "one".</li>
+    <li>Is X required</li>
+    <li>Is X recursive - enabled if the link is to the same object, allows for creating
+    a recursive relationship.</li>
+    <li>Is X an import match - if this link is used as unique value when importing data.</li>
+    <li>Sort X by - default sort property path for Many link.</li>
+    <li>Sequence property for X - for Many link, a property flaged as seq, to use to keep in order.</li>
+    <li>Unique property for X - for Many link, the property that is unique.</li>
+    </ul>
+    <p>
+    <br> 
 
-    DataSource information: fkey name, etc.
-    <br><br> 
-    <img src='images/edLink5.jpg'><br>
-    <br><hr><br><br><br> 
+    <img src='images/editor/link7Editor.jpg'><br>
+    General III tab.  
+    <ul>
+    <li>Ok to create a new X for Y.x</li>
+    <li>Ok to Auto Create a new X for X.Y - if One Link, then automatically create a new value.</li>
+    <li>Ok to add X for Y.X - allow assigning an existing object X to Y.X.</li>
+    <li>Default X from - property path to select the default value.</li>
+    <li> Hier - if property path is defined as a hierarchy.</li>
+    <li> Allow Change - if default value can be changed.</li>
+    <li>Auto Math X.Y using - property path used to auto create.</li>
+    <li>Select X from - property path to select from.</li>
+    <li>Equal proeprty path for X - property path that selected value must match.</li>
+    <li>Pick from link for creating X - the link that is required to create this link.  
+    Example: an Order has many OrderItems, added by selecting the Item for OrderItem.item</li>
+    <li>X Filter - filter to use for selecting from.</li>
+    <li></li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
 
-    Custom code, if different then what is automatically generated.
-    <br><br> 
-    <img src='images/edLink6.jpg'><br>
-    <br><hr><br><br><br> 
-
-    Many to Many relationship.
-    <br><br> 
-    <img src='images/edLinkM2M.jpg'>
-    <br><hr><br><br><br> 
-
-    Many to Many relationship, showing the database information - link table name, fkeys, etc.
-    <br><br> 
-    <img src='images/edLinkM2M1.jpg'><br>
-    <br><hr><br><br><br> 
-
-    Self-reference relationship, also called recursive link, where an object can have many child objects.
-    <br><br> 
-    <img src='images/edLinkRecursive.jpg'><br>
-    <br><hr><br><br><br> 
+    Properties tab. Used for Links that are calculated, to select the 
+    dependent property path(s) used to create the link's values. 
+    <p>
+    <br> 
 
 
+    <img src='images/editor/link8Editor.jpg'><br>
+    Save/Delete tab.  Rules for save and delete.  Cascading is 
+    enabled for owned relationships.
+    <p>
+    <br> 
+
+    <img src='images/editor/link9Editor.jpg'><br>
+    From/To Code tabs.
+    <ul>
+    <li>X.get/setY methods - only needed to customize default code gen.</li>
+    <li>X.YCallback - callback method.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/link10Editor.jpg'><br>
+    From/To Code tabs, User Interface.
+    <ul>
+    <li>X.Y User Interface - customize UI rendering.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/link11Editor.jpg'><br>
+    Permissions tab.
+    <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/link12Editor.jpg'><br>
+    DataSource tab.
+    <ul>
+    <li>Link Table Name - for M2M links.</li>
+    <li>From/To Fkey - DB foreign key names and constraints.</li>
+    </ul>
+    <p>
+    <br> 
+
+    <img src='images/editor/link13Editor.jpg'><br>
+    <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    </ul>
+    <p>
+    <br> 
 
 
 
