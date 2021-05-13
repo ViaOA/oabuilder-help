@@ -7,9 +7,16 @@
   <h3 align="center">Sample Application</h3>
 
 
-  For our demo, were going to <i>throw together</i> a software system for a fictitious company named "EmpowHR" (meaning "empower Employee HR"). 
+  For our demo, we are going to <i>throw together</i> a software system for a fictitious company named "EmpowHR" (meaning "empower Employee HR").
+By that I mean that we will describe the system and start building it, and even backtracking to undo/change before moving forward.
+<p>
+I will be creating <i>CheckPoints</i> along the way that will allow you get caught up with the latest changes and sample data.
+
+  <p>
+  Along the way, we'll give extra details on how to use OABuilder, generate the code, and run the application.
+  <p> 
    
-  This system will allow the employees of our customers to earn points. The points are then used to purchase items from a 
+  The demo that we will be building will allow the employees of our customers to earn points. The points are then used to purchase items from a 
   list of choices specific to the type of award and the company offering it.
   
   <p>These customers are companies that have hired us to manage employee award campaigns.
@@ -358,7 +365,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
 	
 	<p>
 
-	<h5>Checkpoints for catching up with Model and sample data for Demo Application.</h5>
+	<h5>CheckPoints for catching up with Model and sample data for Demo Application.</h5>
 	The checkpoints directory has copies of the model and datasource files at
 	certain points during this demo.
 	<ul>Do the following if you would like to use them at that point.
@@ -366,11 +373,11 @@ We're now going to set up Locations so that it can be multi-level.  This is done
 	<li>Copy &amp; rename data/ObjectCache_#.bin to runtime/server/data/ObjectCache.bin</li>
 	<li>Copy &amp; rename data/data_#.bin to runtime/server/data/data.bin</li>
 	</ul> 
-	Note: some of the checkpoints will only have a Model.  You can use the previous checkpoint's data files.
+	Note: some of the CheckPoints will only have a Model.  You can use the previous checkpoint's data files.
 
 
 	<p style="margin-left: 30px; margin-right: 30px;">  
-	<b>Checkpoint</b>#1 was created before starting this next section. <br>
+	<b>CheckPoint</b> #1 was created before starting this next section. <br>
 	use the instructions above to use the checkpoint files.
 
     <p>
@@ -562,7 +569,7 @@ the custom code.
 	<img src="images/demo/demo18.jpg"><br>
 
 	<p style="margin-left: 30px; margin-right: 30px;">  
-	<b>Checkpoint</b>#3 was created. <br>
+	<b>CheckPoint</b> #3 was created. <br>
 	That includes the model "EmpowHR_3.obx", and data/ObjectCache_3.bin & data/data_3.bin.
 	See instructions above on where to copy and rename the files.
 	</p>
@@ -636,11 +643,11 @@ Recap <img src="images/recap.jpg"> we just did some <i>rewiring</i>, so that we 
 that "belong to a Location".  
 <p>
 
-I moved the Objects around a bit, go ahead and use the next checkpoint #4.<br>
+I moved the Objects around a bit, go ahead and use the next CheckPoint #4.<br>
 <img src="images/demo/model9.jpg"><br>
 
 <p>
-<b>Checkpoint</b>#4 was created<br>
+<b>CheckPoint</b> #4 was created<br>
 Use the instructions above to use the checkpoint files.<br>
 <img src="images/demo/checkpoint4.jpg"><br>
 
@@ -769,7 +776,7 @@ From Eclipse, you can do a "Search / File ...", and select Image*.* to get a lis
 Then use the following to delete all of them.<br>
 <img src="images/demo/eclipse3.jpg"><br>
 <p>
-Go ahead and use the next checkpoint #5.  Get the model and the data files.<br>
+Go ahead and use the next <b>CheckPoint</b> #5.  Get the model and the data files.<br>
 <p>
 Regen and rerun.
 <p>
@@ -826,31 +833,185 @@ Go ahead and add this property to your UI table columns and search.<br>
 <p>
 Regen and rerun.
 <p>
+<img src="images/demo/demo27.jpg"><br>
 
-
-
-
-
-<p><br><br><br><br><br> qqqqqqqqqqqqq
-
-
+<p>
+Now, we want to be able to assign an Employee an AwardType.
+Create a link between Employee and EmployeeAward (1toMany) ... "Employee can have many Awards".<br>
+Set "Does Employee <b>own</b> EmployeAwards" to yes ("General II" tab). 
+Fyi, setting the link to "owned" automatically makes other adjustments to the link.<br>
+One last thing, we want the User to select a Company.AwardType to be able to create the EmployeeAward. 
+Go to "General III" tab, and "Pick from link for creating EmployeeAwards", and set to AwardType.<br>
+<img src="images/demo/link26.jpg"><br>
 
 
 
 <p>
+Create a link between AwardType and EmployeeAward (1toMany) ... "an Employee Award has an AwardType from the Company".
+Also, we dont need AwardType to have a method for getting EmployeeAwards, so go ahead and set it to "no" -
+go to "General II" tab, and set "Create method AwardType.getEmployeeAwards" to no. Also, set "Is AwardType required" to yes.
+<br>
+<img src="images/demo/link23.jpg"><br>
+<p>
+Now, we want the EmployeeAward to be created by picking an AwardType from the Employee's Company list of AwardTypes ... "employee.company.awardTypes",
+and we want them to only have one of each.
+To model this, select the EmployeeAward.AwardType link, and set the "Select AwardType from" to match:<br> 
+<img src="images/demo/link24.jpg"><br>
+<br>
+Also, an Employee is only allowed to have one of each AwardType (no duplicates).  Do this, by making this change:<br>
+<img src="images/demo/link25.jpg"><br>
+This will make the Employee.EmployeeAwards.AwardType unique.<br>
+<p>
+As you can see, the relationships between the objects are also used within other links.
+These patterns are used throughout modeling, and 
+OABuilder makes it easy to incorporate them to define business rules and logic.<br> 
+<img src="images/demo/link27.jpg"><br>
+ 
+<p>
+Set up EmployeeAward UI for table columns and search.<br>
+<p>
+I also made changes to the Model UI.  I changed the first Company to "List All", and the second to a "Company Search".<br>
+<img src="images/demo/model14.jpg"><br>
 
-test client
+<p>
+Check out the Model "Changes" tab, to see all of the changes that we made since we cleared them earlier.
+If we had an existing DB (JavaDB in this example), then we would need to update it with these changes.
+The code generator menu has a menu item for "SQL Changes Script ..." that would do it. 
+<p>
 
 
-HERE qqqqqqqqqqqqvvvvvvvvvvvvvvvvvvvvvvvvvvv
+<p>
+Regen and rerun.  
+<p>
+<img src="images/demo/demo28.jpg"><br>
+All of that work just for this one screen shot :)<br>
+This shows adding a new AwardType to an Employee, by selecting from Employee.Company.AwardTypes<br>
+If you try to add the same one more then once, it does not allow it.
+
+<p>
+
+Recap:
+We did some fancy links that all work together to automatically define and enforce requirements.
+<br>
+
+<p>
+I created a <b>CheckPoint</b> #6 here.
+<p>
+
+Ok, I need to come up with a new requirement that will need us to create a "Link Merger". 
+A Link Merger is used to create a collection from a property path.<br>
+For this example, we want to have a "list of open Awards from Employees who are inactive".
+<p>
+To do this, we will create a filter on Employee, add processed date on EmployeeAward to know that it is no longer "open", 
+and create a filter on EmployeeAward for open .
+<p>
+Click on EmployeeAward and add property "processed" with type "date".
+<p>
+Click on Employee, go to the Object Editor "Filter" tab, and create a new filter and name it "inactive".<br>
+For "dependent properties", we only need "inactiveDate", and for code:<br>
+<img src="images/demo/filter4.jpg"><br>
+<img src="images/demo/filter5.jpg"><br>
+
+<p>
+Click on EmployeeAward, go to the Object Editor "Filter" tab, and create a new filter and name it "open".<br>
+For "dependent properties", we only need "processed", and for code:<br>
+<img src="images/demo/filter6.jpg"><br>
+<img src="images/demo/filter7.jpg"><br>
+
+<p>
+Now, right click on Company and select "Create new Merger Link ...", which will bring up 
+property path chooser.  Choose:<br> 
+<img src="images/demo/link28.jpg"><br>
+"employees:inactive.employeeAwards:open" 
+which means "for a Company, get the EmployeeAwards that are not processed for Employees with an inactiveDate"
+<br>
+It named the link "mergeEmployeeAwards", go ahead and change it to "mergeOpenEmployeeAwards".  
+And, change display to "Open Emp Awards".<br> 
+
+<p>
+Regen and rerun, and let's see how this worked out.  
+<p>
+Go to the "Test Corp" Company and click on the "Open Emp Awards" tab.
+The list is empty.  Now go to Employee "John Doe" (<i>remember him?</i>), and give him an inactive date, and a reason if you want.<br>
+Now go back to "Open Emp Awards" tab.<br> 
+<img src="images/demo/demo29.jpg"><br>
+<p> 
+
+So ... that's a Merger Link that uses a Property Path from Object to another Object, and allowing Filters.
+The other thing to notice is that it's real-time: a change that affects the property path will automatically 
+keep the list updated - not by refreshing, but by adjusting with delta changes.<p>
+
+Let's take a look at the generated code.  Pull up Company.java and go to method "getMergeOpenEmployeeAwards()".<br>
+<img src="images/demo/code7.jpg"><br>
+The method is a small amount of code, that returns a list (collection) of EmployeeAwards.  The annotation tells it the Property Path for the Merger.
+That is all that is needed to make this work. <br>
+<p>
+Internally, it uses a HubMerger, which will use the Property Path
+to configure a tree structure that "knows" how to keep the list updated, by listening for specific changes
+that affect the list.  The things that it "listens" for are found by parsing the property path, and getting any 
+additional "dependent property paths" - remember, how we use these in the model? (ex: for calculated properties, filters, etc).
+<br>
+The HubMerger's tree structure is then able to be notified, which allows it to know how to update the list.<br>
+The combination of Property Paths (PP), dependent PPs, and being able to <i>listen</i> is core to how reactive models work, 
+and is directly related to Software Patterns like Model/View/Control (MVC).<br>
+Historically, the problem has been scaling.  The cost of <i>listening</i> is too high at a certain point.  
+OA has been able to scale this by using a combination of listening with some other unique techniques.  The cost is reduced
+down to a very small size and stays small with large amounts of data (objects).   
+<br>Another solution is "<i>reactive streams<i>", but there are boundaries and challenges when using them as the solution.
+<p>
+The solution ends up being a combination of observability through listeners, bubble up events, event streams, tree structures
+like what Merger uses.
+
+Add remoting to the mix, and you have distributed synchronized object graphs.  Sounds complicated, but the code
+is small and is built on a few core building blocks.
+Observable Object
+Observable Collection
+Collection that can be shared
+Reflection, annotations
+Object Serialization (all types, tech independent)
+Remoting  
+Communication (all types, tech independent)
+Persistence (all types, tech independent)  
+  
+  
+ 
+ qqqqqqqq show the code and annotation for Company.getMergedEmployeeAward
+    mergerPropertyPath = 
 
 
-filtered list
-	no hire date
-	this weeks hires
-	no location
-	employees with inactive manager
 
+We just got a new requirement: all employees need to pass a series of company tests.
+We can use this as an example to show another way to automate how Links work.
+<br>
+For this we will need to create the following Objects in Red:<br>
+ 
+
+CompanyTest
+EmployeeCompanyTest
+    auto create 
+
+
+qqqqqqqqqqq
+
+
+
+
+
+<p><br><br><br><br><br> HERE qqqqqqqqqqqqvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+EmployeeTest qqqqqqqqq from location and company
+	autocreate
+
+show more code .. we already discussed mvc
+	datasource
+	jetty
+
+How do emp get awards ... create an CompanyEvent that has employees, that will auto give Emps an AwardType 
+	equal to CompanyEvent.awardType 
+
+The next Rule is that only a manager can assign an Employee and AwardType.
+
+Rule 
 
 review codebase
 	maven
@@ -871,9 +1032,7 @@ Location employees ... merge
 
 
 
-	<p>
-  qqqqqqqqqqq ADD Objects qqqqqqqqqq
-        
+	        
     
     
 <p>qqqqqqqqqqqqq<p>    
@@ -893,7 +1052,7 @@ h3
 Recap <img src="images/recap.jpg"> 
 <p style="margin-left: 30px; margin-right: 30px;">  
 
-
+BizRule <img src="images/bizrule.jpg">
    
   
   <p>
