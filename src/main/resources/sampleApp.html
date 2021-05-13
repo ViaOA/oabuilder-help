@@ -9,11 +9,22 @@
 
   For our demo, we are going to <i>throw together</i> a software system for a fictitious company named "EmpowHR" (meaning "empower Employee HR").
 By that I mean that we will describe the system and start building it, and even backtracking to undo/change before moving forward.
-<p>
-I will be creating <i>CheckPoints</i> along the way that will allow you get caught up with the latest changes and sample data.
+
+
+<p style="margin-left: 30px; margin-right: 30px;">  
+
+<img src="images/demo/rule.jpg""> BizRule: will be used to mark business requirements (rules) for the application that we're building.
+<br>
+<img src="images/demo/review.jpg""> Review: are used to recap what we just did before moving forward. 
+<br>
+<img src="images/demo/checkpoint.jpg"> CheckPoint: are used along the way, that will allow you get caught up with the latest Model changes and sample data.
+<br>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run: use the code generator to regenerate the application, and then run.
+
+
 
   <p>
-  Along the way, we'll give extra details on how to use OABuilder, generate the code, and run the application.
+  Along the way, we'll give extra details on how to use OABuilder, <img src="images/demo/genrun.jpg"> generate the code, and run the application.
   <p> 
    
   The demo that we will be building will allow the employees of our customers to earn points. The points are then used to purchase items from a 
@@ -136,7 +147,7 @@ Click on menu item "Generators/Generate All" and regenerate the application, and
     This shows the Company editor.<br>
     
     <p>
-    Recap: we created the first Object for Company and are able to create new, search and edit/update/delete.
+    <img src="images/demo/review.jpg"> Review: we created the first Object for Company and are able to create new, search and edit/update/delete.
     
     <p>
     Let's take a moment to look at Code.  The code generation uses a combination of techniques: 
@@ -169,7 +180,7 @@ Click on menu item "Generators/Generate All" and regenerate the application, and
     then select all three (mouse drag to rubber band around them), and select a color green for them.
     <img src="images/demo/newObjects.jpg"><p>
     
-    Next let's create the relationships between these Objects, starting with LocationType - "<i>A Company has many of it's own Location Types</i>", which is used to describe the names of a company's locations.
+    Next let's create the relationships between these Objects, starting with LocationType -  <img src="images/demo/rule.jpg"> BizRule: "<i>A Company has many of it's own Location Types</i>", which is used to describe the names of a company's locations.
     "owned" means that the Location Types belong to a single Company, and not shared with other Company ... each Company has it's own Location Types.
     For example: Region, Territory, City, ...<br>
     
@@ -183,19 +194,19 @@ Click on menu item "Generators/Generate All" and regenerate the application, and
     <img src="images/demo/prop1.jpg"><br>
     ... and then set the the "seq" flag. <p>
     <img src="images/demo/prop2.jpg"><br>
-    This will tell it to use this property to keep the order, so that it can make sure to load it in the same order.
+    This will tell it to use this property to keep the sort order, so that it can make sure to load it in the same order.
     <p>
     
     Now,  let's use the "seq" property for  the link ...<br>
         <img src="images/demo/link3.jpg"><br>
-        The Company.LocationTypes will now be auto sequenced in the order that users positions them.<br>
+        The Company.LocationTypes will now be auto sequenced in the order that users position them.<br>
                 You will notice that the link shows a "S" icon.<br>
         
 <p>
 Note:  "Company.LocationTypes" is a <i>property path</i>, an important concept for object graphs.<p>
     <img src="images/demo/link4.jpg"><br>
         <p>
-        Next, let's add a couple of things to LocationType, and then we'll regenerate and run again.
+        Next, let's add a couple of things to LocationType, and then we'll <img src="images/demo/genrun.jpg"> regenerate and run again.
         <br>
         Add a new &quot;name&quot; property.  Notice that for the "Lengths", 25 is max input size.  The display size is the default size of textfield, and max display is to allow the textfield to
         grow to a length (usually the max).  The grid length is for the column in a table/grid listing.
@@ -204,7 +215,7 @@ Note:  "Company.LocationTypes" is a <i>property path</i>, an important concept f
         Now, lets go to the Object UI, and set the display property to "name" (under "UI General" left sub tab).
         Under "Table Columns" subtab, add name.  For "Search Panel", add "name".
         <p>
-        Go ahead and regen and run again.<br>
+        Go ahead and <img src="images/demo/genrun.jpg"> regen and run again.<br>
     <img src="images/demo/demo1.jpg"><br>
     We now have Company.LocationTypes defined.  This will be used in the next step, when we set up Company Locations, and how each Location will "<i>know</i>" it's Location Type.
     <p>
@@ -223,7 +234,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     <img src="images/demo/prop4.jpg"><br>
     change Location UI to use "name" as display property ("UI General" left subtab), and add name to table ("Table Columns" left subtab) and search ("Search Panel" left subtab).<br>
     <p>
-    Do a codgen and rerun the App<br>
+    Do a codegen and rerun the App<br>
     <img src="images/demo/demo2.jpg"><br>
     <p> 
     Next, we want to know a Location's LocationType.  There are two options, the first would be to select one from the Location's Company list of LocationTypes (Company.LocationTypes).  The second
@@ -284,7 +295,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     <img src="images/demo/link13.jpg"><br>
     
     <p>
-    Recap <img src="images/recap.jpg"> We now have Company.Locations, that can be a hierarchy.  The Company has a list of LocationTypes, that can be directly assigned 
+    <img src="images/demo/review.jpg"> Review: We now have Company.Locations, that can be a hierarchy.  The Company has a list of LocationTypes, that can be directly assigned 
     to a Location, or use the correct value from Company.LocationTypes.<br>
     Let's add the Location.caclLocationType to the Location table columns.<br>
     <img src="images/demo/link14.jpg"><br>
@@ -315,7 +326,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     <img src="images/demo/demo11.jpg"><br>
     Login using "admin"/"admin" for user/password.<p>
     
-    Run two clients, and go to the company location that was created. 
+    Run two clients, and go to the company location that was created. <br>
     <img src="images/demo/demo12.jpg"><br>
     Now, change the location type and notice how the other is automatically updated. The change causes a "reaction", causing the calcLocationType 
     to be redisplayed on both programs.  This behavior is described as an "observable &amp; reactive object model", and is main feature of
@@ -365,8 +376,10 @@ We're now going to set up Locations so that it can be multi-level.  This is done
 	
 	<p>
 
-	<h5>CheckPoints for catching up with Model and sample data for Demo Application.</h5>
-	The checkpoints directory has copies of the model and datasource files at
+	<h5>Using CheckPoints for catching up with Model and sample data for Demo Application.</h5>
+	
+  <img src="images/demo/checkpoint.jpg"> CheckPoints:
+  The checkpoints directory has copies of the model and datasource files at
 	certain points during this demo.
 	<ul>Do the following if you would like to use them at that point.
 	<li>Replace your model with EmpowHR_#.obx</li>
@@ -377,7 +390,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
 
 
 	<p style="margin-left: 30px; margin-right: 30px;">  
-	<b>CheckPoint</b> #1 was created before starting this next section. <br>
+	<img src="images/demo/checkpoint.jpg"> CheckPoint #1 was created before starting this next section. <br>
 	use the instructions above to use the checkpoint files.
 
     <p>
@@ -386,7 +399,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
 	
 	The last model change that was made was to create the calculated LocationType.
 	We're done with that and can create the "Company owns many Campaigns" Link.<br>
-	First, let's add the following Properties to Campaign: name, startDate, endDate.
+	First, let's add the following Properties to Campaign: name, startDate, endDate.<br>
     <img src="images/demo/prop5.jpg"><br>
 	<p>
 	Make the following change for Campaign:
@@ -444,19 +457,19 @@ the custom code.
     <img src="images/demo/prop8.jpg"><br>
 
 	<p>
-	Set the "sort order" for Company.Campaigns to be by startDate.
+	Set the "sort order" for Company.Campaigns to be by startDate.<br>
     <img src="images/demo/link17.jpg"><br>
 	We could have (might do it later) used a seq property for the sort order.
 	<p>
 
     <h5>Changes to the Model</h5>
-	OABuilder keeps track of the changes.  Goto the Model Editor, "Changes" tab.
+	OABuilder keeps track of the changes.  Goto the Model Editor, "Changes" tab.<br>
 	<img src="images/demo/changes1.jpg"><br>
 	These are the changes made so far, and are used by code generation to do things like creating a database
 	change script (DDL &amp; SQL).
 	<p>
 
-	Recap <img src="images/recap.jpg"> We have added Company.Campaigns.
+	<img src="images/demo/review.jpg"> Review: We have added Company.Campaigns.
 	<br>
 	Next, let's go in fast forward and layout a few groups of the Objects
 	needed Employees, Awards, and Items.  Then we'll connect them together and start filling in
@@ -516,7 +529,7 @@ the custom code.
 	<img src="images/demo/calcProp4.jpg"><br>
  
 	<p>
-	    Do a codgen and rerun the App as single user.<br>
+	    Do a <img src="images/demo/genrun.jpg"> codgen and rerun the App as single user.<br>
 	<img src="images/demo/demo15.jpg"><br>
 	
 	<p>
@@ -541,7 +554,7 @@ the custom code.
 	Changing "John Doe" to "John Dox" from the Location's Employee table shows how the "other" John Doe
 	is also changed.  This is because the program and Object Graph are <i>smart enough</i> to be using
 	the same instance.  Any other part of the Application that has Employee John Doe (id=1) will use the same 
-	object and not create a duplicate.  
+	object and not create a duplicate.<br>  
 	<img src="images/demo/demo17.jpg"><br>
 	
 <p>
@@ -569,7 +582,7 @@ the custom code.
 	<img src="images/demo/demo18.jpg"><br>
 
 	<p style="margin-left: 30px; margin-right: 30px;">  
-	<b>CheckPoint</b> #3 was created. <br>
+	<img src="images/demo/checkpoint.jpg"> CheckPoint #3 was created. <br>
 	That includes the model "EmpowHR_3.obx", and data/ObjectCache_3.bin & data/data_3.bin.
 	See instructions above on where to copy and rename the files.
 	</p>
@@ -612,7 +625,7 @@ Make inactiveReason visible only when there is an inactiveDate.<br>
 Make the Employee recursive by recreating a self reference/link, so we can know the management structure.  Use the link button to do this,
 then go to "General II" tab and set "Is Employees recursive?" to yes.<br>
 	<img src="images/demo/link21.jpg"><br>
- We also need to make sure that Employees belong to the same Company.
+ We also need to make sure that Employees belong to the same Company.<br>
 	<img src="images/demo/link22.jpg"><br>
 Also, make the Link Location.Employees recursive.<br>
  
@@ -639,7 +652,7 @@ Right click Company, "Create new Search Link ..." and select "Company.employees"
 <p>
 Make the following change to Link Location.employees, "General III" tab, set "Select Location from" to "company.locations".  
 
-Recap <img src="images/recap.jpg"> we just did some <i>rewiring</i>, so that we have "a Company owns a hierarchy of Employees" 
+<img src="images/demo/review.jpg"> Review: we just did some <i>rewiring</i>, so that we have "a Company owns a hierarchy of Employees" 
 that "belong to a Location".  
 <p>
 
@@ -647,7 +660,7 @@ I moved the Objects around a bit, go ahead and use the next CheckPoint #4.<br>
 <img src="images/demo/model9.jpg"><br>
 
 <p>
-<b>CheckPoint</b> #4 was created<br>
+<img src="images/demo/checkpoint.jpg"> CheckPoint #4 was created<br>
 Use the instructions above to use the checkpoint files.<br>
 <img src="images/demo/checkpoint4.jpg"><br>
 
@@ -658,7 +671,7 @@ Here's what Company is looking like now.<br>
 <p>
 Couple of notes: the demo application is being generated straight from the model.  The code generators
 have all of the information to do this, including the custom code that we added.<br>
-The recursive "Company.employees have employees" has multiple ways for viewing. 
+The recursive "Company.employees have employees" has multiple ways for viewing.<br> 
 <img src="images/demo/demo22.jpg"><br>
 <p>
 Before moving on, let's look at the model.<br>
@@ -681,7 +694,7 @@ Now add the Java code.<br>
 ... also fix a typo, change "HireDate == null" to "hireDate == null".
 
 <p>
-Regen and rerun:<br>
+<img src="images/demo/genrun.jpg"> Regen and rerun:<br>
 Now give "John Doe" a hireDate.
 Change the Table to "flattened", and choose "No Hire" from filter dropdown.<br>
 <img src="images/demo/demo23.jpg"><br>
@@ -716,7 +729,7 @@ Click on the flags tab, and check "Html Template".<br>
 <img src="images/demo/prop12.jpg"><br>
 
 <p>
-Regen and rerun as Single User.
+<img src="images/demo/genrun.jpg"> Regen and rerun as Single User.
 <p>
 <img src="images/demo/demo24.jpg"><br>
 We'll go over all of the things that you can do with the editor in another tutorial.  
@@ -729,7 +742,7 @@ Create the same project "certificate" in Location as you did for Company.
 Use copy and paste to save time.  From the left side, right click on the Company.certificate property and 
 choose copy.  Then right click on Location and choose paste.<br>
 <p>
-Regen and rerun as Single User, and see how the Location now has a Certificate tab.
+<img src="images/demo/genrun.jpg"> Regen and rerun as Single User, and see how the Location now has a Certificate tab.
 <p>
 Now we want to be able "know" what certificate to use for an Employee. 
 Both the Company and Location has certificate property, we want to have 
@@ -744,7 +757,7 @@ Go to the "Dependent Property" tab and add property paths: "location.certificate
 For the "Code" tab, enter the following:<br>
 <img src="images/demo/calc5.jpg"><br>
 <p>
-Regen and rerun as Single User, and see how the Employee Certificate tab matches the first value found in Location or Company.
+<img src="images/demo/genrun.jpg"> Regen and rerun as Single User, and see how the Employee Certificate tab matches the first value found in Location or Company.
 <p>
 Note: setting a Location hierarch would also follow the Location hierarchy itself. 
 
@@ -754,13 +767,13 @@ we use it for Employee phone and signatures.
 <br>
 Create a new Model Object and name it "Image".  Click the checkbox for "multi purpose".<br>
 <img src="images/demo/object5.jpg"><br>
-Create the following property to store the image.
+Create the following property to store the image.<br>
 <img src="images/demo/prop13.jpg"><br>
 Go to the "Flags" tab and check "Image".
 <p>
 Now create a link between Employee and Image, set type to OneToOne.<br>
 <p>
-Regen and rerun.
+<img src="images/demo/genrun.jpg"> Regen and rerun.
 <p>
 <img src="images/demo/demo26.jpg"><br>
 Image editor.
@@ -776,9 +789,9 @@ From Eclipse, you can do a "Search / File ...", and select Image*.* to get a lis
 Then use the following to delete all of them.<br>
 <img src="images/demo/eclipse3.jpg"><br>
 <p>
-Go ahead and use the next <b>CheckPoint</b> #5.  Get the model and the data files.<br>
+Go ahead and use the next <img src="images/demo/checkpoint.jpg"> CheckPoint #5.  Get the model and the data files.<br>
 <p>
-Regen and rerun.
+<img src="images/demo/genrun.jpg"> Regen and rerun.
 <p>
 
 
@@ -831,7 +844,7 @@ Go to the "Name/Values" tab and add the following: "Unknown", "Service", "Achiev
 Go ahead and add this property to your UI table columns and search.<br>
 <img src="images/demo/prop15.jpg"><br>
 <p>
-Regen and rerun.
+<img src="images/demo/genrun.jpg"> Regen and rerun.
 <p>
 <img src="images/demo/demo27.jpg"><br>
 
@@ -881,7 +894,7 @@ The code generator menu has a menu item for "SQL Changes Script ..." that would 
 
 
 <p>
-Regen and rerun.  
+<img src="images/demo/genrun.jpg"> Regen and rerun.  
 <p>
 <img src="images/demo/demo28.jpg"><br>
 All of that work just for this one screen shot :)<br>
@@ -890,12 +903,12 @@ If you try to add the same one more then once, it does not allow it.
 
 <p>
 
-Recap:
+<img src="images/demo/review.jpg"> Review: 
 We did some fancy links that all work together to automatically define and enforce requirements.
 <br>
 
 <p>
-I created a <b>CheckPoint</b> #6 here.
+I created a <img src="images/demo/checkpoint.jpg"> CheckPoint #6 here.
 <p>
 
 Ok, I need to come up with a new requirement that will need us to create a "Link Merger". 
@@ -929,7 +942,7 @@ It named the link "mergeEmployeeAwards", go ahead and change it to "mergeOpenEmp
 And, change display to "Open Emp Awards".<br> 
 
 <p>
-Regen and rerun, and let's see how this worked out.  
+<img src="images/demo/genrun.jpg"> Regen and rerun, and let's see how this worked out.  
 <p>
 Go to the "Test Corp" Company and click on the "Open Emp Awards" tab.
 The list is empty.  Now go to Employee "John Doe" (<i>remember him?</i>), and give him an inactive date, and a reason if you want.<br>
@@ -1035,14 +1048,19 @@ have user check
 
 use calc Location Type for display qqqqqqqqqqqqq    
     
-qqqqqqqqq
+VVVVVVVVVVVVVVV
+
+<img src="images/demo/review.jpg"> Review:
+<img src="images/demo/rule.jpg"> BizRule:
+<img src="images/demo/checkpoint.jpg"> CheckPoint:
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run:
+
+
 h3
-Recap <img src="images/recap.jpg"> 
+   
 <p style="margin-left: 30px; margin-right: 30px;">  
 
-BizRule <img src="images/bizrule.jpg">
-   
   
-  <p>
+
 </body>
 </html>
