@@ -610,7 +610,7 @@ Make inactiveReason visible only when there is an inactiveDate.<br>
 
 <p>
 Make the Employee recursive by recreating a self reference/link, so we can know the management structure.  Use the link button to do this,
-then go to "General II" tab and set "Is Employees recursive?" to yes.<br.
+then go to "General II" tab and set "Is Employees recursive?" to yes.<br>
 	<img src="images/demo/link21.jpg"><br>
  We also need to make sure that Employees belong to the same Company.
 	<img src="images/demo/link22.jpg"><br>
@@ -957,28 +957,23 @@ and is directly related to Software Patterns like Model/View/Control (MVC).<br>
 Historically, the problem has been scaling.  The cost of <i>listening</i> is too high at a certain point.  
 OA has been able to scale this by using a combination of listening with some other unique techniques.  The cost is reduced
 down to a very small size and stays small with large amounts of data (objects).   
-<br>Another solution is "<i>reactive streams<i>", but there are boundaries and challenges when using them as the solution.
+<br>Another solution is "<i>reactive streams</i>", but there are boundaries and challenges when using them as the solution.
 <p>
 The solution ends up being a combination of observability through listeners, bubble up events, event streams, tree structures
 like what Merger uses.
-
+<p>
 Add remoting to the mix, and you have distributed synchronized object graphs.  Sounds complicated, but the code
-is small and is built on a few core building blocks.
-Observable Object
-Observable Collection
-Collection that can be shared
-Reflection, annotations
-Object Serialization (all types, tech independent)
-Remoting  
-Communication (all types, tech independent)
-Persistence (all types, tech independent)  
+is small and is built on a few core building blocks:
+Observable Object, Observable Collection, Collection that can be shared, Reflection, annotations, 
+Object Serialization (all types, tech independent), Remoting, Communication (all types, tech independent), Persistence (all types, tech independent).  
+I'm sure that I'm missing some items, but that's a good chunk of it.  
   
   
+<p>  
  
- qqqqqqqq show the code and annotation for Company.getMergedEmployeeAward
-    mergerPropertyPath = 
 
-
+NEXT NEXT NEXT qqqqqqqqqqqqqqqqqqqqqqqq NEXT NEXT NEXT 
+<p>
 
 We just got a new requirement: all employees need to pass a series of company tests.
 We can use this as an example to show another way to automate how Links work.
@@ -1027,14 +1022,7 @@ make employees recursive
 Location employees ... merge
 
 
- 
-	
-
-
-
-	        
-    
-    
+     
 <p>qqqqqqqqqqqqq<p>    
     
 save model (break points)
