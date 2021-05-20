@@ -10,21 +10,27 @@
   For our demo, we are going to <i>throw together</i> a software system for a fictitious company named "EmpowHR" (meaning "empower Employee HR").
 By that I mean that we will describe the system and start building it, and even backtracking to undo/change before moving forward.
 
-
-<p style="margin-left: 30px; margin-right: 30px;">  
-
-<img src="images/demo/rule.jpg""> BizRule: will be used to mark business requirements (rules) for the application that we're building.
+<p>
+Here's a list of icons that we will use along the way:
+<p style="margin-left: 30px; margin-right: 30px;">
+<img src="images/demo/whiteboard.jpg"> Whiteboard: capture ideas.
+<br>  
+<img src="images/demo/rule.jpg""> BizRule: mark business requirements (rules) for the application that we're building.
 <br>
-<img src="images/demo/review.jpg""> Review: are used to recap what we just did before moving forward. 
+<img src="images/demo/review.jpg""> Review: used to recap what we just did before moving forward. 
 <br>
-<img src="images/demo/checkpoint.jpg"> CheckPoint: are used along the way, that will allow you get caught up with the latest Model changes and sample data.
+<img src="images/demo/checkpoint.jpg"> CheckPoint: allow you get caught up with the latest Model changes and sample data.
 <br>
 <img src="images/demo/genrun.jpg"> ReGen &amp; Run: use the code generator to regenerate the application, and then run.
-
+<br>
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn: take time to explain some important concepts 
+and technical details about how the system works.
+<br>
+<img src="images/demo/continue.jpg"> Continue working on the Model: after a discussion.
 
 
   <p>
-  Along the way, we'll give extra details on how to use OABuilder, <img src="images/demo/genrun.jpg"> generate the code, and run the application.
+  Along the way, we'll give extra details on how to use OABuilder, generate the code, and run the application.
   <p> 
    
   The demo that we will be building will allow the employees of our customers to earn points. The points are then used to purchase items from a 
@@ -46,6 +52,7 @@ By that I mean that we will describe the system and start building it, and even 
     <li>Web Server</li>
     <li>Security</li>
     <li>Options to run as Server/Web Server/Clients/Single/CLI/Webservice/etc</li>
+    <li>Various UI applications, based on type of user.</li>
   </ul>
 
 
@@ -234,7 +241,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     <img src="images/demo/prop4.jpg"><br>
     change Location UI to use "name" as display property ("UI General" left subtab), and add name to table ("Table Columns" left subtab) and search ("Search Panel" left subtab).<br>
     <p>
-    Do a codegen and rerun the App<br>
+    <img src="images/demo/genrun.jpg"> ReGen &amp; Run<br>
     <img src="images/demo/demo2.jpg"><br>
     <p> 
     Next, we want to know a Location's LocationType.  There are two options, the first would be to select one from the Location's Company list of LocationTypes (Company.LocationTypes).  The second
@@ -253,7 +260,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     <p> 
     Ok, now click on the link Company.locations, go to the "General II" tab, and set "Is Locations Recursive" to checked.<p>
     
-    Let's do a codgen and rerun the App, and add some data.<p>
+    <img src="images/demo/genrun.jpg"> ReGen &amp; Run: then add some data.<p>
     
     If you click on sidebar "Company Search", and then click the "new" button.<br> 
     <img src="images/demo/demo4.jpg"><br>
@@ -300,7 +307,7 @@ We're now going to set up Locations so that it can be multi-level.  This is done
     Let's add the Location.caclLocationType to the Location table columns.<br>
     <img src="images/demo/link14.jpg"><br>
     <p>
-    Do a codgen and rerun the App.<br>
+    <img src="images/demo/genrun.jpg"> ReGen &amp; Run<br>
     <img src="images/demo/demo8.jpg"><br>
     The Location.calcLocationType will either be the assigned LocationType, or if empty (null) it will be the same as the Company.LocationTypes(pos), where pos
     is the position of this Location in the Company.Location hierarchy. 
@@ -983,36 +990,343 @@ I'm sure that I'm missing some items, but that's a good chunk of it.
   
   
 <p>  
+<img src="images/demo/rule.jpg"> BizRule:
+We just got a new requirement: all employees need to pass a series of company tests, and each one could have an AwardType.
+We can use this as an example to show another way to automate how Links work.
+<p>
+Create a new Object "AppTest" and add Name (String, max: 50, display: 15), and add all of the properties for the UI display, search &amp; table columns.<br>
+Create another property "document", pick type "String Long", and check as Html in the "Flags" tab.<br>
+Now, create a new Link "Company has many AppTests", and make it owned.<br>
+Now, set up a new Link "AwardType has many AppTests", and set "create method AppTest.getAwardType" to no.<br>
+Now, set this new Link (General III tab)  "Select AwardType from" to: "company.awardTypes".<br> 
+<img src="images/demo/object6.jpg"><br>
+<p>
+Now we need to add a flag to AppTest to know if all Employees must take it.<br>
+Add property "required" and set to "boolean".  Use the "Flags" tab to check "dont track Primitive null".
+<br>
+<img src="images/demo/rule.jpg"> BizRule: all Employees need to take Company.Tests that are required.<br>
+Create a new Filter "Required", dependent property "required", and this for the code:<br>
+<img src="images/demo/filter8.jpg"><br>
+<img src="images/demo/filter9.jpg"><br>
+
+Now, we need to add support for an Employee.appTests that are automatically created if "Employee.company.apptests:required".<br>
+To describe it another way: "An Employee needs to take each required Company Test".<br>
+Create a new Object "EmployeeAppTest", create Link "Employee owns many EmployeeAppTests".<br>
+Now, create new Link "EmployeeAppTest has an AppTest, and is required".  
+Set (General II tab) "Create method AppTest.getEmployeeAppTests" to no.<br>
+Go back and click on "Employee.employeAppTest" Link and "General III" tab, and "Pick from link for creating EmployeeAppTests" to "appTest".<br>
+
+<img src="images/demo/link29.jpg"><br>
+Go to "General II" tab, and set "Unique property for EmployeeAppTests" to "appTest".<br>
+<p>
+Ok, that was pretty interesting.  We need to do one more thing ... have all Company required Tests be assigned to Employees - 
+let's see how that can be done - use the automatch, which means to automatically create EmployeeAppTests for all Company.appTests that are 
+required.<br>
+<img src="images/demo/link30.jpg"><br>
+<p>
+Click on EmployeeAppTest Object and update the UI tables columns - to use Employee &amp; AppTest<br>
+<img src="images/demo/object7.jpg"><br>
+
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run and then we'll recap before adding more.
+<p>
+Create a new Company AppTest.<br>
+<img src="images/demo/demo30.jpg"><br>
+Now go to Employees tab, and all Employees for this Company will have the AppTest added.<br.
+<img src="images/demo/demo31.jpg"><br>
+   
+<p>
+There's still something we need to add - we dont want an inactive Employee getting the Company required AppTest.
+<br>
+We'll do this next, but first let's look at the code for Employee.employeeAppTests.<br>
+<img src="images/demo/code8.jpg"><br>
+The match info is stored in the Annotation, which is <i>metadata</i> about the Employee used to manage the 
+Employee.EmployeeAppTests.  The getHub uses this to be able to get the EmployeeAppTests and keep them updated
+with the Company.AppTests that are required ... matchHub use property path "Company.appTests:required".
+<br>
+Let's make sure that inactive Employees dont get new AppTests.  
+Click on the link Employee.employeeAppTests, then go to "Permissions" tab, and set the following:<br>
+<img src="images/demo/link31.jpg"><br>
+
+<p>
+Next, we need to make sure that an EmployeeAppTest that is completed is not removed.
+First, create a property for EmployeeAppTest.completed and make it a Date.<br>
+We'll create a Callback for removing: click on the Link Employee.employeeAppTests,<br>
+click on "From Code", and then bottom tab "Employee.employeeAppTestsCallback()".<br>  
+Then set the code to match:<br>
+
+<img src="images/demo/link32.jpg"><br>
+
+ 
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run, to see how adding a Company.AppTest is added to Employees when
+it is required, and removed if it's not required ... unless the Employee completed it.
+
+<p>
+ 
+<img src="images/demo/review.jpg"> Review: "A Company can set up Employee Tests that offer an AwardType".
+"If the Test is required, then all active Employees will get it".<br>
+We showed how to set up the Links, and how values in Company.AppTest automatically created matches in Employee.employeeAppTests
+for active Employees.  This also used a Callback to fine tune the rules.
+<p>
+ 
+Let's make the whole Employee Object disabled if the inactive is set - except for unsetting the inactive.<br>
+Go to Object Editor, "Permissions" tab, and set the Enabled Property to "inactive = false".<br>
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run, go to Company "Test Corp", "Employees" tab and give "John Doe"
+and inactiveDate.<br>
+<img src="images/demo/link32.jpg"><br>
+You will notice that the UI for this Employee is disabled, including the inactive date.  This keeps it from being re-activated by
+removing the inactive date.<br> 
+To fix this, go to Model property Employee.inactive and create a Callback to allow it to be enabled.<br>
+<img src="images/demo/prop16.jpg"><br>
+<img src="images/demo/demo33.jpg"><br>
+
+Now, let's set it up so that an Employee will get an AwardType once the EmployeeAppTest is completed.<br>
+Here's an option:<br> 
+Have the code in EmployeeAppTest.setCompleted add to Employee.EmployeeAwards.  
+Here's what it looks like.<br>
+  
+<img src="images/demo/code9.jpg"><br>
+<p>
+<img src="images/demo/review.jpg""> The method isLoaded is built in and is used
+to know if an object is being initialized/loaded.<br>
+The method start &amp; endServerOnly is so that the code will run on the main server.
+OA supports distributed models, and this is one of a few methods used for objects
+to interact with how code is ran.
+  
+<p>
+That solution is embedded into the EmployeeAppTest.completed method.  Other options that
+could also be used:  1: create a process that would do it and listen for completed, 
+2: create a Trigger that would do it.<br>
+<img src="images/demo/trigger1.jpg"><br>
+<img src="images/demo/trigger2.jpg"><br>
+<img src="images/demo/trigger3.jpg"><br>
+
+  
+<br>
+All three are valid solutions.  The last two ideas are "outside" of the Object code,
+and might be preferred if you want to keep custom code outside of the Objects.
+
+<p>
+I think we're done with that :)
+<p>
+
+<p>
+I created a <img src="images/demo/checkpoint.jpg"> CheckPoint #6 here.
+<p>
+
+
+Let's set up Campaigns.<br>
+<img src="images/demo/rule.jpg"> BizRule: 
+"Companies have their own Campaigns, that their Employees are assigned to by one of the following: 
+all active Employees, 
+assigned by Managers, enrolled by Employee, or nominated by X amount of other Employees." 
+<p>
+
+The first thing we'll do is create an "assignment type", for the type
+of method used for adding Employees to a Campaign.<br>
+Click on Campaign and add the following new property "assignmentType", as type = "int",<br>
+under "Flags" tab, check "dont track primitive null",<br>
+and then match this for the "Name/Values" tab.<br>
+<img src="images/demo/prop17.jpg"><br>
+
+<p>
+Add another property "nominateCount", for the number of nominations needed if 
+type is Nominated.<br>
+Since this property is only needed for "type=nominated", then we only want it to 
+be visible in that case.<br>
+Create a Calculated Property, "usesNominateCount", type=boolean, "Dependent Properties"
+needs to have "assignmentType", and "Code" should match this:<br>
+<img src="images/demo/prop17.jpg"><br>
+<p>
+Now, go back to "nominateCount" property, "Permissions" tab, and set "Visible Property" 
+to "usesNominateCount".
+<p>
+Go to the UI, table columns and match:<br>
+<img src="images/demo/object8.jpg"><br>
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run and test Company Campaigns. 
+<p>
+
+<img src="images/demo/demo34.jpg"><br>
+
+
+<p>
+<img src="images/demo/review.jpg"> Review: we now have a way for Companies
+to have Campaigns, which will allow Employees to be be added based on the Campaign.type.
+<br>
+Employees will be able to earn awards/points based on their Campaign involvement, which
+will then allow them to go "shopping".
+<br> 
+Next, we will be set up how Employees are assigned Campaigns.
+<br>
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn: First, let's take a break and discuss 
+security and how it helps to build the Model, and how it works in the application. 
+<p>
+OABuilder let's you define a User object for the Model.  This is the User that logs 
+into the Application. 
+This User could also be considered a "Context", which could be a person, another computer system,
+process, etc.  Anyway, it's treated as a User, and the application has methods to get and set
+the User, that is accessible by the Model and all of the Application.  
+Basically, getting the <i>UserConext</i> returns who the current User is.
+In the Model, we are able to use this User to define permissions for levels of access
+to the Model itself.
+<p>
+In this demo, we have been logging in as a User, and are able to navigate to most of the
+application data ... Companies, Campaigns, Employees, etc.<br>
+The way we have it, the User is more like an Administrator for the system, an internal
+operations, customer support, etc., and the rules are based on what these types of users
+are able to do.
+<p>
+We also want our customers (Companies) to allow their Employees to login, and for them to stay within their
+area, which would be under the Company that they work for, under their manager, and the 
+rules set up based on that.  So, we have two "user" sides to the Application.  The
+first is the "our" company running the software, and the other is our customers Employees.
+<p>
+So far, we have been building the demo and using the internal User, and have been
+using a desktop application for the user interface.
+<br>
+<ul>We want to have other types of interfaces
+<li>our customers, Company Employees, to have access through a website or mobile App.</li>
+<li>API using REST and webservices, so that we can allow our Customers and Partners.</li>
+<li>Other user within our company used to manager operations of business tasks.  For example,
+shipping, receiving, communications, etc.
+</li>
+</ul>
+To accomplish this, we have the Employee Object to allow our customers
+to have access, and will later be setting it up to drive a UI for this.
+<p>
+<img src="images/demo/rule.jpg"> BizRule: allow Company Employees to login to a web or 
+mobile App that allows them to manager their account and have limited access
+to the employees that they manage. Also, we will want some Employees to have access
+to their Company or Location as an administrator.
+<p>
+
+<img src="images/demo/continue.jpg"> Continue working on the Model:
+Let's add Employees to a Campaign, and later we will use the Campaign.assignmentType and User (Context) 
+to determine the rules for how this works.
+<p>
+<img src="images/demo/rule.jpg"> BizRule: "Company can have all or a subset of their Employees assigned to Campaigns".
+<p>
+Create a one2many link Campaign and Employee, and name it campaign.employees.<br>
+<img src="images/demo/link33.jpg"><br>
+<p>
+We need to only allow Employees that are under the same Company as Campaign.
+<img src="images/demo/link34.jpg"><br>
+
+<p>
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn: the Link that we just created
+is "Campaign employees" 
+&amp; the reverse "employees.campaign" was set up to be a One2Many.  An Employee can be added
+to the Campaign list of Employees by directly adding to the Campaign.employees or <i>indirectly</i>
+by setting the Employee.campaign to a Campaign.
+
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run and test Company.Campaigns has Employees ... 
+and then we'll talk about what's wrong and how to fix it. 
+<p>
+
+<img src="images/demo/demo35.jpg"><br>
+
+<p>
+
+<img src="images/demo/review.jpg"> Review: we just created a link for Company.campaigns have Company.Employees.
+There's a couple of problems.<br>
+1: the "select Employees from" will use a dropdown to show all of the Company Employees to select from.  This could be a huge list.
+We want it to use a Employee search instead.
+<br>
+2: the link needs to be of type Many2Many, since an Employee can be in one or more campaigns.
+<p>
+Let's go ahead and change.  For #1, clear the value in the link's "select Employees from"<br>
+<img src="images/demo/link35.jpg"><br>
+<p>
+Now change the One2Many link Campaign.Employees to Many2Many link Campaigns.Employees<br>
+<img src="images/demo/link36.jpg"><br>
+<p>
+Also, make sure that "select from" and "equal property path" matches the following:<br>
+<img src="images/demo/link37.jpg"><br>
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run to test that Company.Campaigns have Employees ... 
+and Employees have Campaigns.  Notice that adding an Employee to Campaign is now using an Employee search,
+and the Employee &amp; Campaign has to match the same Company.  
+Adding an Employee to a Campaign automatically adds the Campaign to the Employee's 
+list of Campaigns - and vice versa.  The same with removing. 
+<p>
+<img src="images/demo/demo36.jpg"><br>
+Lots of arrows here - select Test Company, click on Campaign tab, select first Campaign, select Employees tab,
+click add button to add Employees, from popup search click run search, multi select one or more Employees, and
+click Ok button.
+<p>
+
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn: a Many2Many links have a "special" requirement
+for storing to a database.  Both Employee and Campaign have there own tables, and another table is needed
+to store the relationship between the two. If the relationship is One, then the table uses a column
+that is a foreign key into the other table's primary key.  A <i>link table</i> is used to for M2M relationships
+and stores the primary keys of both tables.<br>
+Look at the "DataSource" tab, which displays the Link table information for creating the Database script.
+<img src="images/demo/link38.jpg"><br>
+
+<p>
+Check out the Model Changes tab, to see how it captured the change to create the Link table.<br> 
+<img src="images/demo/link38.jpg"><br>
+
+
+
+  <p style="margin-left: 30px; margin-right: 30px;">  
+  <img src="images/demo/checkpoint.jpg"> CheckPoint #8 was created before starting this next section. <br>
+  <p>
+  
+<img src="images/demo/continue.jpg"> Continue working on the Model:<br>
+Sometimes, a M2M relationship needs additional information.  
+For our Employee Campaign Link, we want to know if the Employee actually participated/completed the Campaign.
+<p>
+To do this, we'll remove the M2M link we just created, 
+and instead create a "Link Object", which is just a normal Object like the others, and it will look
+like the following.<br>  
+
+
+qqqqqqqqqqqqqqqqq make changs and take screen shot.jpg
+
+<p>
+It has the "completed" date and a link from Employee to Campaign.  Notice that this
+object is still forming a M2M relationship between Employees and Campaigns. 
+
+
+
+
+Let's add the same rule, where the Campaign.Company and Employee.Company must match ...
+qqqqqqqqqqqqq
+
+ 
+show Event start/end date used by calendar  
  
 
+discuss distributed ... run as server and clients ... and show rest
+
+  
+
+
+
+ 
+
+
+
+<p><br><br><br><br>
 NEXT NEXT NEXT qqqqqqqqqqqqqqqqqqqqqqqq NEXT NEXT NEXT 
 <p>
 
-We just got a new requirement: all employees need to pass a series of company tests.
-We can use this as an example to show another way to automate how Links work.
-<br>
-For this we will need to create the following Objects in Red:<br>
- 
-
-CompanyTest
-EmployeeCompanyTest
-    auto create 
 
 
-qqqqqqqqqqq
+start layered diagram showing whiteboard qqqqqqqqqqq
 
 
 
-
-
-<p><br><br><br><br><br> HERE qqqqqqqqqqqqvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-EmployeeTest qqqqqqqqq from location and company
-	autocreate
-
-show more code .. we already discussed mvc
-	datasource
-	jetty
 
 How do emp get awards ... create an CompanyEvent that has employees, that will auto give Emps an AwardType 
 	equal to CompanyEvent.awardType 
@@ -1036,8 +1350,6 @@ Location employees ... merge
 
 
      
-<p>qqqqqqqqqqqqq<p>    
-    
 save model (break points)
 
 permissions for setting up Locations, etc.
@@ -1050,10 +1362,13 @@ use calc Location Type for display qqqqqqqqqqqqq
     
 VVVVVVVVVVVVVVV
 
+<img src="images/demo/whiteboard.jpg"> Whiteboard:
 <img src="images/demo/review.jpg"> Review:
 <img src="images/demo/rule.jpg"> BizRule:
 <img src="images/demo/checkpoint.jpg"> CheckPoint:
 <img src="images/demo/genrun.jpg"> ReGen &amp; Run:
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn:
+<img src="images/demo/continue.jpg"> Continue working on the Model:
 
 
 h3
