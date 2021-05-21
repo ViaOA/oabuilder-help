@@ -29,6 +29,11 @@ and technical details about how the system works.
 <img src="images/demo/continue.jpg"> Continue working on the Model: after a discussion.
 
 
+<p>
+Show the screen shots of final App here qqqqqqqqqqqqq
+<p>
+
+
   <p>
   Along the way, we'll give extra details on how to use OABuilder, generate the code, and run the application.
   <p> 
@@ -1290,8 +1295,93 @@ To do this, we'll remove the M2M link we just created,
 and instead create a "Link Object", which is just a normal Object like the others, and it will look
 like the following.<br>  
 
+<p>
+Add new Object, and new Property "completed" (Date).<br>
+<img src="images/demo/object9.jpg"><br>
 
-qqqqqqqqqqqqqqqqq make changs and take screen shot.jpg
+
+<p>
+The Links are a little more complicated, since we're having it "act" like a M2M relationship, and using
+a middle object with O2M link between it and the other Objects, which forms an <i>extended</i> M2M link.
+<p>
+What we're saying here is that "Employees have many Campaigns and for each we have a completed date".
+<br>And also, the reverse "Campaigns have many Employees and for each we have a completed date".
+<br>And also: the Employees and Campaigns must be from the same Company.
+<br>The Object EmployeeCampaign links "Employee.Campaigns" and the reverse "Campaign.Employees", to form an extended M2M relationship.
+<p>
+We have also set it up so that Campaign.Company and Employee.Company must match: <br> 
+"Employees can only be assigned to Campaigns from their Company", and<br>
+"Campaigns can only add Employees from their Company".<br>
+
+<img src="images/demo/link40.jpg"><br>
+Note: this shows Employee and Campaign must come from same Company.  And, that the user should pick a Campaign to create
+a new EmployeeCampaign.
+
+<p>
+<img src="images/demo/link41.jpg"><br>
+Notes: this also shows Employee and Campaign must come from same Company.  And, that the user should pick an Employee to create
+a new EmployeeCampaign.
+<br>
+"Select Campaigns from" is used so that an Employee can use a dropdown list of their Company's Campaigns to choose from.
+<p>
+<img src="images/demo/discuss.jpg"> Discuss &amp; Learn:
+A Link Object is used to form an <i>Extended</i> ManyToMany relationship between two Objects and requires
+each relationship object.  In our example, "Employees have many Campaigns" is a M2M by using the EmployeeCampaign Object.  
+<p>
+Couple more things before we run: <br>
+set up the UI for the EmployeeCampaign to include the Employee &amp; the Campaing in the table columns.<br>
+<img src="images/demo/object10.jpg"><br>
+<p>
+create a EmployeeCampaign calculated property "display", that uses (dependent properties) Employee.fullName and Campaign.name,
+and then use it as the UI display.<br>
+<img src="images/demo/calcProp6.jpg"><br>
+<img src="images/demo/calcProp7.jpg"><br>
+
+
+
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run:
+<p>
+Test to see how an Employee can be added to a Campaign and also how a Campaign can be added to an Employee.
+<p>
+
+<img src="images/demo/review.jpg"> Review:<br>
+We have just used an Extended Link to form a M2M relationship with an Object in the middle.
+
+<p>
+<img src="images/demo/continue.jpg"><br>
+Next, we will set up the AwardType that an Employee will receive when they complete
+a Campaign. 
+<p>
+Create a new link "a Company Campaign can have a Company AwardType assigned to it", Campaign.AwardType so that it has the following:
+<br>
+draw a link from AwardType to Campaign ... so that it creates a O2M link.<br>
+<img src="images/demo/link42.jpg"><br>
+ 
+<p>
+Go to the "General" tab, and set the "Create method AwardType.getCampaigns" to "no".<br>
+<img src="images/demo/link43.jpg"><br>
+This is "saying" that we dont need a getCampaigns from AwardType.  If left to "yes" (which is ok),
+then the user would be able to see the Campaigns that and assign Campaigns to an AwardType.
+By setting to "no" were saying that we want to assign an AwardType from the Campaign.
+<p>
+Now, go to the "General III" tab and set the property path for picking an AwardType.<br>
+This is saying "a Company Campaign can be assigned a Company AwardType".<br>
+<img src="images/demo/link44.jpg"><br>
+<p>
+Before we rerun, let's go to AwardType and add a new "type":<br>
+<img src="images/demo/calcProp8.jpg"><br>
+
+p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run:<br>
+Go to a Company Campaign and assign an AwardType to it.<br>
+
+qqqqqqqqqqqqqqqqqq
+demo pic qqqqqqqq
+
+<p>
+
+
+check point qqqqqqqq
 
 <p>
 It has the "completed" date and a link from Employee to Campaign.  Notice that this
@@ -1300,7 +1390,6 @@ object is still forming a M2M relationship between Employees and Campaigns.
 
 
 
-Let's add the same rule, where the Campaign.Company and Employee.Company must match ...
 qqqqqqqqqqqqq
 
  
