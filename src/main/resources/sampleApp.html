@@ -15,11 +15,11 @@ Here's a list of icons that we will use along the way:
 <p style="margin-left: 30px; margin-right: 30px;">
 <img src="images/demo/whiteboard.jpg"> Whiteboard: capture ideas.
 <br>  
-<img src="images/demo/rule.jpg""> BizRule: mark business requirements (rules) for the application that we're building.
+<img src="images/demo/rule.jpg"> BizRule: mark business requirements (rules) for the application that we're building.
 <br>
-<img src="images/demo/review.jpg""> Review: used to recap what we just did before moving forward. 
+<img src="images/demo/review.jpg"> Review: used to recap what we just did before moving forward. 
 <br>
-<img src="images/demo/checkpoint.jpg"> CheckPoint: allow you get caught up with the latest Model changes and sample data.
+<img src="images/demo/checkpoint.jpg"> CheckPoint: allow you to get caught up with the latest Model changes and sample data.
 <br>
 <img src="images/demo/genrun.jpg"> ReGen &amp; Run: use the code generator to regenerate the application, and then run.
 <br>
@@ -39,10 +39,10 @@ Show the screen shots of final App here qqqqqqqqqqqqq
   <p> 
    
   The demo that we will be building will allow the employees of our customers to earn points. The points are then used to purchase items from a 
-  list of choices specific to the type of award and the company offering it.
+  list of choices specific to the type of award and the company offering the reward.
   
   <p>These customers are companies that have hired us to manage employee award campaigns.
-  <p>The name of our platform will be "empowhr", and we it to be able to be highly configurable, so that the  
+  <p>The name of our platform will be "empowhr", and we need it to be  highly configurable, so that the  
    customers are able to create a dynamic experience and tune it to match their company preferences.
    
   <p>Our goal is to be able to build a single platform, that can run as a distributed platform. This means that we want our software to be able to 
@@ -63,13 +63,13 @@ Show the screen shots of final App here qqqqqqqqqqqqq
 
   <p>
     <img src="images/demo/platform.jpg"><br> The production platform would look something like this.  Locally, we will be able run
-    as a single user instance, or as distributed as we want.
+    as a single user instance, or as distributed as we want - clients/server, microservices, etc.
   <p>
   <h3>Create using OABuilder</h3>
   The code generator that we're using in OABuilder has a starter Model that we can use, "OATemplate". It has model classes for User and UI settings that we can use as our starting
   point.
   <p>
-    We'll pull it up and make a copy using menu option "File/Save ModelAs ...", naming it EmpowHR.<br> <img src="images/demo/saveAs.jpg">
+    We'll pull it up and make a copy using menu option "File/Save Model As ...", naming it EmpowHR.<br> <img src="images/demo/saveAs.jpg">
   <p>
     Next, use the Model Editor to configure this new project.<br> <img src="images/demo/modelSettings.jpg"><br> Next create the directory entered into "Code Gen
     Root Dir".
@@ -78,15 +78,15 @@ Show the screen shots of final App here qqqqqqqqqqqqq
     through the demo. Click on menu item "Generators/Generate All" and select Ok. This will generate the project in the directory that you entered. <br> <img
       src="images/demo/codeGenComplete.jpg">
   <p>
-    Create a new project in your Java IDE, I'm using Eclipse:<br> <img src="images/demo/eclipseNewProject.jpg"><br> Make sure to change Location to the 
-    directory that you entered for for code gen directory above.
+    Create a new project in your Java IDE.  Here, I'm using Eclipse:<br> <img src="images/demo/eclipseNewProject.jpg"><br> Make sure to change Location to the 
+    directory that you entered for the Models code gen directory above.
   <p>
     Your project will look like this in Eclipse project explorer.<br> <img src="images/demo/eclipseAfterNewProject.jpg"><br>
   <p>
-    Set up the project to use Maven for building. Right click on the project name, then ...<br> <img src="images/demo/mavenConfig.jpg"><br>
+    Set up the project to use Maven for building. Do this by right clicking  on the project name, as follows ...<br> <img src="images/demo/mavenConfig.jpg"><br>
     <p>
-    We're now ready to run. We have the option to run as as single user, and as  multi user (client, client UI, server, webserver, and more ..). <br> The runtime
-    directory is used for running, and has subdirectories for each runtype.
+    We're now ready to run. We have the option to run as as single user, and as  multi user (client, client UI, server, webserver, and more). <br> The runtime
+    directory in the project  has subdirectories for each runtype to use as the &quot;working directory&quot;.
   <p>
     Running as a single user, do the following from Eclipse to set up to run as Single User mode:<br> 
     From Eclipse main menu, choose "Run/Run Configurations" and
@@ -106,7 +106,7 @@ Show the screen shots of final App here qqqqqqqqqqqqq
     Runtime directory:<br> The file single.ini is used for runtime config settings for single user runtime mode. It has settings for saving the data to file, and loads it into an in-memeory database at start up.  
     We'll switch over to a database later.  For now, the in-memory DB does everything you need for queries and saving. 
     The default config settings can be found in the source
-    code, located in directory com/empowhr/resource, see files values.properties and Resource.java for more info.<br><br>Now that we have it running, we'll go back to the model and do some designing.
+    code, located in directory com/empowhr/resource, see files values.properties and Resource.java for more info.<br><br>Now that we have it running, we'll go back to the model.
     <p>
     Let's add the main Objects, starting with Company.  Click on the workspace toolbar "create new Object" (far left).  This will create an empty object in the workspace<br>
     <img src="images/demo/newObject1.jpg">
@@ -121,10 +121,9 @@ Show the screen shots of final App here qqqqqqqqqqqqq
     <img src="images/demo/newProp1.jpg">
     <p> and add a abbrevName<br>
     <img src="images/demo/newProp2.jpg"><br>
-    Changed the UI column title.
+    Change the UI column title to &quot;Abbrev&quot;.
     <p>
-    Ok, now we have a Company Object, with properties.  Let's update a couple of other things based on that.
-    The default display for Company can be "Name".<br>
+    Ok, now we have a Company Object, with properties.  Let's update a couple of other things in the &quot;User Interface&quot; tab.<br>Select name as the &quot;Display Property&quot;.<br>
     <img src="images/demo/newObject2.jpg">
     <p>
     While we're in the UI tab, let's go ahead and add the table columns for Company, and the Search properties.<br>
@@ -137,7 +136,7 @@ Show the screen shots of final App here qqqqqqqqqqqqq
         Search properties.
     
     <p>
-    The Company Object is now created with a few properties.  We can now add to the UI and test it.<br>
+    The Company Object is now created with a few properties.  We can now add to the Main  UI and test it.<br>
     Adding to the Application UI is done by going to the Model and choosing App UI tab.<br>
     Add a new node for "Company" by clicking the new button and using mouse to drag into position in the tree.  Change the name to "Company". <br>
     Click on the "Add ..." button and select Company from the popup.
@@ -151,10 +150,12 @@ Show the screen shots of final App here qqqqqqqqqqqqq
     directory where you are saving your Model. <br>example:  ./backup/202105011310_EmpowHR.obx
     <p> 
 
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run:<br>
+
 Click on menu item "Generators/Generate All" and regenerate the application, and rerun the config for EmpowHr.
 <br>
     <img src="images/demo/singleUser4.jpg"><br> 
-    This shows the Company search.<br>
+    This shows the Company search window.<br>
     <img src="images/demo/singleUser5.jpg"><br> 
     This shows the Company editor.<br>
     
