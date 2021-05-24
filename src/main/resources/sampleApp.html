@@ -1369,15 +1369,46 @@ Now, go to the "General III" tab and set the property path for picking an AwardT
 This is saying "a Company Campaign can be assigned a Company AwardType".<br>
 <img src="images/demo/link44.jpg"><br>
 <p>
-Before we rerun, let's go to AwardType and add a new "type":<br>
-<img src="images/demo/calcProp8.jpg"><br>
+Before we rerun, let's go to AwardType and add a new "type", "Campaign":<br>
+<img src="images/demo/prop19.jpg"><br>
 
-p>
+
+<p>
 <img src="images/demo/genrun.jpg"> ReGen &amp; Run:<br>
-Go to a Company Campaign and assign an AwardType to it.<br>
+Go to a Company Award Types, and create a new one.<br>
+<img src="images/demo/demo37.jpg"><br>
 
-qqqqqqqqqqqqqqqqqq
-demo pic qqqqqqqq
+<p>
+Go to Company Campaigns tab, select the Campaign, and assign an AwardType to it.<br>
+<img src="images/demo/demo38.jpg"><br>
+<p>
+
+One more thing, for completeness:<br>
+we want to add a new filter, so only AwardTypes with type=Campaign are able to be selected.
+<p>
+Select AwardType Object, and select the "Filters" tab.
+<br>
+Create new filter "campaignType".<br>  
+For "Dependent Properties" choose "type".<br>
+Select "code" tab, then "query" subtab, click "generate code", and update code to match:<br>
+<img src="images/demo/filter10.jpg"><br>
+<p>
+Select "code" tab, then "Filter" subtab, click "generate code", and update code to match:<br>
+<img src="images/demo/filter11.jpg"><br>
+
+<p>
+Now, let's use that new Filter.  Click on the Campaign.AwardType link, and make
+the following change:<br>
+<img src="images/demo/link45.jpg"><br>
+
+
+<p>
+<img src="images/demo/genrun.jpg"> ReGen &amp; Run:<br>
+Set a the AwardType for a Campaign, and notice the new Filter working.<br>
+
+
+qqqqqqqqqqqqqqqqqq 
+
 
 <p>
 
@@ -1387,6 +1418,8 @@ check point qqqqqqqq
 <p>
 It has the "completed" date and a link from Employee to Campaign.  Notice that this
 object is still forming a M2M relationship between Employees and Campaigns. 
+This "relationship pattern" of an extended M2M, along with the settings for other patterns are
+very useful for capturing information about the two outside objects. 
 
 
 
