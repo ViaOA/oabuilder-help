@@ -15,5 +15,15 @@ store in directory:  resource/images/*
  Goldish Color: #F7AC08
 
 
+sampleApp.html
+    used snagit for screen captures
+    
+    made copy of sampleApp.html, "sampleApp_WORD.html", and used MS WORD to edit
+        Word adds lots of extra markup, etc
+    when done, go to: https://html-cleaner.com/
+        click on menu "tools/source code" and paste Word's version of the html.
+            need to fix the top and bottom with "<bod> ...</body>" etc
+        
+
     
     
