@@ -14,8 +14,11 @@ store in directory:  resource/images/*
 
  Goldish Color: #F7AC08
 
+snagit/ Image/effects/Border
+    use shadow, then 1 px wide black border
 
-sampleApp.html
+
+editing sampleApp.html with Word
     used snagit for screen captures
     
     made copy of sampleApp.html, "sampleApp_WORD.html", and used MS WORD to edit

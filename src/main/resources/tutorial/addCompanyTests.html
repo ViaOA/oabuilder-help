@@ -1,0 +1,136 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Add Company Tests to Model</h3>
+
+
+<p>
+    <img src="images/demo/rule.jpg">&nbsp;BizRule: &nbsp;all employees need to pass a series of company tests, and each one
+    could have an AwardType. We can use this as an example to show another way to automate how Links work.
+  </p>
+  <p>Create a new Object "AppTest" and add Name (String, max: 50, display: 15), and add the properties for the UI display, search &amp; table columns.</p>
+  <p>
+    Create another property "document", type is "String Long", and check &ldquo;Html&rdquo; in the "Flags" tab.<br /> Create a new Link "Company has many AppTests", and
+    make it owned.
+  </p>
+  <p>Set up a new Link "AwardType has many AppTests", and set "create method AppTest.getAwardType" to no.</p>
+  <p>Set this new Link (General III tab) "Select AwardType from" to: "company.awardTypes".</p>
+  <p>
+    <br /> <img src="images/demo/object6.jpg">
+  </p>
+  <p>
+    We&rsquo;ll need to add a flag to AppTest to know if all Employees must take it.<br /> Add property "required" and type is "boolean". Use the "Flags" tab to check
+    "dont track Primitive null".
+  </p>
+
+
+
+ <p>
+    <br /> <img src="images/demo/rule.jpg>BizRule: all Employees need to take Company.Tests that are required.
+  </p>
+  <p>
+    <br /> Create a new Filter "Required", dependent property "required", and this for the code:<br /> <img src="images/demo/filter8.jpg"><br /> <img src="images/demo/filter9.jpg">
+  </p>
+  <p>
+    Now, we need to add support for an Employee.appTests that are automatically created if "Employee.company.apptests:required".<br /> To describe it another way: "An
+    Employee needs to take each required Company Test".
+  </p>
+  <p>Create a new Object "EmployeeAppTest", create Link "Employee owns many EmployeeAppTests".</p>
+  <p>Now, create a new Link "EmployeeAppTest has an AppTest, and is required". Set (General II tab) "Create method AppTest.getEmployeeAppTests" to no.</p>
+  <p>
+    Go back and click on "Employee.employeAppTest" Link and "General III" tab, and "Pick from link for creating EmployeeAppTests" to "appTest".<br /> <img
+      src="images/demo/link29.jpg"><br /> Go to "General II" tab, and set "Unique property for EmployeeAppTests" to
+    "appTest".
+  </p>
+  <p>
+    Ok, that was interesting. We need to do one more thing ... have all Company required Tests be assigned to Employees - let us see how that can be done - use the <strong><em>automatch</em></strong>,
+    which means to automatically create EmployeeAppTests for all Company.appTests that are required.<br /> <img src="images/demo/link30.jpg" alt="" width="787"
+      height="520" border="0" />
+  </p>
+  <p>
+    Click on EmployeeAppTest Object and update the UI tables columns - to use Employee &amp; AppTest<br /> <img src="images/demo/object7.jpg" alt="" width="700"
+      height="565" border="0" />
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg">ReGen &amp; Run and then we will recap before adding more.
+  </p>
+  <p>
+    Create a new Company AppTest.<br /> <img src="images/demo/demo30.jpg">
+  </p>
+  <p>
+    <br /> Now go to Employees tab, and all Employees for this Company will have the AppTest added. <img src="images/demo/demo31.jpg">
+  </p>
+  <p>
+    There is still something we need to add - we don&rsquo;t want an inactive Employee getting the Company required AppTest. <br /> We will do this next, but first let us
+    look at the code for Employee.employeeAppTests.<br /> <img src="images/demo/code8.jpg">
+  </p>
+  <p>
+    <img src="images/demo/discuss.jpg">&nbsp;Discuss &amp; Learn: the match info is stored in the Annotation, which is <em>metadata</em>
+    about the Employee used to manage the Employee.EmployeeAppTests. The getHub uses this to be able to get the EmployeeAppTests and keep them updated with the
+    Company.AppTests that are required ... matchHub uses property path "Company.appTests:required".
+  </p>
+  <p>
+    Let us make sure that inactive Employees don&rsquo;t get new AppTests. Click on the link Employee.employeeAppTests, then go to "Permissions" tab, and set the following:<br />
+    <img src="images/demo/link31.jpg">
+  </p>
+  <p>
+    Next, we need to make sure that an EmployeeAppTest that is completed is not removed. First, create a property for EmployeeAppTest.completed and make it a Date.<br />
+    We'll create a Callback for removing: click on the Link Employee.employeeAppTests,<br> click on "From Code", and then bottom tab
+    "Employee.employeeAppTestsCallback()".
+  </p>
+  <p>
+    Then set the code to match:<br /> <img src="images/demo/link32.jpg">
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg">&nbsp;ReGen &amp; Run, to see how adding a Company.AppTest is added to Employees when it
+    is required, and removed if it is not required ... unless the Employee has already completed it.
+  </p>
+  <p>
+    <img src="images/demo/review.jpg">&nbsp;Review: "A Company can set up Employee Tests that offer an AwardType". "If the Test
+    is required, then all active Employees will get it".<br /> We showed how to set up the Links, and how values in Company.AppTest automatically created matches in
+    Employee.employeeAppTests for active Employees. This also used a Callback to fine tune the rules.
+  </p>
+  <p>
+    <img src="images/demo/continue.jpg">Continue. Let&rsquo;s make the whole Employee Object disabled if the inactive is set -
+    except for unsetting the inactive.<br /> Go to Object Editor, click the "Permissions" tab, and set the Enabled Property to "inactive = false".
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg">&nbsp;ReGen &amp; Run, go to Company "Test Corp", "Employees" tab and set inactiveDate for
+    "John Doe".
+  </p>
+  <p>
+    You will notice that the UI for this Employee is disabled, including the &ldquo;inactive date&rdquo;. This keeps it from being re-activated by removing the inactive
+    date.<br /> To fix this, go to Model property Employee.inactive and create a Callback to allow it to be enabled.<br /> <br /> <img src="images/demo/prop16.jpg">
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg">&nbsp;ReGen &amp; Run, go to Company "Test Corp", "Employees" tab and see that you can
+    clear the inactiveDate for "John Doe".
+  </p>
+  <p>
+    <img src="images/demo/demo33.jpg">
+  </p>
+  <p>Now, we will set it up so that an Employee will get an AwardType once the EmployeeAppTest is completed.</p>
+  <p>
+    Here's an option: Add code to method EmployeeAppTest.setCompleted to add the AwardType to Employee.EmployeeAwards. Here is what it looks like.<br /> <img
+      src="images/demo/code9.jpg">
+  </p>
+  <p>
+    <img src="images/demo/review.jpg">&nbsp;The method isLoaded is built in and is used to know if an object is being
+    initialized/loaded.<br /> The method start &amp; end ServerOnly is so that the code will run on the main server. OA supports distributed models, and this is one of a
+    few methods used for objects to interact with how and where code is run. &nbsp;Other options that could also be used: 1: create a process that would do it and listen
+    for completed, 2: create a Trigger that would do it.<br /> <img src="images/demo/trigger1.jpg"<br /> <img
+      src="images/demo/trigger2.jpg"><br /> <img src="images/demo/trigger3.jpg"><br />
+    <br /> All three are valid solutions. The last two ideas are "outside" of the Object code, and might be preferred if you want to keep custom business code outside of
+    the Objects.
+  </p>
+  <p>
+    <img src="images/demo/checkpoint.jpg">CheckPoint #6 created here.
+  </p>
+  
+  
+
+</body>
+</html>

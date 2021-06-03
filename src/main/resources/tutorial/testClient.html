@@ -1,0 +1,28 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Test Client and Command Line Interface (CLI)</h3>
+ 
+  <p>Next let us look at how to create a "Test Client", which is a client application that can connect and interact with the Server.</p>
+  <p>We want to run the Server and have another program connect to it and select Employee John Doe.</p>
+  <p>
+    From Eclipse, go to "run configurations" and make a duplicate of your "EmpowHR client", then make the following changes.<br> 
+    <img src="images/demo/eclipse1.jpg"><br>
+    <p>
+    If you run it now, it will try to connect to a server and fail, since the server is not running. Run the server,
+    but first copy ObjectCache.bin &amp; data.bin from runtime/client/data to runtime/server/data. Then run the Server, and then run your testclient.
+  </p>
+  <p>
+    The testclient connected to the Server and then exited. Now, pull up file TestClientController.java, and make the following change:<br> 
+    <img src="images/demo/demo24.jpg"><br> 
+    <p>
+    Rerun and you will see console output showing the John Doe Employee object, and
+    then it will disconnect after 2 seconds.
+  </p>
+   
+  
+</body>
+</html>

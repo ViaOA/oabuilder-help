@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Discuss DataSource</h3>
+
+  <p>
+    <img src="images/demo/discuss.jpg" alt="" width="24" height="24" />&nbsp;Discuss &amp; Learn: Back to discussing databases ... the model objects are set up to work
+    with any datasource, all types and combinations. Currently, our demo application is using an in-memory datasource that supports sql/OQL and is persisted to xml, json,
+    java binary. The client apps are using a client datasource, which remotely interacts with the server's datasource. Caching is included, and "hinting" is used when
+    fetching data to make it more efficient when making a trip to another server or disk. For example, getting a Company is <em>smart</em> enough to know about other
+    information that will be needed close to the Company (reference data, other Companies, etc), and sends this with the request as "hints". The hints are based on the
+    object graph and how it is "wired" (used/configured) in the part of the application that is requesting data.
+  </p>
+  <p>
+    <strong>For example</strong>: a Company is using its LocationTypes to set the Company's Locations.locationTypes.<br /> If the Company X is not in memory (cache), then
+    it will be requested from datasource. If it is running on a client, then the datasource knows the server(s) to get Company from. The computer could be using a database
+    directly. Either way, it "looks" at how the Company will be used and is able to "hint" to "also send the Company.locationTypes, Company.locations, etc." if it has time.
+    Otherwise, there is a good chance it might be calling for it soon, so go ahead and have it ready. This allows it to be dynamic and smart about how and what is being
+    delivered and acts as a JIT (just in time) access for your model objects. The "goal" is to act like the objects are in the local cache.
+  </p>
+  <p>
+    <strong>Another example</strong>: selecting all Orders for an Employee, to display them and allow editing. The application code around this looks at how the model
+    objects are "wired"/connected and will see that the OrderItems, and other reference data could be needed (based on user navigation). When the method is called for
+    order.getOrderItems(), it will look at other unloaded reference on "order", and along with the other Orders close to this Order from the collection of Order objects
+    from the query.
+  </p>
+
+
+</body>
+</html>

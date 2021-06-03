@@ -1,0 +1,56 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Compile &amp; Run as Java program</h3>
+
+  <p>
+    &nbsp;Create a new project in your Java IDE. Here, I am using Eclipse:<br /> <img src="images/demo/eclipseNewProject.jpg" alt="" width="736" height="719" /><br />
+    Make sure to change Location to the directory that you entered for the Models code generator directory above.
+  </p>
+  <p>
+    Your project will look like this in the Eclipse project explorer.<br /> <img src="images/demo/eclipseAfterNewProject.jpg" alt="" width="458" height="370" />
+  </p>
+  <p>
+    Set up the project to use Maven for building. Do this by right clicking on the project name, as follows ...<br /> <img src="images/demo/mavenConfig.jpg" alt=""
+      width="806" height="837" />
+  </p>
+  <p>
+    We are now ready to run. We have the option to run as single user, and as multi-user (client, client UI, server, webserver, and more). <br /> The runtime directory in
+    the project has subdirectories for each runtype to use as the "working directory".
+  </p>
+  <p>
+    Running as a single user, do the following from Eclipse to set up to run as Single User mode:<br /> From Eclipse main menu, choose "Run/Run Configurations" and choose
+    option to create a new launch configuration<br /> Enter the following:<br /> <img src="images/demo/eclipseRunAsSingle1.jpg" alt="" width="741" height="465" /><br />
+    <img src="images/demo/eclipseRunAsSingle2.jpg" alt="" width="741" height="465" /><br /> This is now ready to run.
+  </p>
+  <p>
+    Running the new App looks like this.<br /> <img src="images/demo/singleUser1.jpg" alt="" width="558" height="321" />
+  </p>
+  <p>
+    Click on toolbar button &ldquo;Application&rdquo;.<br /> <img src="images/demo/singleUser2.jpg" alt="" width="558" height="321" />
+  </p>
+  <p>
+    Click on menu item &ldquo;Help&rdquo;.<br /> <img src="images/demo/singleUser3.jpg" alt="" width="377" height="312" />
+  </p>
+
+  <p>
+    <br /> This is starting point, that will expand as we add and change the model.<br /> Quick note: this same application can be ran as multiuser and split into
+    multiple services at any time. For now, we will use the single user runtime option.
+  </p>
+  <p>
+    The runtime directory looks like this.<br /> <img src="images/demo/singleRuntimeDirectory.jpg" alt="" width="1156" height="480" />
+  </p>
+  <p>
+    Runtime directory:<br /> The file single.ini is used for runtime config settings for single user runtime mode. It has default settings for saving the data to file, and
+    loads it into an in-memory database at start up. We will switch over to a database later. For now, the in-memory DB does everything you need for queries and saving. The
+    default config settings can be found in the source code, located in directory com/empowhr/resource, see files values.properties and Resource.java for full listing and
+    more info.<br /> <br /> <
+    
+  </p>
+
+
+ </body>
+ </html>

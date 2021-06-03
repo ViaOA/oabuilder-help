@@ -1,0 +1,20 @@
+
+
+
+
+  Event start/end date used by calendar.</p>
+
+
+  <p>discuss distributed ... run as server and clients show rest get sib data remoting diagram tunnelling http rest multiplexer socket remoting smart dynamic
+    references, object graph messaging or remoting.</p>
+
+
+  <p>
+    start layered diagram showing whiteboard qqqqqqqqqqq 
+    How do emp get awards ... create an CompanyEvent that has employees, that will auto give Emps an AwardType equal to
+    CompanyEvent.awardType. 
+    
+    The next Rule is that only a manager can assign an Employee and AwardType. 
+    
+    review codebase maven OA dependencies location.employees ....
+    

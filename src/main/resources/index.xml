@@ -4,10 +4,16 @@
          "http://java.sun.com/products/javahelp/index_1_0.dtd">
 
 <index version="1.0">
+    <!-- 
+   
     <indexitem text="open">
         <indexitem text="openA" target="oabuilder.openA"/>
     </indexitem>
     <indexitem text="new" target="oabuilder.new"/>
     <indexitem text="save" target="oabuilder.save"/>
+    
+     -->
+    <indexitem text="tutorial" target="tutorial"/>
+    
 </index>
 

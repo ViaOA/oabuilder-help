@@ -1,0 +1,35 @@
+
+
+body {
+    margin: 8;
+    /* border-width: 13; border-style: solid; border-color: red; */
+    padding: 6;
+    font-family: serif;
+    font-size: 16pt;
+}
+
+td p {
+    padding-top: 12;
+}
+
+
+/*
+
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+
+    <br><br> 
+    <img src='images/editMethod2.jpg'><br>
+    <br><hr><br><br><br> 
+
+
+    <div style='padding-left: 25'>
+A: .<br>
+B: .<br>
+    </div>
+
+*/

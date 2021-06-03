@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Web Server</h3>
+  <p>
+    While we have the server running, let us use the browser to see some features of the webserver. <br /> The server uses embedded Jetty for a zero admin webserver. It is
+    configured as a high end webserver with built-in services, including Java Server Pages, web services (SOAP), remoting through http, REST API, Swagger/OpenAPI, security,
+    and many more features.
+  </p>
+  See JettyController.java to check out how it is setup to run as an embedded server.
+  <br>
+   <img src="images/demo/webserver.jpg"/><br>
+  <p>
+  The Application can also be ran as a webserver only, so that the application can be divided into "micro-services".
+  Multiple instances can be ran, and each instance will "know" how to connect to the server application.
+  <p> 
+  To do this, create another run type using the runtime/webserver directory and change the param to "webserver".
+
+   <img src="images/demo/webserver1.jpg"/><br>
+   <img src="images/demo/webserver2.jpg"/><br>
+
+  <p>
+  Run the Server first, and then start up a webserver instance.
+  <p>
+  To start multiple instances of the webserver on your computer, you'll need to start each one on a different port number.
+  This can be done by creating more then one runtime/webserver directories (webserver1,2,3...) and edit the webserver.ini to change the port. 
+  <p>
+  <img src="images/demo/webserver3.jpg"/><br>
+  <p>
+  This shows the Server and a Webserver running.<br>
+  <img src="images/demo/webserver4.jpg"/><br>
+
+
+</body>
+</html>

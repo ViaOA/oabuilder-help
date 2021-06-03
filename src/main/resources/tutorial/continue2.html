@@ -1,0 +1,50 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Review &amp; continue</h3>
+
+  <p>
+    <img src="images/demo/review.jpg">Review: We have added Company.Campaigns. <br>
+  <p>Next, let us go in fast forward and layout a few groups of the Objects needed: Employees, Awards, and Items. Then we will connect them together and start filling
+    in details.
+  <p>
+    Here is the <i>story</i> - our customers are Companies, that have Locations, that have Employees. These Employees receive Awards, that can be redeemed for Items. The
+    Items are in a Catalog, that is organized into Sections. Each Award has an AwardType, that is associated with the Catalog that can be used to choose an Item from. Each
+    Item can have options (ex: color, size, etc).<p>
+  
+  <img sr c="images/demo/checkpoint.jpg">&nbsp;CheckPoint: you can use the saved Model from "checkpoints/2/EmpowHR.obx", that
+    includes these new Objects.
+  </p>
+  <p>
+    <img src="images/demo/model1.jpg"><br /> 
+  </p>
+  <p>This is the design "mode" that you can be in when talking through the business requirements and building a model for it. The next "block" of changes will be for
+    the shopping cart and creating and managing employee Orders. For now, we will zoom in and get this last block defined and tested.</p>
+  <p>
+    Color code the main Objects to green, to have them stand out, and have the other Objects unflagged so that they are gray.<br> 
+    <img src="images/demo/model2.jpg">
+  
+  
+  <p>
+    Starting with Employee, we'll add the following properties.<br /> 
+    <img src="images/demo/model3.jpg"><br> 
+    The password will use a one-way encryption and needs to allow for some "bloat", so the size is set to 70.
+  </p>
+  <p>Create a link for "Location.employees" (one2many). This is not an owned link, since an Employee can be moved to another Location. We do want to make sure that
+    Employees and the Location must be in the same Company. Otherwise, an Employee could be added to a Location in a different Company. To define this, go to the Link tab
+    "General III" and set the equal property value for Location and Employee to be the common Company.
+    
+  
+  <p>
+  Location.Company &amp; Employee.Location.Company. This tells the Model that they both must match Company for it to be valid
+  <p>
+    <img src="images/demo/link18.jpg"><br>
+  </p>
+ 
+  
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Continue defining Model</h3>
+
+  <p>
+    Now, create the following three new Objects:<br /> click the new Object button on the workspace toolbar, set the Object name, drag object to match screen shot. <br />
+    then select all three (mouse drag to rubber band around them), and select a color green for them. <img src="images/demo/newObjects.jpg" alt="" width="635" height="236" />
+  </p>
+  
+  
+  <p>Next, create the relationships between these Objects, starting with LocationType &ndash;</p>
+  <p>
+    &nbsp;<img src="images/demo/rule.jpg" alt="" width="23" height="26" />BizRule: "<em>A Company has many of its own Location Types</em>", which is used to describe the
+    names of a company's types of locations. "own" means that the Location Types belong to a single Company, and not shared with other Company ... each Company has its own
+    Location Types. For example: Region, Territory, City, ...
+  </p>
+  <p>
+    <br /> <img src="images/demo/link1.jpg" alt="" width="538" height="261" />
+  </p>
+  <p>
+    Let us change the relationship to "owned", which means that it is only for the Company that created it, and they are treated as an aggregate (one unit).<br /> <img
+      src="images/demo/link2.jpg" alt="" width="514" height="378" />
+  </p>
+  <p>
+    We need one more thing for this, to be able to keep the sort order. To do this, we create a property that is a number, so create a new Property, name it "seq", set type
+    as "int" <br /> <img src="images/demo/prop1.jpg" alt="" width="474" height="447" />
+  </p>
+  <p>
+    <br /> ... and then set the "seq" flag.
+  </p>
+  <p>
+    <img src="images/demo/prop2.jpg" alt="" width="637" height="342" /><br /> This will tell it to use this property to keep the sort order, so that it can make sure to
+    load it in the same order.
+  </p>
+  <p>
+    Now, let us use the "seq" property for the link ...<br /> <img src="images/demo/link3.jpg" alt="" width="466" height="488" /><br /> The Company.LocationTypes will
+    now be auto sequenced in the order that users position them.<br /> You will notice that the link shows a "S" icon.
+  </p>
+  <p>
+    Note: "Company.LocationTypes" is a <em>property path</em>, an important concept for object graphs.
+  </p>
+  <p>
+    <img src="images/demo/link4.jpg" alt="" width="498" height="204" />
+  </p>
+  <p>
+    Next, add a couple of things to LocationType, and then we will <img src="images/demo/genrun.jpg" alt="" width="23" height="24" />regenerate and run again. <br /> Add
+    a new "name" property. Notice that for the "Lengths", 25 is max input size. The display size is the default size of textfield, and max display is to allow the textfield
+    to grow to a length (usually the max). The grid length is for the column in a table/grid listing. <br /> <img src="images/demo/prop3.jpg" alt="" width="474"
+      height="306" /><br /> Now, let us go to the Object UI, and set the display property to "name" (under "UI General" left sub tab). Under "Table Columns" subtab, add
+    name. For "Search Panel", add "name".
+  </p>
+  <p>
+    Go ahead and <img src="images/demo/genrun.jpg" alt="" width="23" height="24" />regen and run again.
+  </p>
+  <p>
+    <br /> <img src="images/demo/demo1.jpg" alt="" width="660" height="380" /><br /> We now have Company.LocationTypes defined. This will be used in the next step, when
+    we set up Company Locations, and how each Location will "<em>know</em>" the Location Type.
+  </p>
+  <h4>Create Company Locations</h4>
+  <p>
+    First step is to create an owned link between Company and Location - " <em>A Company has many Locations</em>" <br /> <img src="images/demo/link5.jpg" alt=""
+      width="338" height="453" />
+  </p>
+  <p>
+    We are now going to set up Locations so that it can be multi-level. This is done by creating a link to itself and flagging it as recursive.<br /> <img
+      src="images/demo/link6.jpg" alt="" width="515" height="587" />
+  </p>
+  <p>
+    Let us add the following to Location:<br /> create a property "name"<br /> <img src="images/demo/prop4.jpg" alt="" width="469" height="316" /><br /> change Location
+    UI to use "name" as display property ("UI General" left subtab), and add name to table ("Table Columns" left subtab) and search ("Search Panel" left subtab).
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg" alt="" width="23" height="24" />ReGen &amp; Run<br /> <img src="images/demo/demo2.jpg" alt="" width="660" height="380" />
+  </p>
+  <p>
+    Next, we want to know a Location's LocationType, based on its level in the location hierarchy. There are two options, the first would be to allow the selection from the
+    Location's Company list of LocationTypes (<em>Company.LocationTypes</em>). The second is to have it automatically pick LocationType based on Company.LocationTypes list
+    to match the position of the Location under Company (since Location is recursive/hierarchy). We will choose both, so that a Location.LocationType can be directly
+    selected, else it will default to the Company.LocationTypes with same position.<br /> &lt;![endif]&gt;
+  </p>
+  <p>
+    To do this, we will first create a Location.LocationType link. Right click the Location object and click new link, or click the link button on the workspace toolbar. <br />
+    Now we need to make a couple changes to the new Location.LocationType. First make sure the relationship is One LocationType, Many Locations, and that the names are
+    "Locations" and "LocationType".<br /> <img src="images/demo/link7.jpg" alt="" width="440" height="273" /><br /> Next, we need to have choices for LocationType use
+    the LocationTypes from Company.LocationTypes. This is done be going to the "General III" tab and setting the value for "Select LocationType from:" to
+    Company.locationTypes.<br /> <img src="images/demo/link8.jpg" alt="" width="754" height="352" />
+  </p>
+  <p>
+    Do a codegen and rerun the App<br /> <img src="images/demo/demo3.jpg" alt="" width="716" height="463" />
+  </p>
+  <p>One last thing: click on the link Company.locations, go to the "General II" tab, and set "Is Locations Recursive" to checked.</p>
+  <p>
+    <img src="images/demo/genrun.jpg" alt="" width="23" height="24" />ReGen &amp; Run: then add some data.
+  </p>
+  <p>
+    If you click on sidebar "Company Search", and then click the "new" button.<br /> <img src="images/demo/demo4.jpg" alt="" width="716" height="463" />
+  </p>
+  <p>
+    <br /> Set the name of this new Company to "TestCorp", abbrev name "TC". <br /> Click on the "Location Types" tab, and use the "New" button to create and match the
+    following list:<br /> <img src="images/demo/demo5.jpg" alt="" width="716" height="463" />
+  </p>
+  <p>
+    <br /> Close the Application, and rerun again. Click the toolbar "Application" button, then click the sidebar "Company", notice that no Companies are showing. Click
+    the "Company Search" button, and then click the "Run Search" button to get a list of all the Companies. Your new Company will be on the list, and under the Company side
+    bar.<br /> <img src="images/demo/demo6.jpg" alt="" width="701" height="463" /><br /> Note: the data is stored in the "runtime/single/data directory", in multiple
+    formats. They are also saved backup copies with files names that match.
+  </p>
+  <p>
+    To edit a Company, either click the Company showing in the sidebar "Test Corp", or you can click it in the search listing, and then pop it up by clicking the "Details
+    ..." button in the bottom toolbar.<br /> The first shows it inside the main window, the second will show it in a popup window.
+  </p>
+  <p>
+    Now, let us add a Location. Go to the following and add a new Location.<br /> <img src="images/demo/demo7.jpg" alt="" width="716" height="463" /><br /> Notice that
+    the Location list will be recursive and displayed in a tree table.
+  </p>
+  <p>
+    Next, we want to allow the Location that has not been assigned a LocationType to default to the specific value in the Company.LocationTypes.<br /> We will do this by
+    creating a "Calculated Link" between Location.LocationType and call it "Location.calcLocationType".
+  </p>
+  <p>
+    Right click on Location and choose the following:<br /> <img src="images/demo/link9.jpg" alt="" width="582" height="399" />
+  </p>
+  <p>
+    <br /> Let us set up the Link.<br /> <img src="images/demo/link10.jpg" alt="" width="471" height="430" />
+  </p>
+  <p>
+    <br /> Now, we need to set up the calculation. The first thing is to go to the "Properties" tab, and click "Add ..." to add property paths: "Company.locationTypes",
+    "Company.locations", and "locationType".
+  </p>
+  <p>
+    <br /> <img src="images/demo/link11.jpg" alt="" width="748" height="536" />
+  </p>
+  <p>
+    These are the property paths that are used to determine the correct Location.locationType, and needs to be recalculated if any of the values change. <br /> <img
+      src="images/demo/link15.jpg" alt="" width="287" height="288" />
+  </p>
+  <p>
+    Go to the "From Code", and add the code that will be used for the calculation. Click the "Generate Code" to have a template created to enter code.<br /> <img
+      src="images/demo/link12.jpg" alt="" width="448" height="289" />
+  </p>
+  <p>
+    <br /> Enter code, that shows that it first checks to see if a LocationType is assigned, else it will determine based on the Company.LocationTypes. <img
+      src="images/demo/link13.jpg" alt="" width="469" height="334" />
+  </p>
+  <p>
+    <img src="images/demo/review.jpg" alt="" width="27" height="26" />Review: We now have Company.Locations, that can be a hierarchy. The Company has a list of
+    LocationTypes, that can be directly assigned to a Location, or use the correct value from Company.LocationTypes.
+  </p>
+  <p>
+    <br /> Let us add the Location.caclLocationType to the Location table columns.<br /> <img src="images/demo/link14.jpg" alt="" width="865" height="448" />
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg" alt="" width="23" height="24" />ReGen &amp; Run<br /> <img src="images/demo/demo8.jpg" alt="" width="716" height="463" /><br />
+    The Location.calcLocationType will either be the assigned LocationType, or if empty (null) it will be the same as the Company.LocationTypes(pos), where pos is the
+    position of this Location in the Company.Location hierarchy.
+  </p>
+
+  
+</body>
+</html>

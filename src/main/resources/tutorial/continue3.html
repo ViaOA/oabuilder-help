@@ -1,0 +1,98 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Continue building Company &amp; Locations</h3>
+
+  Set up another company "ABC Company", with one location type, and then add one location.<br> 
+  <img src="images/demo/demo19.jpg"><br> 
+  If you go to the "Search Employees" tab and do a search, there will not be any results. Select the "Test Company" and redo the search to see"John Doe".
+  </p>
+  <p>Go ahead and create an employee for "ABC Company" main location with name "Mary Smith".</p>
+  <p>
+    Let us make a few changes to Employees before moving on. Add new properties for hireDate, inactiveDate, inactiveReason.<br>
+     <img src="images/demo/prop9.jpg"><br> 
+     <p> Make inactiveReason visible only when there is an inactiveDate.<br> 
+     <img src="images/demo/prop10.jpg"><br>
+  </p>
+  <p>
+    Make the Employee recursive by recreating a self-reference/link, so we can know the management structure. Use the link button to do this, then go to "General II" tab
+    and set "Is Employees recursive?" to yes.<br> 
+    <img src="images/demo/link21.jpg"><br>
+  </p>
+  <p>
+    We also need to make sure that Employees belong to the same Company.<br> 
+    <img src="images/demo/link22.jpg"><br>
+  </p>
+  <p>
+    Also, make the Link Location.Employees recursive.
+  
+  <p>
+    <img src="images/demo/genrun.jpg">&nbsp;ReGen &amp; Run: make sure we can get "John Doe" some help from a new Employee. <br>
+    <img src="images/demo/demo20.jpg"><br>
+  </p>
+  <p>Ok, the Location.employees being recursive is not going to work for us. For example an Employee that works for a manager under a different location. Instead, we
+    need to have Company.employees as a recursive/hierarchy, and Locations.employees as the Employees that work from that Location.
+  <p>We will undo a couple of things and move forward from there.
+    <p>Go back to the Location.employees link and set "Is Employees recursive" to no.
+  <p>Go back to the Employee.employees link and change the name from "parentEmployee" to "managerEmployee".
+  <p>Create a One2Many link for Company.Employees. Set "Does Company owns Employees" to true. "Is Employees recursive" should be yes.
+  <p>
+    Also, go back to "General I" tab and set the "Cache Size:" for Employees to 100. This sets the amount of Company.employees collections (Hub) that will use cached. More
+    on this later.<br /> <br /> Delete the Link for Company.searchEmployee - and we will next recreate it using "Company.Employees" as the property path. Right click
+    Company, "Create new Search Link ..." and select "Company.employees".
+  </p>
+  <p>Make the following change to the Location.employees link: click "General III" tab, and set "Select Location from" to "company.locations".</p>
+  <p>
+    &nbsp;<img src="images/demo/review.jpg"> Review: we just did some <em>rewiring</em>, so that we have "a Company owns a
+    hierarchy of Employees", and Employees "have a Location".
+  </p>
+  <p>
+    <br /> <img src="images/demo/model9.jpg" alt="" width="728" height="288" border="0" />
+  </p>
+  <p>
+    <img src="images/demo/checkpoint.jpg" alt="" width="22" height="29" border="0" />CheckPoint #4 was created here.<br>
+  </p>
+  
+   <p>
+    <br /> Here is what Company is looking like now.<br /> <img src="images/demo/demo21.jpg">
+  </p>
+  <p>Couple of notes: the demo application is being generated straight from the model. The code generators have all the information to do this, including the custom
+    code that we added.</p>
+  <p>
+    The recursive "Company.employees have employees" has multiple ways for viewing the list. The tree view is used for Hierarchy List, and the Flattened list shows all
+    Employees in the hierarchy as a single list.<br /> <img src="images/demo/demo22.jpg">
+  </p>
+  <p>
+    Before moving on, let us look at the model.<br /> <img src="images/demo/model10.jpg"><br /> This shows how the Locations
+    and Employees are set up so that they are under the same Company.
+  </p>
+ 
+  
+    <p>
+    <img src="images/demo/rule.jpg">&nbsp;BizRule: we want a list of Employees that do not have a HireDate assigned.
+  </p>
+  <p>
+    This can be done using a simple query to get the list. But if we want to have a list that is kept real time updated, then we can create a Filter that will do this.
+    &nbsp;Click on the Employee Object, select the "Filter" tab, click "New" button, and make the following Filter.<br /> 
+    <img src="images/demo/filter1.jpg">
+  </p>
+  <p>
+    Go to the "Dependent Properties" and add "HireDate". <br /> Go to the Code tab, and add the following for the Query. This is the query it will use to initially load
+    from datasource.<br /> <img src="images/demo/filter2.jpg" alt="" width="472" height="281" border="0" /><br /> Now add the Java code.<br /> 
+    <img src="images/demo/filter3.jpg"><br> ... also fix a typo, change "HireDate == null" to "hireDate == null".
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg"/>Regen and rerun:
+  </p>
+  <p>
+    Now give "John Doe" a hireDate. Change the Table to "flattened", and choose "No Hire" from filter dropdown.<br /> 
+    <img src="images/demo/demo23.jpg"><br> 
+    That's a simple Filter, but it gives you the idea of how it works. A filter can be created on anything, and it will be dynamically
+    updated.
+  </p>
+  
+</body>
+</html>

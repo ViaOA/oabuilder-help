@@ -36,7 +36,6 @@
 <!--Using OABuilder -->
     <mapID target="using" url="using.html" />
     <mapID target="creating" url="creating.html" />
-    <mapID target="sampleApp" url="sampleApp.html" />
     <mapID target="planning" url="planning.html" />
     <mapID target="creatingnew" url="creatingnew.html" />
     <mapID target="openmodel" url="openmodel.html" />
@@ -56,7 +55,46 @@
     <mapID target="runApplication" url="runApplication.html" />
     <mapID target="deployApplication" url="deployApplication.html" />
 
-
+<!--Tutorial -->
+    <mapID target="tutorial" url="tutorial/heading.html" />
+    <mapID target="sampleApp" url="tutorial/sampleApp.html" />
+    <mapID target="tutIntro" url="tutorial/intro.html" />
+    <mapID target="tutNewModel" url="tutorial/newModel.html" />
+    <mapID target="tutCompileRun" url="tutorial/compileAndRun.html" />
+    <mapID target="tutAddFirstObject" url="tutorial/addFirstObject.html" />
+    <mapID target="tutFirstCodeReview" url="tutorial/firstCodeReview.html" />
+    <mapID target="tutContinueDefiningModel" url="tutorial/continueDefiningModel.html" />
+    <mapID target="tutRunAsMultiUser" url="tutorial/runAsMultiUser.html" />
+    <mapID target="tutReactive" url="tutorial/reactive.html" />
+    <mapID target="tutDiscussDataSource" url="tutorial/discussDataSource.html" />
+    <mapID target="tutWebServer" url="tutorial/webserver.html" />
+    <mapID target="tutRest" url="tutorial/rest.html" />
+    <mapID target="tutSwagger" url="tutorial/swagger.html" />
+    <mapID target="tutCheckPoints" url="tutorial/checkpoints.html" />
+    <mapID target="tutContinue1" url="tutorial/continue1.html" />
+    <mapID target="tutCallback" url="tutorial/callback.html" />
+    <mapID target="tutModelChanges" url="tutorial/modelChanges.html" />
+    <mapID target="tutContinue2" url="tutorial/continue2.html" />
+    <mapID target="tutCalcProperty" url="tutorial/calcProperty.html" />
+    <mapID target="tutSearch" url="tutorial/search.html" />
+    <mapID target="tutSecurity" url="tutorial/security.html" />
+    <mapID target="tutContinue3" url="tutorial/continue3.html" />
+    <mapID target="tutTestClient" url="tutorial/testClient.html" />
+    <mapID target="tutNewHireCert" url="tutorial/newHireCert.html" />
+    <mapID target="tutNewImage" url="tutorial/newImage.html" />
+    <mapID target="tutFixNewImage" url="tutorial/newImageFix.html" />
+    <mapID target="tutDbScript" url="tutorial/genDbScript.html" />
+    <mapID target="tutCreateLink" url="tutorial/createLink.html" />
+    <mapID target="tutCreateLinkMerger" url="tutorial/createLinkMerger.html" />
+    <mapID target="tutAddCompanyTests" url="tutorial/addCompanyTests.html" />
+    <mapID target="tutAddCampaigns" url="tutorial/addCampaigns.html" />
+    
+    
+    
+    
+    
+    
+    
 
 
 

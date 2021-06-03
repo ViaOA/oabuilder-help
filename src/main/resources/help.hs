@@ -22,6 +22,7 @@
     <data>toc.xml</data>
   </view>
 
+<!-- 20210603 commented out until done qqqqqqqqqqqq 
   <view>
     <name>Index</name>
     <label>Index</label>
@@ -37,6 +38,8 @@
       JavaHelpSearch
     </data>
   </view>
+-->  
+  
   
 <!-- 2007/05/18 commented out, JavaWebstart throws a security exception
                 since this will store favorites in an external xml file.

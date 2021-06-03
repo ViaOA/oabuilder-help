@@ -1,0 +1,79 @@
+<html>
+<head>
+<link rel="stylesheet" href="oa.css" />
+</head>
+<body>
+
+  <h3>Create an Employee Search</h3>
+
+  We have Location.employees, but we need to add a few "user friendly" items. First, there is no way to find an Employee without "drilling" down from Company and Locations.
+  We will create an Employee Search from Company. Right click the Company Object in the workspace, and choose "Create new Search Link ...".
+  <br>
+  <img src="images/demo/link19.jpg"><br>
+  
+  <p>
+  A Search Link is used to add a search from one object to another, by using the property path (locations.employees) that connects them. The search logic will know
+    to search for Employees using this path by using a Filter.
+    <br>
+  
+    <img src="images/demo/link20.jpg"><br>
+  
+  <p>
+    <img src="images/demo/genrun.jpg">&nbsp;ReGen &amp; Run: and bring up your Company (using Company Search), and then use the "Search Employees" tab to find John
+    Doe.
+  </p>
+  <p>There are a few things to notice in the UI, and how it directly works as Modeled.</p>
+  <p>
+    From the search for John Doe, from the Company, you can popup Employee using the "Details ..." button. This shows the Company.Employees relationship that is being used.<br>
+    <img src="images/demo/demo16.jpg"><br>
+  </p>
+
+
+
+
+<p>From there you can click on the Location "Details ..." button, and then see John Doe in the "Employees" tab.</p>
+  <p>
+     The UI navigation follows the Model's Objects &amp; Links. The Application is treating this as an Object Graph, which means the Objects are not just a copy of
+    data from a record in database, but kept in sync and distributed across systems.
+  </p>
+  <p>
+    Changing "John Doe" to "John Dox" from the Location's Employee table shows how the "other" John Doe is also changed. This is because the program and Object Graph are <em>smart
+      enough</em> to be using the same instance. Any other part of the Application (and other servers) that have Employee John Doe (id=1) will use the same object and not create
+    a duplicate.<br /> <img src="images/demo/demo17.jpg" alt="" width="716" height="463" border="0" />
+  </p>
+  <p>The Company Employee Search is helpful, but an Admin would want to search all Employees. Let us create a full system Employee search, and update the UI with a new
+    title bar button for searching. &nbsp;We do this from the Model / App UI tab. We are first going to change the UI hierarchy so that it will have another layer/level.</p>
+  <p>The UI generator looks at the "depth" of the UI tree to determine how to build the navigation layout. The top level is for main toolbar, next level is side bars,
+    and additional levels will allow expanding the side levels.</p>
+  <p>Click on the new button (bottom left) to create a new node and then drag-n-drop it to under the Application (root node). Name this node "Company" and then drag the
+    other "Company" node under it.</p>
+  <p>
+    Create another new node, and name it "System" and drag/move it to Application. Click on the new node and name it "System" for now. Drag node "Application" and drop on
+    "System" node.<br /> <img src="images/demo/model4.jpg" alt="" width="627" height="262" border="0" />
+  </p>
+  <p>
+    <img src="images/demo/genrun.jpg" alt="" width="23" height="24" border="0" />&nbsp;ReGen &amp; Run: make sure it is still working :)
+  </p>
+  <p>
+    <img src="images/demo/demo18.jpg">
+  
+  <p>
+    <img src="images/demo/checkpoint.jpg">CheckPoint #3 was created. See instructions above on where to copy and rename the
+    files.
+  
+  <p>
+  From the &ldquo;Model Editor&rdquo;, &ldquo;App UI&rdquo; tab, create a main toolbar Search button.</p>
+  <p>
+    Create a new node, naming it "Search", and place it under Application. <br /> <img src="images/demo/model5.jpg">
+
+  <p>
+     Add a Search node and make it a child under Search. <br /> Now, use the add button (bottom, see arrow) to add all the following: 
+     <br> 
+     <img src="images/demo/model6.jpg">
+
+  <p>
+    It will look like the following: <br /> <img src="images/demo/model7.jpg"><br /> We might not want  Company set up as "List All", but it is good for now.
+ 
+
+</body>
+</html>
