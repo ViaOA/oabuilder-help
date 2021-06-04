@@ -7,7 +7,7 @@
   <h3>Add a new hire Employee Certificate</h3>
 
   <p>
-    <img src="images/demo/rule.jpg">&nbsp;BizRule: we want to be able to create a "New Hire Certificate", welcoming new
+    <img src="images/demo/rule.jpg"> BizRule: we want to be able to create a "New Hire Certificate", welcoming new
     Employees to the Company.
   
   <p>
@@ -24,23 +24,20 @@
     <img src="images/demo/genrun.jpg"> Regen and rerun as Single User.
 
   <p>
-    <img src="images/demo/demo25.jpg"><b/> 
-    We will go over all the things that you can do with the editor in another
-    tutorial. For now, it is worth noting that you can have a background image, which would make the certificate look great. Other data tags can be used to dynamically
-    generate a report or pdf. Right click inside the editor to see all of the options.
+    <img src="images/demo/demo25.jpg"><br> 
+    We will go over all the things that you can do with the editor in another tutorial. For now, it is worth noting that you can have a background image, which would make the certificate look great. Other data tags can be used to dynamically generate a report or pdf. Right-click inside the editor to see all of the options.
 
   <p>
-    What we want to do next is to allow Locations to have their own employee certificate, that would be used for instead of the (default) one that is in the Company.
+    What we want to do next is to allow Locations to have their employee certificate, which would be used for instead of the (default) one that is in the Company.
     <br>
-    Create the same project "certificate" in Location as you did for Company. Use copy and paste to save time. From the left side, right click on the Company.certificate
-    property and choose copy. Then right click on Location and choose paste.
+    Create the same project "certificate" in Location as you did for Company. Use copy and paste to save time. From the left side, right-click on the Company.certificate property and choose copy. Then right-click on Location and choose paste.
 
   <p>
     <img src="images/demo/genrun.jpg"> Regen and rerun as Single User, and see how the Location now has a Certificate tab.
 
   <p>
-    Now we want to be able "know" what certificate to use for an Employee. Both the Company and Location have a certificate property. We want to have the Employee.location
-    checked first, and if empty then keep checking the parent Locations since it recursive, before using the Company.certificate.
+    Now we want to be able to "know" what certificate to use for an Employee. Both the Company and Location have a certificate property. We want to have the Employee.location
+    checked first, and if empty then keep checking the parent Locations since it is recursive, before using the Company.certificate.
   
   <p>
     To handle this, we will create a calculated property in Employee for "certificate" and use a finder to get the value. Click on the Employee Object and create a new

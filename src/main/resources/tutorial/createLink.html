@@ -7,8 +7,7 @@
   <h3>Create a new Link between Employee and Award</h3>
 
 
-  <img src="images/demo/continue.jpg">&nbsp;Let us continue with the Model. For the App requirements: "A Company can give Awards
-  to its Employees". We already have AwardType and EmployeeAward in the Model, so now we can link them up.
+  <img src="images/demo/continue.jpg"> Let us continue with the Model. For the App requirements: "A Company can give Awards to its Employees". We already have AwardType and EmployeeAward in the Model, so now we can link them up.
   
   <p>
     <br> Create a link between Company and AwardType, to have a one2many Link (the default). Set this link so that "Company owns AwardTypes".<br> 
@@ -18,31 +17,31 @@
     Create a new "name" property for AwardType: click the new button, and then use the copy autocomplete to make a copy of the Campaign.name property.<br> 
     <img src="images/demo/prop14.jpg">
     <br> 
-    Use the Object Editor to setup the UI for AwardType, setting the table columns and the search properties.
+    Use the Object Editor to set up the UI for AwardType, setting the table columns and the search properties.
   
   <p>Add a new property to AwardType named "type", as an "int". Go to the "Name/Values" tab and add the following: "Unknown", "Service", "Achievement", "Other".
   <p>
     <br> Go ahead and add this property to your UI table columns and search.<br> 
-    <img src="images/demo/prop15.jpg">
+    <img src="images/demo/prop15.jpg"><br>
   
   <p>
     <img src="images/demo/genrun.jpg"> Regen and rerun.
   
   <p>
-    <img src="images/demo/demo27.jpg" alt="" width="824" height="463" border="0" />
+    <img src="images/demo/demo27.jpg"><br>
   
   <p>
     We want to be able to add an AwardType to Employee. Create a link between Employee and EmployeeAward (1toMany) ... "Employee can have many Awards".
     <br> Set "Does Employee <strong>own</strong> EmployeeAwards" to yes ("General II" tab). Fyi, setting the link to "owned" automatically makes other adjustments to the link.
   
   <p>
-    One last thing, we want the User to select a Company.AwardType to be able to create a new EmployeeAward. Go to "General III" tab, and "Pick from link for creating
+    One last thing, we want the User to select a Company.AwardType to be able to create a new EmployeeAward. Go to the "General III" tab, and "Pick from the link for creating
     EmployeeAwards", and set to AwardType.<br> 
-    <img src="images/demo/link26.jpg">
+    <img src="images/demo/link26.jpg"><br>
   
   <p>
     Create a link between AwardType and EmployeeAward (1toMany) ... "an Employee Award has an AwardType from the Company". Also, we don&rsquo;t need AwardType to have a
-    method for getting EmployeeAwards, so go ahead and set it to "no" - go to "General II" tab, and set "Create method AwardType.getEmployeeAwards" to no. Also, set "Is
+    method for getting EmployeeAwards, so go ahead and set it to "no" - go to the "General II" tab, and set "Create method AwardType.getEmployeeAwards" to no. Also, set "Is
     AwardType required" to yes. <br> 
     <img src="images/demo/link23.jpg"><br>
   
@@ -59,17 +58,17 @@
   <p>
     As you can see, the relationships between the objects are also used within other links. These patterns are used throughout modeling, and OABuilder makes it easy to
     incorporate them to define business rules and logic.<br> 
-    <img src="images/demo/link27.jpg" >
+    <img src="images/demo/link27.jpg" ><br>
   
   <p>Set up EmployeeAward&rsquo;s UI settings for table columns and search.</p>
   <p>
     I also made changes to the Model UI. &nbsp;I changed the first Company to "List All", and the second to a "Company Search".<br> 
-    <img src="images/demo/model14.jpg">
+    <img src="images/demo/model14.jpg"><br>
   </p>
   <p>Check out the Model "Changes" tab, to see all the changes that we made since we cleared them earlier. If we had an existing DB (JavaDB in this example), then we
     would need to update it with these changes. The code generator menu has a menu item for "SQL Changes Script ..." that would do this.
   <p>
-    <img src="images/demo/genrun.jpg">Regen and rerun.
+    <img src="images/demo/genrun.jpg"> Regen and rerun.
   
   <p>
     <img src="images/demo/demo28.jpg"><br> 

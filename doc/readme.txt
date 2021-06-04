@@ -18,7 +18,9 @@ snagit/ Image/effects/Border
     use shadow, then 1 px wide black border
 
 
-editing sampleApp.html with Word
+** use Grammarly to edit 
+
+OLD: editing sampleApp.html with Word
     used snagit for screen captures
     
     made copy of sampleApp.html, "sampleApp_WORD.html", and used MS WORD to edit

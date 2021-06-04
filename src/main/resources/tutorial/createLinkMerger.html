@@ -8,63 +8,59 @@
 
 
  <p>
-    Ok, I need to come up with a new requirement that will need a "Link Merger". A Link Merger is used to create a collection from a property path.<br /> For this example,
+    Ok, I need to come up with a new requirement that will need a "Link Merger". A Link Merger is used to create a collection from a property path.<br> For this example,
     we want to have a "list of open Awards from Employees who are inactive".
   </p>
   <p>To do this, we will create a filter on Employee, add processed date on EmployeeAward to know that it is no longer "open", and create a filter on EmployeeAward.</p>
-  <p>Click on EmployeeAward and add property "processed" with type "date". This will be used to know if the Employee&rsquo;s Award is still open or not.</p>
+  <p>Click on EmployeeAward and add property "processed" with type "date". This will be used to know if the Employee's Award is still open or not.</p>
   <p>
-    Click on Employee, go to the Object Editor "Filter" tab, and create a new filter and name it "inactive".<br /> For "dependent properties", we only need "inactiveDate",
+    Click on Employee, go to the Object Editor "Filter" tab, and create a new filter and name it "inactive".<br> For "dependent properties", we only need "inactiveDate",
     and for code:
   </p>
   <p>
-    Set the code to match the next two screen shots:<br /> <img src="images/demo/filter4.jpg" alt="" width="444" height="247" border="0" />
+    Set the code to match the next two screen shots:<br> <img src="images/demo/filter4.jpg"><br>
   </p>
   <p>
-    <br /> <img src="images/demo/filter5.jpg" alt="" width="440" height="245" border="0" />
+    <br> <img src="images/demo/filter5.jpg"><br>
   </p>
   <p>
-    Click on EmployeeAward, go to the Object Editor "Filter" tab, and create a new filter and name it "open".<br /> For "dependent properties", we only need "processed",
-    and for the code, use the following:<br /> <img src="images/demo/filter6.jpg" alt="" width="429" height="245" border="0" /><br /> <img src="images/demo/filter7.jpg"
-      alt="" width="435" height="247" border="0" />
+    Click on EmployeeAward, go to the Object Editor "Filter" tab, and create a new filter and name it "open".<br> For "dependent properties", we only need "processed",
+    and for the code, use the following:<br> 
+    <img src="images/demo/filter6.jpg"><br> 
+    <img src="images/demo/filter7.jpg"><br>
   </p>
   <p>
-    Now, right click on Company and select "Create new Merger Link ...", which will bring up property path chooser. For the propet path, choose:<br /> <img
-      src="images/demo/link28.jpg" alt="" width="212" height="268" border="0" /><br /> "employees:inactive.employeeAwards:open" which means "for a Company, get the
-    EmployeeAwards that are not processed for Employees with an inactiveDate" <br /> It named the link "mergeEmployeeAwards", go ahead and change it to
+    Now, right click on Company and select "Create new Merger Link ...", which will bring up property path chooser. For the propet path, choose:<br> <img
+      src="images/demo/link28.jpg"><br> "employees:inactive.employeeAwards:open" which means "for a Company, get the
+    EmployeeAwards that are not processed for Employees with an inactiveDate" <br> It named the link "mergeEmployeeAwards", go ahead and change it to
     "mergeOpenEmployeeAwards". And change display to "Open Emp Awards".
   </p>
   <p>
-    <img src="images/demo/genrun.jpg">Regen and rerun, and let us see how this worked out.
+    <img src="images/demo/genrun.jpg"> Regen and rerun, and let us see how this worked out.
   </p>
   <p>
-    Go to the "Test Corp" Company and click on the "Open Emp Awards" tab. The list is empty. Now go to Employee "John Doe", and give him an inactive date, and a reason if
-    you want.<br /> Now go back to "Open Emp Awards" tab.<br /> <img src="images/demo/demo29.jpg">
+    Go to the "Test Corp" Company and click on the "Open Emp Awards" tab. The list is empty. Now go to Employee "John Doe", and give him an inactive date, and a reason if you want.<br> Now go back to "Open Emp Awards" tab.<br> 
+    <img src="images/demo/demo29.jpg"><br>
   
-  <p>So ... that is a Merger Link that uses a Property Path from one Object to another Object, and allows including Filters. The other thing to notice is that it is
-    real-time: a change that affects the property path will automatically keep the list updated - not by refreshing, but by adjusting based on changes. Running the server
+  <p>So ... that is a Merger Link that uses a Property Path from one Object to another Object and allows including Filters. The other thing to notice is that it is real-time: a change that affects the property path will automatically keep the list updated - not by refreshing, but by adjusting based on changes. Running the server
     and multiple clients would show this.</p>
   <p>
-    <img src="images/demo/discuss.jpg">&nbsp;Discuss &amp; Learn: pull up Company.java and go to method
-    "getMergeOpenEmployeeAwards()".<br /> <img src="images/demo/code7.jpg"><br> The method is a small amount of code, that
-    returns a list (collection) of EmployeeAwards. The annotation tells it the Property Path for the Merger. That is all that is needed to make this work.
+    <img src="images/demo/discuss.jpg"> Discuss &amp; Learn: pull up Company.java and go-to method
+    "getMergeOpenEmployeeAwards()".<br> 
+    <img src="images/demo/code7.jpg"><br> 
+    The method is a small amount of code, that returns a list (collection) of EmployeeAwards. The annotation tells it the Property Path for the Merger. That is all that is needed to make this work.
   
   <p>
-    Internally, it uses a HubMerger, which will use the Property Path to configure a tree structure that "knows" how to keep the list updated, by listening for specific
-    changes that affect the list. The things that it "listens" for are found by parsing the property path, and getting any additional "dependent property paths" (including
-    filters).  The HubMerger's tree structure is then able to be notified, which
-    allows it to know how to update the list.<br> 
-    The combination of Property Paths (PP), dependent PPs, and being able to <em>listen</em> is core to how reactive models
-    work, and is used in Software Patterns like Model/View/Control (MVC).
+    Internally, it uses a HubMerger, which will use the Property Path to configure a tree structure that "knows" how to keep the list updated, by listening for specific changes that affect the list. The things that it "listens" for are found by parsing the property path and getting any additional "dependent property paths" (including filters).  The HubMerger's tree structure is then able to be notified, which allows it to know how to update the list.<br> 
+    The combination of Property Paths (PP), dependent PPs, and being able to <em>listen</em> is core to how reactive models work, and is used in Software Patterns like Model/View/Control (MVC).
   
    <p>
-    Historically, there has been a problem scaling this to work with large amounts of data. The cost of <em>listening</em> is too high at a certain point. &nbsp;OA has been
-    able to scale this by using a combination of listening with some other unique techniques. The cost is reduced to a small size and stays small with large amounts of data
+    Historically, there has been a problem scaling this to work with large amounts of data. The cost of <em>listening</em> is too high at a certain point.  OA has been able to scale this by using a combination of listening with some other unique techniques. The cost is reduced to a small size and stays small with large amounts of data
     (objects). Another solution is "<em>reactive streams</em>", but there are boundaries and challenges when using them as the only solution.
 
 <p>
-<img src="images/demo/review.jpg">&nbsp;Review:
-   the solution ends up being a combination of observability through listeners, bubble up events, event streams, and tree structures like what Merger uses.
+<img src="images/demo/review.jpg"> Review:
+   the solution ends up being a combination of observability through listeners, bubble-up events, event streams, and tree structures like what Merger uses.
     Add remoting to the mix, and you have distributed synchronized object graphs. Sounds complicated, but the code is small and is built on a few core building blocks:
     Observable Object, Observable Collection, Collections that can be shared, Reflection, annotations, Object Serialization (all types, tech independent), Remoting,
     Communication, Persistence. 

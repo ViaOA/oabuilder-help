@@ -52,8 +52,10 @@
    </tocitem>
 
    <tocitem text="Tutorial" target="tutorial">
+        <!--
        <tocitem text="The sample Application" target="sampleApp"></tocitem>
-       
+        -->
+        
        <tocitem text="Introduction" target="tutIntro"></tocitem>
        <tocitem text="Create new Model" target="tutNewModel"></tocitem>
        <tocitem text="Compile &amp; Run" target="tutCompileRun"></tocitem>

@@ -16,8 +16,7 @@
     following new property "assignmentType", as type = "int",<br> under "Flags" tab, check "dont track primitive null",<br> and then match the "Name/Values" tab
     with the following:<br> <img src="images/demo/prop17.jpg"><br>
   <p>
-    Add another property "nominateCount", for the number of nominations needed if type is Nominated.<br> Since this property is only needed for "type=nominated", then
-    we only want it to be visible in that case.
+    Add another property "nominateCount", for the number of nominations needed if the type is Nominated.<br> Since this property is only needed for "type=nominated", then we only want it to be visible in that case.
   <p>
     Create a Calculated Property, "usesNominateCount", type is boolean, "Dependent Properties" needs to have "assignmentType", and "Code" should match this:<br> <img
       src="images/demo/prop18.jpg"><br>
@@ -37,23 +36,19 @@
     the application.
   <p>
     OABuilder lets you define a User object for the Model. This is the User that logs into the Application. This User could also be considered a "Context", which could be a
-    person, another computer system, process, etc. It is treated as a User, and the application has methods to get and set the User, that is accessible by the Model and all
-    the Application. Getting the <em>UserContext</em> returns who the current User is.
+    person, another computer system, process, etc. It is treated as a User, and the application has methods to get and set the User, that is accessible by the Model and all of the Application. Getting the <em>UserContext</em> returns who the current User is.
   <p>In this demo, we have been logging in as a User, and are able to navigate to most of the application data ... Companies, Campaigns, Employees, etc.
-  <p>We also want our customers (Companies) to allow their Employees to login, and for them to stay within their "area", which would be under the Company that they work
-    for, under their manager, and the rules set up based on that. So, we have two "user" sides to the Application. The first is the "our" company running the software, and
-    the other type of user are the Employees of our customers.
+  <p>We also want our customers (Companies) to allow their Employees to login, and for them to stay within their "area", which would be under the Company that where they work, under their manager, and the rules set up based on that. So, we have two "user" sides to the Application. The first is the "our" company running the software, and the other type of user are the Employees of our customers.
   <p>So far, we have been building the demo and using the internal User, and have been using a desktop application for the user interface.
   <p>We want to have other types of interfaces.
   <ul type="disc">
     <li>our customers, Company Employees, to have access through a website or mobile App.</li>
-    <li>API using REST and webservices, so that we can allow our Customers and Partners.</li>
-    <li>Other user within our company used to manager operations of business tasks. For example, shipping, receiving, communications, etc.</li>
+    <li>API using REST and web services, so that we can allow our Customers and Partners.</li>
+    <li>Other users within our company used to manage operations of business tasks. For example, shipping, receiving, communications, etc.</li>
   </ul>
   <p>To accomplish this, we have the Employee Object to allow our customers to have access, and will later be setting it up to drive a UI for this.
   <p>
-    <img src="images/demo/rule.jpg"> BizRule: allow Company Employees to login to a web or mobile App that allows them to manager their account and have limited
-    access to the employees that they manage. Also, we will want some Employees to have administrator access to their Company or Location.
+    <img src="images/demo/rule.jpg"> BizRule: allow Company Employees to login to a web or mobile App that allows them to manage their account and have limited access to the employees that they manage. Also, we will want some Employees to have administrator access to their Company or Location.
   <p>
     <img src="images/demo/continue.jpg">Continue working on the Model: Let us add Employees to a Campaign, and later we will use the Campaign, AssignmentType and User
     (Context) to determine the rules for how this works.
@@ -77,8 +72,7 @@
     "select Employees from" will use a dropdown to show all the Company Employees to select from. This could be a large list. We want it to use an Employee search instead.
     <br> 2: the link needs to be of type Many2Many, since an Employee can be in multiple campaigns.
   <p>
-    Let us go ahead and makes the changes for this. For #1, clear the value in the link's "select Employees from". This will "tell" the application to use a Search instead
-    of a dropdown/navigation. The "equal property" will make sure that the Campaign and Employee are from the same Company.<br> <img src="images/demo/link35.jpg"><br>
+    Let us go ahead and makes the changes for this. For #1, clear the value in the link's "select Employees from". This will "tell" the application to use a Search instead of a dropdown/navigation. The "equal property" will make sure that the Campaign and Employee are from the same Company.<br> <img src="images/demo/link35.jpg"><br>
   <p>
     Now change the One2Many link "Campaign.Employees" to Many2Many link Campaigns.Employees<br> <img src="images/demo/link36.jpg"><br>
   <p>
@@ -89,12 +83,9 @@
     Notice that adding an Employee to Campaign is now using an Employee search, and the Employee &amp; Campaign must match the same Company. Adding an Employee to a
     Campaign automatically adds the Campaign to the Employee's list of Campaigns - and vice versa. The same with removing.
   <p>
-    <img src="images/demo/demo36.jpg"><br> Lots of arrows here - select Test Company, click on Campaign tab, select first Campaign, select Employees tab, click
-    add button to add Employees, from popup search click run search, multi select one or more Employees, and click Ok button.
+    <img src="images/demo/demo36.jpg"><br> Lots of arrows here - select Test Company, click on Campaign tab, select first Campaign, select Employees tab, click the add button to add Employees, from popup search click run search, multi-select one or more Employees, and click Ok button.
   <p>
-    <img src="images/demo/discuss.jpg"> Discuss &amp; Learn: Many2Many links have a "special" requirement for storing to a database. Both Employee and Campaign have
-    their own tables, and another table is needed to store the relationship between the two. If the relationship is One, then the table uses a column that is a foreign key
-    into the other table's primary key. A <em>link table</em> is used for M2M relationships and stores the primary keys of both tables.
+    <img src="images/demo/discuss.jpg"> Discuss &amp; Learn: Many2Many links have a "special" requirement for storing to a database. Both Employee and Campaign have their own tables, and another table is needed to store the relationship between the two. If the relationship is One, then the table uses a column that is a foreign key into the other table's primary key. A <em>link table</em> is used for M2M relationships and stores the primary keys of both tables.
   <p>
     Look at the "DataSource" tab, which displays the Link Table information for creating the Database script. <img src="images/demo/link38.jpg"><br>
   <p>Check out the Model Changes tab, to see how it captured the change to create the Link table.
@@ -108,11 +99,10 @@
   <p>
     Add new Object, and new Property "completed" (Date).<br> <img src="images/demo/object9.jpg"><br>
   <p>
-    The Links are a little more complicated, since we are having it "act" like a M2M relationship, and using a middle object with O2M link between it and the other Objects,
+    The Links are a little more complicated since we are having it "act" like a M2M relationship, and using a middle object with O2M link between it and the other Objects,
     which forms an <em><strong>extended</strong></em> M2M link.
   <p>
-    What we are saying here is that "Employees have many Campaigns and for each we have a completed date". <br> And the reverse "Campaigns have many Employees and for
-    each we have a completed date". <br> And: the Employees and Campaigns must be from the same Company. <br> We now have the Object EmployeeCampaign links to
+    What we are saying here is that "Employees have many Campaigns and for each, we have a completed date". <br> And the reverse "Campaigns have many Employees and for each we have a completed date". <br> And: the Employees and Campaigns must be from the same Company. <br> We now have the Object EmployeeCampaign links to
     "Employee.Campaigns" and the reverse "Campaign.Employees", to form an extended M2M relationship.
   <p>
     We have also set it up so that Campaign.Company and Employee.Company must match: <br> "Employees can only be assigned to Campaigns from their Company", and<br>
@@ -121,8 +111,7 @@
     Note: this shows Employee and
     Campaign must come from same Company. And, that the user should pick a Campaign to create a new EmployeeCampaign.
   <p>
-    <img src="images/demo/link41.jpg"><br> Notes: this also shows Employee and Campaign must come from same Company. And, that the user should pick an Employee
-    to create a new EmployeeCampaign. <br> "Select Campaigns from" is used so that an Employee can use a dropdown list of their Company's Campaigns to choose from.
+    <img src="images/demo/link41.jpg"><br> Notes: this also shows Employee and Campaign must come from same Company. And, that the user should pick an Employee to create a new EmployeeCampaign. <br> "Select Campaigns from" is used so that an Employee can use a dropdown list of their Company's Campaigns to choose from.
   <p>
     <img src="images/demo/review.jpg"> Review: A Link Object is used to form an <em>extended</em> ManyToMany relationship between two Objects and requires each
     relationship object. In our example, "Employees have many Campaigns" is a M2M by using the EmployeeCampaign Object.
@@ -144,8 +133,7 @@
     AwardType to Campaign ... so that it creates a O2M link.<br> <img src="images/demo/link42.jpg"><br>
   <p>
     Go to the "General" tab, and set the "Create method AwardType.getCampaigns" to "no".<br> <img src="images/demo/link43.jpg"><br> This is "saying" that we
-    dont need a getCampaigns from AwardType. If left to "yes" (which is ok), then the user would be able to see the Campaigns that and assign Campaigns to an AwardType. By
-    setting to "no" were saying that we want to pick/assign an AwardType from the Campaign.
+    don't need a getCampaigns from AwardType. If left to "yes" (which is ok), then the user would be able to see the Campaigns that are assigned Campaigns to an AwardType. By setting to "no" were saying that we want to pick/assign an AwardType from the Campaign.
   <p>
     Go to the "General III" tab and set the property path for picking an AwardType.<br> This is saying "a Company Campaign can be assigned a Company AwardType".<br>
     <img src="images/demo/link44.jpg"><br>

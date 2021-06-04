@@ -15,7 +15,7 @@
     Items are in a Catalog, that is organized into Sections. Each Award has an AwardType, that is associated with the Catalog that can be used to choose an Item from. Each
     Item can have options (ex: color, size, etc).<p>
   
-  <img sr c="images/demo/checkpoint.jpg">&nbsp;CheckPoint: you can use the saved Model from "checkpoints/2/EmpowHR.obx", that
+  <img src="images/demo/checkpoint.jpg"> CheckPoint: you can use the saved Model from "checkpoints/2/EmpowHR.obx", that
     includes these new Objects.
   </p>
   <p>
@@ -24,14 +24,14 @@
   <p>This is the design "mode" that you can be in when talking through the business requirements and building a model for it. The next "block" of changes will be for
     the shopping cart and creating and managing employee Orders. For now, we will zoom in and get this last block defined and tested.</p>
   <p>
-    Color code the main Objects to green, to have them stand out, and have the other Objects unflagged so that they are gray.<br> 
+    Color code the main Objects to green, to have them stand out and have the other Objects unflagged so that they are gray.<br> 
     <img src="images/demo/model2.jpg">
   
   
   <p>
     Starting with Employee, we'll add the following properties.<br /> 
     <img src="images/demo/model3.jpg"><br> 
-    The password will use a one-way encryption and needs to allow for some "bloat", so the size is set to 70.
+    The password will use one-way encryption and needs to allow for some "bloat", so the size is set to 70.
   </p>
   <p>Create a link for "Location.employees" (one2many). This is not an owned link, since an Employee can be moved to another Location. We do want to make sure that
     Employees and the Location must be in the same Company. Otherwise, an Employee could be added to a Location in a different Company. To define this, go to the Link tab
