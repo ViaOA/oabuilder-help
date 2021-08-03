@@ -87,7 +87,8 @@
   <p>
     <img src="images/demo/discuss.jpg"> Discuss &amp; Learn: Many2Many links have a "special" requirement for storing to a database. Both Employee and Campaign have their own tables, and another table is needed to store the relationship between the two. If the relationship is One, then the table uses a column that is a foreign key into the other table's primary key. A <em>link table</em> is used for M2M relationships and stores the primary keys of both tables.
   <p>
-    Look at the "DataSource" tab, which displays the Link Table information for creating the Database script. <img src="images/demo/link38.jpg"><br>
+    Look at the "DataSource" tab, which displays the Link Table information for creating the Database script.<br>
+     <img src="images/demo/link38.jpg"><br>
   <p>Check out the Model Changes tab, to see how it captured the change to create the Link table.
   <p>
     <img src="images/demo/checkpoint.jpg"> CheckPoint #8 was created before starting this next section.
@@ -106,17 +107,18 @@
     "Employee.Campaigns" and the reverse "Campaign.Employees", to form an extended M2M relationship.
   <p>
     We have also set it up so that Campaign.Company and Employee.Company must match: <br> "Employees can only be assigned to Campaigns from their Company", and<br>
-    "Campaigns can only add Employees from their Company".<br> 
-    <img src="images/demo/link40.jpg"><br>qqqqqqqqqqqqqqqqqqqqq 
+    "Campaigns can only add Employees from the same Company".<br> 
+    <img src="images/demo/link40.jpg"><br> 
     Note: this shows Employee and
-    Campaign must come from same Company. And, that the user should pick a Campaign to create a new EmployeeCampaign.
+    Campaign must come from same Company, and the user should pick a Campaign to create a new EmployeeCampaign.
   <p>
-    <img src="images/demo/link41.jpg"><br> Notes: this also shows Employee and Campaign must come from same Company. And, that the user should pick an Employee to create a new EmployeeCampaign. <br> "Select Campaigns from" is used so that an Employee can use a dropdown list of their Company's Campaigns to choose from.
+    <img src="images/demo/link41.jpg"><br> Notes: this also shows Employee and Campaign must come from same Company, and the user should pick an Employee to create a new EmployeeCampaign. <br>
+     "Select Campaigns from" is used so that an Employee can use a dropdown list of their Company's Campaigns to choose from.
   <p>
     <img src="images/demo/review.jpg"> Review: A Link Object is used to form an <em>extended</em> ManyToMany relationship between two Objects and requires each
     relationship object. In our example, "Employees have many Campaigns" is a M2M by using the EmployeeCampaign Object.
   <p>
-    Couple more things before we run: set up the UI for the EmployeeCampaign to include the Employee &amp; the Campaign in the table columns.<br> <img
+    There are a couple of more things before we run: set up the UI for the EmployeeCampaign to include the Employee &amp; the Campaign in the table columns.<br> <img
       src="images/demo/object10.jpg"><br>
   <p>
     create a EmployeeCampaign calculated property "display", that uses (dependent properties) Employee.fullName and Campaign.name, and then use it as the UI display.<br>
@@ -161,3 +163,10 @@
     <img src="images/demo/checkpoint.jpg"> CheckPoint #9 created.
 </body>
 </html>
+
+qqqqqqqqqqqqqqqqqqqqqqqqqqqq
+use grammerly ...
+then do a planning to figure out UI and then build images & icons qqqqqqqqqqqqqqqqqqqq
+
+
+
